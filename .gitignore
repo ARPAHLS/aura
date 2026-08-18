@@ -13,5 +13,6 @@ venv/
 *.log
 .aura/
 !.aura/.gitkeep
+AURA_PLAN.md
 .mypy_cache/
 .ruff_cache/
