@@ -1,20 +1,42 @@
+<div align="center">
+
+<img src="docs/assets/aura_splash.png" alt="αύρα — AURA Harness" width="720" />
+
+<br>
+
 # AURA Harness
 
 **The runtime coat around agent loops.**
 
-Also **AVRA**, **αύρα** — the field that wraps what is inside it. Governed runtime for any logical system that must run, act, and be accounted for.
+*Also AVRA · αύρα — the field that wraps what is inside it.*
 
-*By ARPA Hellenic Logical Systems — [arpacorp.net](https://arpacorp.net)*
+<br>
+
+[![ARPA Hellenic Logical Systems](https://img.shields.io/badge/ARPA-Hellenic%20Logical%20Systems-A793AC?labelColor=e8e0e4&style=flat-square)](https://github.com/arpahls)
+[![Manifesto](https://img.shields.io/badge/docs-manifesto-f5e6d3?labelColor=e8e0e4&style=flat-square)](https://github.com/ARPAHLS/manifesto)
+[![Narrative](https://img.shields.io/badge/docs-narrative-d4e4f7?labelColor=e8e0e4&style=flat-square)](docs/narrative.md)
+[![Architecture](https://img.shields.io/badge/docs-architecture-c8dde8?labelColor=e8e0e4&style=flat-square)](docs/architecture.md)
+[![Stack](https://img.shields.io/badge/docs-stack%20position-b8d4e8?labelColor=e8e0e4&style=flat-square)](docs/stack-position.md)
+[![Spec](https://img.shields.io/badge/spec-schemas-e8f0f8?labelColor=e8e0e4&style=flat-square)](spec/)
+
+<br>
+
+[Overview](#overview) ·
+[Stack](#where-aura-sits-in-the-stack) ·
+[How It Works](#how-it-works) ·
+[Levels](#aura-levels) ·
+[Documentation](#documentation) ·
+[Development](#development)
+
+</div>
 
 ---
 
-## What αύρα Is
+## Overview
 
 **αύρα** *(aura)* — in Greek, a surrounding presence. Not the loop itself. The conditions that make the loop viable.
 
 AURA Harness wraps the active **body** while it runs: monitoring, enforcing, recording, recovering. It takes **inputs** — brain, identity, skills, memory, guardrails, host — and produces **normalized output**: causal audit trails, conformance records, exports to continuity and environment.
-
-Two jobs, always:
 
 | | |
 |---|---|
@@ -59,7 +81,9 @@ flowchart LR
 | **Space / Env** | Rooms | Collaboration, environments |
 | **Continuity** | Legacy | Record beyond the host |
 
-SoulSig persists on identity. Soma is temporal — the host for this chapter. AURA governs the loop and routes results to Rooms and Legacy. Full stack vision: [Manifesto](https://github.com/ARPAHLS/manifesto).
+SoulSig persists on identity. Soma is temporal — the host for this chapter. AURA governs the loop and routes results to Rooms and Legacy.
+
+→ Full stack vision: [Manifesto](https://github.com/ARPAHLS/manifesto) · [Stack position](docs/stack-position.md)
 
 ---
 
@@ -80,8 +104,6 @@ Inputs (any types)  →  Manifest + Spectrum  →  Harness  →  AuraEvent outpu
 | **Field services** | Monitor, audit, limit, break, recover, … — parallel to the loop |
 | **Exporters** | JSON, OTel, CSV, webhook, continuity stream |
 
-→ [Documentation index](docs/INDEX.md) · [Narrative spec](docs/narrative.md) · [Architecture](docs/architecture.md)
-
 ---
 
 ## AURA Levels
@@ -99,29 +121,26 @@ Autonomy is tiered, explicit, enforceable:
 
 ---
 
-## Repository
+## Documentation
 
-```text
-spec/           Schemas and contracts
-docs/           Narrative, architecture, design notes
-aura/
-  core/         Registry, session, audit spine, conformance, spectrum
-  sequencer/    Pipelines and middleware ordering
-  ops/          Field services and operation plugins
-  types/        Input type plugins
-  bridges/      ARPA stack integrations
-  exporters/    Output adapters
-  cli/          Command-line interface
-tests/
-```
+| Topic | Links |
+| :--- | :--- |
+| **Index** | [docs/INDEX.md](docs/INDEX.md) |
+| **Narrative** | [docs/narrative.md](docs/narrative.md) |
+| **Architecture** | [docs/architecture.md](docs/architecture.md) · [three-rings.md](docs/three-rings.md) |
+| **Runtime** | [sequencer.md](docs/sequencer.md) · [field-services.md](docs/field-services.md) · [outputs.md](docs/outputs.md) |
+| **Trust & identity** | [trust-paths.md](docs/trust-paths.md) |
+| **Specifications** | [spec/](spec/) |
 
 ---
 
 ## Development
 
-Requires Python **3.10+**.
+Requires **Python 3.10+**.
 
 ```bash
+git clone https://github.com/ARPAHLS/aura.git
+cd aura
 pip install -e ".[dev]"
 pytest
 aura version
@@ -129,10 +148,16 @@ aura version
 
 ---
 
-## ARPA Hellenic Logical Systems
+<div align="center">
 
-[Manifesto](https://github.com/ARPAHLS/manifesto) · [Rooms](https://github.com/arpahls/rooms) · [Legacy Protocol](https://github.com/arpahls/legacy-protocol) · [github.com/arpahls](https://github.com/arpahls)
+<br>
 
----
+**Built & Maintained by ARPA Hellenic Logical Systems**
+
+[arpacorp.net](https://arpacorp.net) · [github.com/arpahls](https://github.com/arpahls) · [Manifesto](https://github.com/ARPAHLS/manifesto) · [Rooms](https://github.com/arpahls/rooms) · [Legacy Protocol](https://github.com/arpahls/legacy-protocol)
+
+<br>
 
 *All concepts and terminology in this repository are attributed to ARPA Hellenic Logical Systems / [arpacorp.net](https://arpacorp.net).*
+
+</div>
