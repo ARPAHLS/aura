@@ -45,4 +45,4 @@ Manifest `spectrum.services` selects which field services activate for a session
 
 Beyond core twelve — observability modules, resource governors, temporal schedulers, event bridges, recovery playbooks. Registered as **op plugins** or **type plugins** — same extensibility model.
 
-See [design/direction-draft.md](design/direction-draft.md) · [outputs.md](outputs.md)
+See [architecture.md](architecture.md) · [outputs.md](outputs.md) · [spec/capability.registry.json](../spec/capability.registry.json)

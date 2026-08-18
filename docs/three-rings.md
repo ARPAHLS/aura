@@ -1,6 +1,6 @@
 # Three Rings
 
-Cross-cutting model from [design/direction-draft.md](design/direction-draft.md).
+Cross-cutting model — see also [architecture.md](architecture.md).
 
 ---
 

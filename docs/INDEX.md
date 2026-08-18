@@ -33,25 +33,15 @@
 
 ---
 
-## Design Notes
-
-Internal design exploration — chronological:
-
-| | File |
-|---|---|
-| 1 | [design/direction-draft.md](design/direction-draft.md) |
-| 2 | [design/direction-draft2.md](design/direction-draft2.md) |
-| 3 | [design/direction-draft3.md](design/direction-draft3.md) |
-
----
-
 ## ARPA Stack
 
-| Resource | Link |
+| Project | Link |
 |---|---|
 | Manifesto | [github.com/ARPAHLS/manifesto](https://github.com/ARPAHLS/manifesto) |
-| Reference | [reference.md](../../reference.md) |
-| Graphs | [graph.md](../../graph.md) |
+| Skillware | [github.com/arpahls/skillware](https://github.com/arpahls/skillware) |
+| Rooms | [github.com/arpahls/rooms](https://github.com/arpahls/rooms) |
+| Legacy Protocol | [github.com/arpahls/legacy-protocol](https://github.com/arpahls/legacy-protocol) |
+| Avatar | [github.com/arpahls/avatar](https://github.com/arpahls/avatar) |
 
 ---
 

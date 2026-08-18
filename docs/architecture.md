@@ -40,7 +40,7 @@ EXPORTERS          JSON · OTel · CSV · webhook · continuity stream
 | Field services | [field-services.md](field-services.md) |
 | AURA Levels | [aura-levels.md](aura-levels.md) |
 | Sequencer | [sequencer.md](sequencer.md) |
-| Type registry | [design/direction-draft3.md](design/direction-draft3.md) |
+| Type registry | [spec/type-plugin.contract.md](../spec/type-plugin.contract.md) |
 | Trust paths | [trust-paths.md](trust-paths.md) |
 | Stack position | [stack-position.md](stack-position.md) |
 | Outputs | [outputs.md](outputs.md) |

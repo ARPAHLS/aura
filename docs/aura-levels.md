@@ -20,7 +20,7 @@ From [narrative.md](narrative.md). Enforced by Spectrum + conformance engine + h
 - **Permission contract** — not a badge
 - **Enforced by harness** — visible in logs, revocable by UBH
 - **Effective level** may be capped by **trust tier** (Path B ≤ Path A ceiling)
-- **Provider-aware** — same level, different enforcement for cloud vs local brain (see draft 2)
+- **Provider-aware** — same level, different enforcement for cloud vs local brain (see [trust-paths.md](trust-paths.md))
 
 ---
 
