@@ -6,8 +6,6 @@
 
 **AURA Harness - The runtime coat around agent loops.**
 
-*Also AVRA · αύρα — the field that wraps what is inside it.*
-
 <br>
 
 [![ARPA Hellenic Logical Systems](https://img.shields.io/badge/ARPA-Hellenic%20Logical%20Systems-A793AC?labelColor=e8e0e4&style=flat-square)](https://github.com/arpahls)
@@ -32,9 +30,11 @@
 
 ## Overview
 
-**αύρα** *(aura)* — in Greek, a surrounding presence. Not the loop itself. The conditions that make the loop viable.
+**αύρα** *(aura)* — in Greek, a surrounding presence: the field that wraps what is inside it. In ARPA Logical Systems, if an agent loop is an active **body**, aura is not the loop/runtime/body itself, but the conditions that make the loop viable — what we call a **harness**.
 
-AURA Harness wraps the active **body** while it runs: monitoring, enforcing, recording, recovering. It takes **inputs** — brain, identity, skills, memory, guardrails, host — and produces **normalized output**: causal audit trails, conformance records, exports to continuity and environment.
+**AURA Harness** is that coat for software agents. It wraps whatever **runtime** hosts your loop — a script, an orchestration framework, a device — and works **alongside** it, not instead of it. On every turn it can enforce guardrails and autonomy levels, watch for drift and errors, pause or recover, chain multi-step pipelines with retries, and record a full causal log of what happened and why.
+
+What you plug in is open-ended: models, tools, memory, identity, policy, security layers, and more — registered as extensible **types**, not hardcoded vendors. The harness governs the run itself: whether behavior matched what was declared, every tool call and correction in order, and exports you can send to logs, observability stacks, or webhooks.
 
 | | |
 |---|---|
@@ -66,18 +66,19 @@ flowchart LR
     AURA --> LEG["Continuity"]
 ```
 
-| Readable | ARPA | Role |
+| Layer | ARPA Stack | Role |
 | :--- | :--- | :--- |
+
+| **Brain** | Logical Systems | Reasoning substrate |
 | **Identity** | Live ID | Who is accountable |
 | **Soul** | SoulSig | Birth contract, constitution |
 | **Body / Runtime** | Soma | Whatever hosts the run |
-| **Brain** | Logical Systems | Reasoning substrate — use, do not own |
-| **Memory** | MnemoLink | Personas, experience, retention |
+| **Memory** | Mnemonic Matrix | Personas, experience, retention |
 | **Neural System** | Skillware | Capabilities, tool pathways |
+| **Aura** | AURA | **Runtime coat/harness — this project** |
 | **Sovereignty** | Synapuls | Security across every surface |
-| **Aura** | AURA Harness | **Runtime coat — this project** |
-| **Space / Env** | Rooms | Collaboration, environments |
-| **Continuity** | Legacy | Record beyond the host |
+| **Space / Env** | Rooms | Cross-species collaboration envs |
+| **Continuity** | Legacy Protocol | Immutable record beyond the host |
 
 SoulSig persists on identity. Soma is temporal — the host for this chapter. AURA governs the loop and routes results to Rooms and Legacy.
 
