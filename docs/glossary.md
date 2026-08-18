@@ -10,8 +10,11 @@
 | **Binding** | One `{ type, config }` entry in manifest |
 | **Bridge** | Integration to ARPA stack (Live ID, Legacy, Rooms, …) |
 | **Conformance (Job A)** | Runtime ⊆ declared manifest |
-| **Audit (Job B)** | Full causal log of session |
-| **Constitution** | SoulSig or guardrails — what agent may/must not do |
+| **Audit trail** | Live append-only session log; code: audit spine / `AuraEvent` stream |
+| **Session export** | Closed-session deliverable — JSONL + conformance summary JSON |
+| **Constitution** | Rules, guardrails, constraints — what the run must obey (agent profile or adapters) |
+| **Tools** | Skills, MCP, APIs, bundles — capability surface (adapter) |
+| **Audit (Job B)** | Full causal log of session — same as audit trail |
 | **Envelope** | Outer ring — identity, trust, Legacy export |
 | **Field** | Parallel services on event stream |
 | **Hook pipeline** | pre/post interception stages |

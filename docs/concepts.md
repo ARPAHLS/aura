@@ -22,7 +22,19 @@ One run of an agent. Opens, records events, closes, exports logs.
 
 Anything that happens during a session: `turn.start`, `tool.call`, `constraint.violated`, etc.
 
-Every event is appended to the **audit spine** with causal links (`event_id`, `parent_id`, `trace_id`).
+Every event is appended to the **audit trail** with causal links (`event_id`, `parent_id`, `trace_id`).
+
+## Audit trail
+
+The live, append-only record of a session. Official name for what the code calls the **audit spine**. Written to JSONL as events occur.
+
+## Session export
+
+What you get when a session closes: JSONL audit file + conformance **summary** JSON. Ship to logs, observability, or storage.
+
+## Constitution
+
+Rules, guardrails, and constraints the run must obey — on the agent profile, in YAML, or from adapters. Enforced during the run; checked again on close (conformance).
 
 ## Rule
 

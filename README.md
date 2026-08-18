@@ -18,7 +18,7 @@
 <br>
 
 [Overview](#overview) ·
-[Stack](#where-aura-sits-in-the-stack) ·
+[Architecture](#aura-architecture) ·
 [How It Works](#how-it-works) ·
 [Documentation](#documentation) ·
 [Development](#development)
@@ -42,47 +42,38 @@ What you plug in is open-ended: models, tools, memory, identity, policy, and mor
 
 ---
 
-## Where AURA Sits in the Stack
+## AURA Architecture
 
-Optional ARPA ecosystem context — AURA runs **standalone**; nothing below is required to use this repo.
-
-Identity births the soul. The soul inhabits a body. Feeds converge on the body while it runs. **AURA wraps the body** and may project outward into space and continuity.
+This is the **AURA Harness** view — not the full [ARPA manifesto stack](https://github.com/ARPAHLS/manifesto). Soul, Rooms, Legacy, and the birth chain live there. Here, parallel **inputs** feed the **body**; **Aura** wraps it; an **audit trail** records everything; **session export** delivers the log on close.
 
 ```mermaid
 flowchart LR
-    LIVE["Identity"] -->|"SoulSig / Birth"| SOUL["Soul"]
-    SOUL --> SOMA["Body / Runtime"]
+    ID["Identity"] -.-> BODY["Body / Runtime"]
+    BRAIN["Brain"] -.-> BODY
+    MEM["Memory"] -.-> BODY
+    TOOLS["Tools"] -.-> BODY
+    CONST["Constitution"] -.-> BODY
 
-    BRAIN["Brain"] -.-> SOMA
-    MEM["Memory"] -.-> SOMA
-    SKILL["Neural System"] -.-> SOMA
-    SEC["Sovereignty"] -.-> SOMA
-
-    SOMA --> AURA["Aura"]
-    LIVE -.-> AURA
-    SOUL -.-> AURA
-    SOMA -.-> AURA
-
-    AURA --> ROOMS["Space / Env"]
-    AURA --> LEG["Continuity"]
+    BODY --> AURA["Aura"]
+    AURA --> TRAIL["Audit Trail"]
+    TRAIL --> EXPORT["Session Export"]
 ```
 
-| Layer | ARPA Stack | Role |
-| :--- | :--- | :--- |
-| **Brain** | Logical Systems | Reasoning substrate |
-| **Identity** | Live ID | Who is accountable |
-| **Soul** | SoulSig | Birth contract, constitution |
-| **Body / Runtime** | Soma | Whatever hosts the run |
-| **Memory** | Mnemonic Matrix | Personas, experience, retention |
-| **Neural System** | Skillware | Capabilities, tool pathways |
-| **Aura** | AURA | **Runtime coat/harness — this project** |
-| **Sovereignty** | Synapuls | Security across every surface |
-| **Space / Env** | Rooms | Cross-species collaboration envs |
-| **Continuity** | Legacy Protocol | Immutable record beyond the host |
+| Layer | Role in AURA |
+| :--- | :--- |
+| **Identity** | Agent ID trailer — `AURA-000n`, optional name, your external IDs |
+| **Brain** | Model / reasoning (adapter — any provider) |
+| **Memory** | Retention, persona (adapter — optional) |
+| **Tools** | Skills, MCP, APIs, [Skillware](https://github.com/arpahls/skillware) bundles (adapter) |
+| **Constitution** | Rules, guardrails, constraints — what the run must obey |
+| **Body / Runtime** | Whatever hosts the loop — script, framework, device |
+| **Aura** | **This project** — attach, enforce, record |
+| **Audit Trail** | Append-only causal event log during the run |
+| **Session Export** | JSONL log + conformance summary when the session closes |
 
-SoulSig persists on identity. Soma is temporal — the host for this chapter. AURA governs the loop and can route results to Rooms and Legacy when those bridges are connected.
+All inputs are optional except a body to wrap. Use any subset; AURA adapts.
 
-→ Full stack vision: [Manifesto](https://github.com/ARPAHLS/manifesto) · [Stack position](docs/stack-position.md)
+→ Deeper detail: [stack-position.md](docs/stack-position.md) · Full ARPA vision: [Manifesto](https://github.com/ARPAHLS/manifesto)
 
 ---
 

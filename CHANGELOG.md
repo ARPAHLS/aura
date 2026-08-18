@@ -9,6 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **AURA architecture diagram** — replaced manifesto stack (Soul, Rooms, Legacy) with harness-specific flow: Identity, Brain, Memory, Tools, Constitution → Body / Runtime → Aura → **Audit Trail** → **Session Export**.
+  - *Rationale:* README and docs must reflect AURA's model, not copy manifesto; Soul removed; Identity is a peer input.
+  - *Affected:* `README.md`, `docs/stack-position.md`, `docs/architecture.md`, `docs/concepts.md`, `docs/glossary.md`.
+- **Official output names** — **Audit trail** (live log) and **Session export** (JSONL + summary on close). Code term `AuditSpine` unchanged.
+
+### Changed (prior)
+
 - **README.md** — fixed broken stack table (blank line between header and rows broke Markdown rendering); updated to reflect v0.1 shipped vs roadmap; added getting-started/examples badges; removed aspirational mechanisms presented as current; lite identity note.
   - *Rationale:* GitHub README must match runnable repo state; table must render correctly.
 

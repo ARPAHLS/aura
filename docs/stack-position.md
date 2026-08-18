@@ -1,6 +1,8 @@
-# Stack Position
+# AURA Architecture
 
-Where **AURA Harness** sits in the ARPA logical-system stack.
+How **AURA Harness** models a run — distinct from the full [ARPA manifesto stack](https://github.com/ARPAHLS/manifesto).
+
+The manifesto diagram covers Identity → Soul → Body → Aura → Rooms / Legacy. **This repo uses a harness-centric view:** parallel inputs, one body, one coat, one audit trail out.
 
 ---
 
@@ -8,53 +10,60 @@ Where **AURA Harness** sits in the ARPA logical-system stack.
 
 ```mermaid
 flowchart LR
-    LIVE["Identity"] -->|"SoulSig / Birth"| SOUL["Soul"]
-    SOUL --> SOMA["Body / Runtime"]
+    ID["Identity"] -.-> BODY["Body / Runtime"]
+    BRAIN["Brain"] -.-> BODY
+    MEM["Memory"] -.-> BODY
+    TOOLS["Tools"] -.-> BODY
+    CONST["Constitution"] -.-> BODY
 
-    BRAIN["Brain"] -.-> SOMA
-    MEM["Memory"] -.-> SOMA
-    SKILL["Neural System"] -.-> SOMA
-    SEC["Sovereignty"] -.-> SOMA
-
-    SOMA --> AURA["Aura"]
-    LIVE -.-> AURA
-    SOUL -.-> AURA
-    SOMA -.-> AURA
-
-    AURA --> ROOMS["Space / Env"]
-    AURA --> LEG["Continuity"]
+    BODY --> AURA["Aura"]
+    AURA --> TRAIL["Audit Trail"]
+    TRAIL --> EXPORT["Session Export"]
 ```
 
 ---
 
-## How to Read This
+## Layers
 
-**Identity → Soul → Body** — birth chain. Who is accountable, what was contracted, where the run lives.
-
-**Feeds into Body** (dotted) — brain, memory, neural system, sovereignty converge on the active host while it runs. They are inputs, not owned by AURA.
-
-**Body → Aura** — the coat wraps the running form. Governance, audit, and enforcement happen here.
-
-**Aura → Space / Continuity** — governed output projects into collaboration (Rooms) and persistence (Legacy). Nothing bypasses the coat.
-
-**Identity, Soul, Body → Aura** (dotted) — constitution, UBH context, and host metadata bind into the harness for the duration of the run.
+| Layer | What it is | v0.1 |
+| :--- | :--- | :--- |
+| **Identity** | `AURA-000n`, optional name, `ids.external` trailer | Shipped — agent registry |
+| **Brain** | Any model or reasoning substrate | Adapter (roadmap) |
+| **Memory** | Any retention backend | Adapter (roadmap) |
+| **Tools** | Skills, MCP, HTTP APIs, Skillware | Adapter (roadmap) |
+| **Constitution** | Rules, guardrails, constraints on the agent profile | Shipped — constraint engine |
+| **Body / Runtime** | The active loop — Python script first | Shipped — runtime helper |
+| **Aura** | Harness — hook, enforce, record | Shipped — session + SDK |
+| **Audit Trail** | Append-only causal log (`AuraEvent` stream) | Shipped — audit spine / JSONL |
+| **Session Export** | Deliverable on close — `.jsonl` + `.summary.json` | Shipped |
 
 ---
 
-## ARPA Names
+## How to read this
 
-| Readable | ARPA | Relationship to AURA |
-| :--- | :--- | :--- |
-| **Identity** | Live ID | Input type — accountability, UBH |
-| **Soul** | SoulSig | Birth manifest → harness configuration |
-| **Body / Runtime** | Soma | Host; a script counts |
-| **Brain** | Logical Systems | Input type — swappable reasoning |
-| **Memory** | MnemoLink | Input type — retention, persona |
-| **Neural System** | Skillware | Input type — capabilities, tools |
-| **Sovereignty** | Synapuls | Input type — surface security |
-| **Aura** | AURA Harness | **This project** |
-| **Space / Env** | Rooms | Output bridge — environments |
-| **Continuity** | Legacy | Output bridge — persistence |
+**Inputs** (dotted) — none are required except something acting as a body. Bring any combination; adapters normalize over time.
+
+**Body / Runtime** — the loop AURA wraps. Not owned by AURA.
+
+**Aura** — runs alongside the body: checks constitution, appends to audit trail, never replaces the loop.
+
+**Audit Trail** — official name for the live record. Code: `AuditSpine`. Every event has causal IDs.
+
+**Session Export** — official name for the closed-session output. Feeds logs, SIEM, observability, or future bridges (Legacy, webhooks).
+
+---
+
+## vs ARPA manifesto stack
+
+| Manifesto | AURA Harness |
+| :--- | :--- |
+| Identity → Soul → Body chain | Identity is an input alongside brain, memory, tools |
+| Soul / SoulSig | Folded into **Constitution** + optional `ids` metadata |
+| Neural System | **Tools** |
+| Aura → Rooms / Legacy | Aura → Audit Trail → Export (bridges to Rooms/Legacy later) |
+| Sovereignty | Security rules in **Constitution** or future adapter |
+
+→ [README.md](../README.md) · [architecture.md](architecture.md) · [Manifesto](https://github.com/ARPAHLS/manifesto)
 
 ---
 
@@ -62,11 +71,7 @@ flowchart LR
 
 | | |
 |---|---|
-| Active harness ⇒ active body | Autonomy without a host is unbounded |
-| Brains are rented | AURA integrates any logical system; it does not compete on models |
-| Guardrails from anywhere | SoulSig, manifest, memory layer, skill constitution — AURA enforces all |
-| Same harness, many inputs | Types are plugins; the core does not hardcode vendors |
-
----
-
-See [narrative.md](narrative.md) · [README.md](../README.md) · [Manifesto](https://github.com/ARPAHLS/manifesto)
+| Any subset of inputs | AURA stretches to what you bring |
+| Wrap, don't replace | Body keeps the loop |
+| Events before features | Audit trail is the foundation |
+| Constitution is declarative | Rules compared on close (conformance) |

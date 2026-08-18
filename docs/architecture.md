@@ -6,6 +6,23 @@ AURA wraps any agent loop in six steps:
 ATTACH → PROBE → HOOK → ENFORCE → RECORD → EXPORT
 ```
 
+## Data flow
+
+```mermaid
+flowchart LR
+    ID["Identity"] -.-> BODY["Body / Runtime"]
+    BRAIN["Brain"] -.-> BODY
+    MEM["Memory"] -.-> BODY
+    TOOLS["Tools"] -.-> BODY
+    CONST["Constitution"] -.-> BODY
+
+    BODY --> AURA["Aura"]
+    AURA --> TRAIL["Audit Trail"]
+    TRAIL --> EXPORT["Session Export"]
+```
+
+→ Layer definitions: [stack-position.md](stack-position.md)
+
 ## Core (shipped in v0.1)
 
 | Module | Role |
@@ -13,7 +30,7 @@ ATTACH → PROBE → HOOK → ENFORCE → RECORD → EXPORT
 | `aura/agents/` | Registry, `AURA-000n`, ID trailer |
 | `aura/config.py` | Global + project paths |
 | `aura/core/session.py` | Session modes, open/close |
-| `aura/core/spine.py` | Append-only JSONL audit log |
+| `aura/core/spine.py` | Audit trail (append-only JSONL) |
 | `aura/core/constraints.py` | Modular rules |
 | `aura/core/conformance.py` | Declared vs observed summary |
 | `aura/api.py` | Public SDK |
