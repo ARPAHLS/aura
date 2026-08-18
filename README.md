@@ -1,12 +1,10 @@
 <div align="center">
 
-<img src="docs/assets/aura_splash.png" alt="αύρα — AURA Harness" width="720" />
+<img src="docs/assets/aura_splash.png" alt="αύρα — AURA Harness" width="550" />
 
 <br>
 
-# AURA Harness
-
-**The runtime coat around agent loops.**
+**AURA Harness - The runtime coat around agent loops.**
 
 *Also AVRA · αύρα — the field that wraps what is inside it.*
 
@@ -151,13 +149,10 @@ aura version
 <div align="center">
 
 <br>
-
-**Built & Maintained by ARPA Hellenic Logical Systems**
-
-[arpacorp.net](https://arpacorp.net) · [github.com/arpahls](https://github.com/arpahls) · [Manifesto](https://github.com/ARPAHLS/manifesto) · [Rooms](https://github.com/arpahls/rooms) · [Legacy Protocol](https://github.com/arpahls/legacy-protocol)
-
-<br>
-
-*All concepts and terminology in this repository are attributed to ARPA Hellenic Logical Systems / [arpacorp.net](https://arpacorp.net).*
-
+<div align="center">
+  <img src="assets/arpalogo26.png" width="50" alt="ARPA Logo">
+  <br>
+  <sub>Developed and Maintained by <b>ARPA HELLENIC LOGICAL SYSTEMS</b></sub>
+  <br>
+  <sub>Support: systems@arpacorp.net</sub>
 </div>
