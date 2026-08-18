@@ -150,7 +150,7 @@ aura version
 
 <br>
 <div align="center">
-  <img src="assets/arpalogo26.png" width="50" alt="ARPA Logo">
+  <img src="https://raw.githubusercontent.com/ARPAHLS/.github/main/Group%202062.png" width="50" alt="ARPA Logo">
   <br>
   <sub>Developed and Maintained by <b>ARPA HELLENIC LOGICAL SYSTEMS</b></sub>
   <br>
