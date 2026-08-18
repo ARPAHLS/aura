@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://arpacorp.net/schemas/aura/manifest/v1",
+  "title": "AuraManifest",
+  "description": "Birth declaration for an AURA session.",
+  "type": "object",
+  "required": ["manifest_version", "bindings"],
+  "properties": {
+    "manifest_version": { "type": "integer", "const": 1 },
+    "bindings": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/TypeBinding" },
+      "minItems": 1
+    },
+    "sequencer": { "$ref": "sequencer.schema.json" },
+    "middleware": { "$ref": "middleware-policy.schema.json" },
+    "spectrum": { "$ref": "#/$defs/Spectrum" },
+    "trust_tier": {
+      "enum": ["ephemeral", "unverified", "verified_live_id"],
+      "description": "Derived from identity binding; caps effective AURA level"
+    }
+  },
+  "$defs": {
+    "TypeBinding": {
+      "type": "object",
+      "required": ["type", "config"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "Namespaced type id, e.g. arpa.brain.gemini"
+        },
+        "config": { "type": "object" }
+      }
+    },
+    "Spectrum": {
+      "type": "object",
+      "properties": {
+        "level": {
+          "enum": ["low", "mid", "high", "full"]
+        },
+        "services": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "output": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    }
+  }
+}

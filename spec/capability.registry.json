@@ -1,0 +1,126 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://arpacorp.net/schemas/aura/capability-registry/v1",
+  "title": "AuraCapabilityRegistry",
+  "description": "Operation ids for field services, middleware, conformance, and type extensions.",
+  "operations": {
+    "audit.log": {
+      "stage": "*",
+      "owner": "core",
+      "description": "Always-on audit spine (Job B)"
+    },
+    "monitor.loop": {
+      "stage": "parallel",
+      "owner": "op",
+      "service": "monitor",
+      "description": "Watch loop state, drift, outputs"
+    },
+    "track.progress": {
+      "stage": "parallel",
+      "owner": "op",
+      "service": "track",
+      "description": "Task progress, lineage, retries"
+    },
+    "limit.tokens": {
+      "stage": "pre_step",
+      "owner": "op",
+      "service": "limit",
+      "description": "Token and cost budgets"
+    },
+    "limit.rate": {
+      "stage": "pre_tool",
+      "owner": "op",
+      "service": "limit",
+      "description": "Rate caps and scope boundaries"
+    },
+    "safeguard.guardrail": {
+      "stage": "pre_tool",
+      "owner": "op",
+      "service": "safeguard",
+      "description": "Enforce guardrails from any source"
+    },
+    "safeguard.injection_scan": {
+      "stage": "pre_turn",
+      "owner": "op",
+      "service": "safeguard",
+      "description": "Surface prompt injection filter"
+    },
+    "wake.resume": {
+      "stage": "session",
+      "owner": "op",
+      "service": "wake",
+      "description": "Restart stalled / resume interrupted work"
+    },
+    "break.runaway": {
+      "stage": "on_drift",
+      "owner": "op",
+      "service": "break",
+      "description": "Stop infinite loops and runaway tools"
+    },
+    "conserve.tokens": {
+      "stage": "pre_step",
+      "owner": "op",
+      "service": "conserve",
+      "description": "Reduce redundant model/tool calls"
+    },
+    "recover.error": {
+      "stage": "on_error",
+      "owner": "op",
+      "service": "recover",
+      "description": "Retry, fallback, escalate"
+    },
+    "remember.memory": {
+      "stage": "turn_end",
+      "owner": "op",
+      "service": "remember",
+      "description": "Compress, discard, persist memory policy"
+    },
+    "learn.capture": {
+      "stage": "post_session",
+      "owner": "op",
+      "service": "learn",
+      "description": "Capture outcomes for improvement"
+    },
+    "attach.extension": {
+      "stage": "post_bind",
+      "owner": "op",
+      "service": "attach",
+      "description": "Load modular extensions"
+    },
+    "conformance.check": {
+      "stage": "*",
+      "owner": "core",
+      "description": "Declared vs observed (Job A)"
+    },
+    "middleware.firewall": {
+      "stage": "middleware",
+      "owner": "middleware",
+      "description": "Inbound filter — middleware stack"
+    },
+    "middleware.pii_mask": {
+      "stage": "middleware",
+      "owner": "middleware",
+      "description": "PII redaction before model/skill"
+    },
+    "middleware.prompt_compress": {
+      "stage": "middleware",
+      "owner": "middleware",
+      "description": "Context compression"
+    },
+    "sequencer.step": {
+      "stage": "sequencer",
+      "owner": "sequencer",
+      "description": "Ordered pipeline step execution"
+    },
+    "skills.enrich_tool": {
+      "stage": "post_tool",
+      "owner": "bridge",
+      "description": "Skills-type enriched tool events"
+    },
+    "legacy.export": {
+      "stage": "post_session",
+      "owner": "bridge",
+      "description": "Legacy Protocol stream"
+    }
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://arpacorp.net/schemas/aura/event/v1",
+  "title": "AuraEvent",
+  "description": "Append-only audit spine record.",
+  "type": "object",
+  "required": ["event_id", "session_id", "timestamp", "kind"],
+  "properties": {
+    "event_id": { "type": "string" },
+    "parent_id": { "type": ["string", "null"] },
+    "session_id": { "type": "string" },
+    "trace_id": { "type": "string" },
+    "span_id": { "type": "string" },
+    "step_id": { "type": "string" },
+    "task_id": { "type": "string" },
+    "timestamp": { "type": "string", "format": "date-time" },
+    "kind": { "type": "string" },
+    "constitution_hash": { "type": "string" },
+    "payload": { "type": "object" },
+    "telemetry": {
+      "type": "object",
+      "properties": {
+        "latency_ms": { "type": "number" },
+        "attempt": { "type": "integer" },
+        "skill_id": { "type": "string" },
+        "skill_version": { "type": "string" }
+      }
+    }
+  }
+}

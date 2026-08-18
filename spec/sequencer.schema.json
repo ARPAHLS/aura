@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://arpacorp.net/schemas/aura/sequencer/v1",
+  "title": "AuraSequencer",
+  "description": "Ordered step pipeline inside a session.",
+  "type": "object",
+  "properties": {
+    "steps": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/Step" }
+    }
+  },
+  "$defs": {
+    "Step": {
+      "type": "object",
+      "required": ["id", "type"],
+      "properties": {
+        "id": { "type": "string" },
+        "type": {
+          "enum": ["skill", "prompt", "op", "subflow", "gate"]
+        },
+        "ref": { "type": "string" },
+        "version": { "type": "string" },
+        "depends_on": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "retry": {
+          "type": "object",
+          "properties": {
+            "max": { "type": "integer", "minimum": 0 },
+            "backoff": { "enum": ["none", "linear", "exponential"] }
+          }
+        },
+        "gates": {
+          "type": "array",
+          "items": { "enum": ["human_confirm", "constitution", "budget"] }
+        },
+        "config": { "type": "object" }
+      }
+    }
+  }
+}

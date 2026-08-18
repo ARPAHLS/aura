@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://arpacorp.net/schemas/aura/middleware-policy/v1",
+  "title": "MiddlewarePolicy",
+  "description": "Ordered operation chain applied per step or per model request.",
+  "type": "object",
+  "required": ["order"],
+  "properties": {
+    "scope": {
+      "enum": ["per_step", "per_model_request"],
+      "default": "per_step"
+    },
+    "order": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["op"],
+        "properties": {
+          "op": { "type": "string" },
+          "config": { "type": "object" }
+        }
+      },
+      "minItems": 1
+    }
+  }
+}
