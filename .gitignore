@@ -11,5 +11,7 @@ htmlcov/
 venv/
 .env
 *.log
+.aura/
+!.aura/.gitkeep
 .mypy_cache/
 .ruff_cache/

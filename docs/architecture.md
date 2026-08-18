@@ -1,77 +1,46 @@
-# Architecture
+# Architecture (v0.1)
 
-*Index: [INDEX.md](INDEX.md)*
-
----
-
-## Principles
-
-1. **Hardcode core, never hardcode the world** — inputs and ops are plugins
-2. **Wrap, don't replace** — the loop stays in the body
-3. **Events before features** — AuraEvent spine is the foundation
-4. **Conformance + audit** — run as declared; log everything
-5. **Same harness, many inputs** — any brain, skills framework, identity model
-
----
-
-## Layers
+AURA wraps any agent loop in six steps:
 
 ```
-TYPE PLUGINS       brain · identity · skills · memory · soma · drive · guardrails · …
-       ↓
-BRIDGES            Live ID · Rooms · Legacy · … (when present)
-       ↓
-CORE               registry · session · spine · pipeline · conformance · spectrum
-       ↓
-SEQUENCER          steps · middleware · retries · state
-       ↓
-OPS                field services · middleware handlers
-       ↓
-EXPORTERS          JSON · OTel · CSV · webhook · continuity stream
+ATTACH → PROBE → HOOK → ENFORCE → RECORD → EXPORT
 ```
 
----
+## Core (shipped in v0.1)
 
-## Mechanisms
-
-| Mechanism | Doc |
+| Module | Role |
 |---|---|
-| Three rings | [three-rings.md](three-rings.md) |
-| Field services | [field-services.md](field-services.md) |
-| AURA Levels | [aura-levels.md](aura-levels.md) |
-| Sequencer | [sequencer.md](sequencer.md) |
-| Type registry | [spec/type-plugin.contract.md](../spec/type-plugin.contract.md) |
-| Trust paths | [trust-paths.md](trust-paths.md) |
-| Stack position | [stack-position.md](stack-position.md) |
-| Outputs | [outputs.md](outputs.md) |
+| `aura/agents/` | Registry, `AURA-000n`, ID trailer |
+| `aura/config.py` | Global + project paths |
+| `aura/core/session.py` | Session modes, open/close |
+| `aura/core/spine.py` | Append-only JSONL audit log |
+| `aura/core/constraints.py` | Modular rules |
+| `aura/core/conformance.py` | Declared vs observed summary |
+| `aura/api.py` | Public SDK |
+| `aura/runtime/python.py` | Python attach helper |
+| `aura/exporters/jsonl.py` | Session export |
 
----
+## Extension surface (roadmap)
 
-## Runtime Flow
+| Module | Role |
+|---|---|
+| `aura/core/registry.py` | Type plugins (brain, skills, memory) |
+| `aura/sequencer/` | Multi-step pipelines (deferred) |
+| `aura/ops/` | Observer presets (deferred) |
+| `aura/bridges/` | Optional ARPA stack exporters |
 
-1. Parse manifest
-2. Validate type bindings
-3. Resolve capabilities → spectrum + effective operations
-4. Open session
-5. Bind types; register hooks
-6. Run sequencer or ad-hoc loop
-7. Hook pipeline on every tick; spine records all
-8. Field services parallel on event stream
-9. Conformance compares observed vs declared
-10. Close session → exporters → bridges
+**Principle:** new capabilities emit or subscribe to the spine — core loop unchanged.
 
----
+## Hook stages (full pipeline — partial in v0.1)
 
-## Hook Pipeline
+v0.1 uses `emit(kind, payload)` freely. Planned ordered hooks:
 
-`pre_manifest` → `post_bind` → `pre_turn` → `pre_step` → `pre_tool` → `post_tool` → `post_step` → `on_drift` → `on_error` → `turn_end` → `post_session`
+`pre_turn` → `pre_tool` → `post_tool` → `turn_end` → `post_session`
 
----
+See [pipeline.py](../aura/core/pipeline.py) for enum definitions.
 
-## Robustness
+## ARPA stack (optional)
 
-Robust · Safe · Secure · Fast · Precise · Auditable · Maintainable · Continuous · Memory-correct · Self-healing
+AURA works standalone. In the wider ARPA stack, aura sits around Soma and may export to Rooms or Legacy — via adapters, never required.
 
-An agent under AURA is guaranteed to **fail visibly, bounded, and recoverably**.
-
-→ [narrative.md](narrative.md)
+→ [stack-position.md](stack-position.md) · [Manifesto](https://github.com/ARPAHLS/manifesto)

@@ -145,6 +145,19 @@ pytest
 aura version
 ```
 
+Quick start:
+
+```python
+from aura import agent, configure
+configure()
+with agent("my-bot").session() as run:
+    run.emit("turn.start", {"input": "hello"})
+    run.emit("turn.end", {"tokens": 10})
+print(run.exports)
+```
+
+→ [getting-started.md](docs/getting-started.md) · [examples/](examples/) · [CHANGELOG.md](CHANGELOG.md)
+
 ---
 
 <div align="center">

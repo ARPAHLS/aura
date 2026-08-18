@@ -5,13 +5,14 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "aura-harness"
 version = "0.1.0"
-description = "Runtime coat around agent loops — conformance, audit, orchestration"
+description = "Lightweight runtime coat for agent loops — record, enforce, export"
 readme = "README.md"
 requires-python = ">=3.10"
-license = { text = "Proprietary" }
+license = { text = "MIT" }
 authors = [{ name = "ARPA Hellenic Logical Systems" }]
 keywords = ["agents", "harness", "audit", "governance", "runtime", "aura"]
 classifiers = [
+    "License :: OSI Approved :: MIT License",
     "Intended Audience :: Developers",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.10",
@@ -19,7 +20,9 @@ classifiers = [
     "Programming Language :: Python :: 3.12",
 ]
 
-dependencies = []
+dependencies = [
+    "pyyaml>=6.0",
+]
 
 [project.optional-dependencies]
 dev = ["pytest>=7.0", "pytest-cov>=4.0"]
