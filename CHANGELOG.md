@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- **README.md** — fixed broken stack table (blank line between header and rows broke Markdown rendering); updated to reflect v0.1 shipped vs roadmap; added getting-started/examples badges; removed aspirational mechanisms presented as current; lite identity note.
+  - *Rationale:* GitHub README must match runnable repo state; table must render correctly.
+
 ## [0.1.0] - 2026-08-18
 
 ### Added

@@ -10,9 +10,9 @@
 
 [![ARPA Hellenic Logical Systems](https://img.shields.io/badge/ARPA-Hellenic%20Logical%20Systems-A793AC?labelColor=e8e0e4&style=flat-square)](https://github.com/arpahls)
 [![Manifesto](https://img.shields.io/badge/docs-manifesto-f5e6d3?labelColor=e8e0e4&style=flat-square)](https://github.com/ARPAHLS/manifesto)
-[![Narrative](https://img.shields.io/badge/docs-narrative-d4e4f7?labelColor=e8e0e4&style=flat-square)](docs/narrative.md)
+[![Getting started](https://img.shields.io/badge/docs-getting%20started-d4e4f7?labelColor=e8e0e4&style=flat-square)](docs/getting-started.md)
 [![Architecture](https://img.shields.io/badge/docs-architecture-c8dde8?labelColor=e8e0e4&style=flat-square)](docs/architecture.md)
-[![Stack](https://img.shields.io/badge/docs-stack%20position-b8d4e8?labelColor=e8e0e4&style=flat-square)](docs/stack-position.md)
+[![Examples](https://img.shields.io/badge/examples-runnable-b8d4e8?labelColor=e8e0e4&style=flat-square)](examples/)
 [![Spec](https://img.shields.io/badge/spec-schemas-e8f0f8?labelColor=e8e0e4&style=flat-square)](spec/)
 
 <br>
@@ -20,7 +20,6 @@
 [Overview](#overview) ·
 [Stack](#where-aura-sits-in-the-stack) ·
 [How It Works](#how-it-works) ·
-[Levels](#aura-levels) ·
 [Documentation](#documentation) ·
 [Development](#development)
 
@@ -32,20 +31,22 @@
 
 **αύρα** *(aura)* — in Greek, a surrounding presence: the field that wraps what is inside it. In ARPA Logical Systems, if an agent loop is an active **body**, aura is not the loop/runtime/body itself, but the conditions that make the loop viable — what we call a **harness**.
 
-**AURA Harness** is that coat for software agents. It wraps whatever **runtime** hosts your loop — a script, an orchestration framework, a device — and works **alongside** it, not instead of it. On every turn it can enforce guardrails and autonomy levels, watch for drift and errors, pause or recover, chain multi-step pipelines with retries, and record a full causal log of what happened and why.
+**AURA Harness** wraps whatever hosts your loop — a script, a framework, a device — and works **alongside** it, not instead of it. It records a causal audit log, enforces your rules, and exports session summaries you can ship to logs or observability tools.
 
-What you plug in is open-ended: models, tools, memory, identity, policy, security layers, and more — registered as extensible **types**, not hardcoded vendors. The harness governs the run itself: whether behavior matched what was declared, every tool call and correction in order, and exports you can send to logs, observability stacks, or webhooks.
+What you plug in is open-ended: models, tools, memory, identity, policy, and more — via adapters over time, not hardcoded vendors. **v0.1** ships the kernel: agent registry, sessions, constraints, JSONL export, and a Python SDK.
 
 | | |
 |---|---|
-| **Conformance** | The agent runs as declared — goals, guardrails, constitution, level |
-| **Auditability** | Every step, tool call, API touch, correction — logged in order |
+| **Conformance** | Did the run stay within declared rules? |
+| **Auditability** | Every meaningful event logged in order, with causal IDs |
 
 ---
 
 ## Where AURA Sits in the Stack
 
-Identity births the soul. The soul inhabits a body. Feeds converge on the body while it runs. **AURA wraps the body** and projects outward into space and continuity.
+Optional ARPA ecosystem context — AURA runs **standalone**; nothing below is required to use this repo.
+
+Identity births the soul. The soul inhabits a body. Feeds converge on the body while it runs. **AURA wraps the body** and may project outward into space and continuity.
 
 ```mermaid
 flowchart LR
@@ -68,7 +69,6 @@ flowchart LR
 
 | Layer | ARPA Stack | Role |
 | :--- | :--- | :--- |
-
 | **Brain** | Logical Systems | Reasoning substrate |
 | **Identity** | Live ID | Who is accountable |
 | **Soul** | SoulSig | Birth contract, constitution |
@@ -80,7 +80,7 @@ flowchart LR
 | **Space / Env** | Rooms | Cross-species collaboration envs |
 | **Continuity** | Legacy Protocol | Immutable record beyond the host |
 
-SoulSig persists on identity. Soma is temporal — the host for this chapter. AURA governs the loop and routes results to Rooms and Legacy.
+SoulSig persists on identity. Soma is temporal — the host for this chapter. AURA governs the loop and can route results to Rooms and Legacy when those bridges are connected.
 
 → Full stack vision: [Manifesto](https://github.com/ARPAHLS/manifesto) · [Stack position](docs/stack-position.md)
 
@@ -88,35 +88,26 @@ SoulSig persists on identity. Soma is temporal — the host for this chapter. AU
 
 ## How It Works
 
+**v0.1 flow:**
+
 ```
-Inputs (any types)  →  Manifest + Spectrum  →  Harness  →  AuraEvent output
+Agent (AURA-000n)  →  Session open  →  emit events  →  enforce rules  →  close  →  JSONL + summary
 ```
 
-**Inputs** are registered **types** — not hardcoded vendors. Brain can be Gemini, Claude, Ollama, or custom. Skills can be any framework. Identity can be Live ID or ephemeral session. The harness adapts; the output shape stays the same.
+| Component | Status | Role |
+| :--- | :--- | :--- |
+| **Agent registry** | Shipped | Permanent `AURA-000n` IDs, optional name, user ID trailer |
+| **Session** | Shipped | Modes: `script`, `task`, `continuous` |
+| **Audit spine** | Shipped | Append-only JSONL with causal event IDs |
+| **Constraint engine** | Shipped | Token limits, confirm-before-action, allow/deny tools |
+| **Conformance summary** | Shipped | Declared rules vs observed events on close |
+| **Python SDK + CLI** | Shipped | `agent()`, `session()`, `emit()`, `approve()`, export |
+| **Type adapters** | Roadmap | Brain, skills, memory plugins — see [ROADMAP](docs/ROADMAP.md) |
+| **Sequencer / field services** | Roadmap | Pipelines and observer presets — deferred |
 
-| Mechanism | Role |
-|---|---|
-| **Type registry** | Extensible input bindings |
-| **Spectrum** | AURA Levels, budgets, guardrails, services |
-| **Hook pipeline** | Interception on every loop tick |
-| **Sequencer** | Ordered pipelines — steps, retries, middleware |
-| **Field services** | Monitor, audit, limit, break, recover, … — parallel to the loop |
-| **Exporters** | JSON, OTel, CSV, webhook, continuity stream |
+Lite identity: AURA assigns `AURA-0001`, `AURA-0002`, … if you provide no name. Your own IDs nest under `ids` — no identity service required.
 
----
-
-## AURA Levels
-
-Autonomy is tiered, explicit, enforceable:
-
-| Level | Posture |
-|---|---|
-| **Low** | Suggest; human approves before action |
-| **Mid** | Act in scope; escalate at boundaries |
-| **High** | Independent within guardrails |
-| **Full** | Self-directed within constitution; accountability via audit |
-
-→ [aura-levels.md](docs/aura-levels.md)
+→ [concepts.md](docs/concepts.md) · [getting-started.md](docs/getting-started.md) · [examples/](examples/)
 
 ---
 
@@ -124,12 +115,13 @@ Autonomy is tiered, explicit, enforceable:
 
 | Topic | Links |
 | :--- | :--- |
+| **Start here** | [getting-started.md](docs/getting-started.md) · [concepts.md](docs/concepts.md) · [examples/](examples/) |
 | **Index** | [docs/INDEX.md](docs/INDEX.md) |
-| **Narrative** | [docs/narrative.md](docs/narrative.md) |
-| **Architecture** | [docs/architecture.md](docs/architecture.md) · [three-rings.md](docs/three-rings.md) |
-| **Runtime** | [sequencer.md](docs/sequencer.md) · [field-services.md](docs/field-services.md) · [outputs.md](docs/outputs.md) |
-| **Trust & identity** | [trust-paths.md](docs/trust-paths.md) |
-| **Specifications** | [spec/](spec/) |
+| **Architecture** | [architecture.md](docs/architecture.md) · [stack-position.md](docs/stack-position.md) |
+| **Identity** | [trust-paths.md](docs/trust-paths.md) — lite ID trailer, no Live ID required |
+| **Roadmap** | [ROADMAP.md](docs/ROADMAP.md) |
+| **Specifications** | [spec/](spec/) — schemas for adapters and events |
+| **Vision (long-form)** | [narrative.md](docs/narrative.md) |
 
 ---
 
@@ -149,6 +141,7 @@ Quick start:
 
 ```python
 from aura import agent, configure
+
 configure()
 with agent("my-bot").session() as run:
     run.emit("turn.start", {"input": "hello"})
@@ -156,7 +149,7 @@ with agent("my-bot").session() as run:
 print(run.exports)
 ```
 
-→ [getting-started.md](docs/getting-started.md) · [examples/](examples/) · [CHANGELOG.md](CHANGELOG.md)
+→ [getting-started.md](docs/getting-started.md) · [examples/](examples/) · [CHANGELOG.md](CHANGELOG.md) · [CONTRIBUTING.md](CONTRIBUTING.md)
 
 ---
 
