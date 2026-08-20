@@ -1,0 +1,29 @@
+name: Sync GitHub Labels
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/labels.json"
+      - ".github/scripts/sync_labels.py"
+      - ".github/workflows/sync-labels.yml"
+  workflow_dispatch:
+
+permissions:
+  issues: write
+  contents: read
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate labels.json
+        run: python .github/scripts/sync_labels.py --dry-run
+
+      - name: Sync labels to GitHub
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: python .github/scripts/sync_labels.py

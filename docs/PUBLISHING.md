@@ -26,6 +26,9 @@ The workflow runs tests, builds sdist/wheel, then uploads to PyPI.
 
 ## README images on PyPI
 
-Use **raw GitHub URLs** in `README.md` (not relative paths) so the PyPI project page renders logos:
+- **GitHub (private or public):** use a **relative** path in `README.md`, e.g. `docs/assets/aura_splash.png`.
+- **PyPI** (after the repo is **public**): pin a tag URL so the project page renders logos:
 
-`https://raw.githubusercontent.com/ARPAHLS/aura/main/docs/assets/aura_splash.png`
+  `https://raw.githubusercontent.com/ARPAHLS/aura/v0.3.0/docs/assets/aura_splash.png`
+
+  Switch back to relative on `main` for GitHub if you prefer one README for both — PyPI will not resolve relative asset paths.

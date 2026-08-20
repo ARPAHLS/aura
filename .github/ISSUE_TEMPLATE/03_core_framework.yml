@@ -1,0 +1,43 @@
+name: Core framework
+description: Session, spine, constraints, identity, conformance, audit report
+title: "[Core]: "
+labels: ["core framework"]
+body:
+  - type: dropdown
+    id: component
+    attributes:
+      label: Component
+      options:
+        - session / API
+        - agent registry / identity
+        - audit spine / hash chain
+        - constraints / policy
+        - conformance / audit report
+        - config / storage
+        - other core
+    validations:
+      required: true
+
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Kind
+      options:
+        - bug
+        - enhancement
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: What should change and why?
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Code or session context (optional)
+      description: File paths, API calls, or export snippet

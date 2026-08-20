@@ -1,22 +1,24 @@
-## Summary
+## Description
 
-<!-- What changed and why -->
+<!-- What changed and why? -->
 
-## Type
+### Type
 
-- [ ] Bug fix
-- [ ] Feature
-- [ ] Docs
-- [ ] Tests / CI
+- [ ] **Bug fix**
+- [ ] **Core framework** — session, spine, constraints, identity, audit report
+- [ ] **CLI**
+- [ ] **Integration** — sequencer, hosts, membrane, observers, exporters
+- [ ] **Documentation**
+- [ ] **Examples**
+- [ ] **Packaging / CI**
 
 ## Checklist
 
+- [ ] Linked issue (`Fixes #…` or `Refs #…`)
 - [ ] `pytest` passes
-- [ ] `black aura tests` — no formatting diff
+- [ ] `black aura tests` — no diff
 - [ ] `flake8 aura tests` — clean
-- [ ] CHANGELOG updated ([Keep a Changelog](https://keepachangelog.com/))
-- [ ] Docs updated if user-facing behavior changed
-- [ ] No secrets or `.env` files committed
+- [ ] `CHANGELOG.md` updated when user-visible behavior changes
 
 ## Test plan
 

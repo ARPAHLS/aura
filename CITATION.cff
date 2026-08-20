@@ -1,0 +1,45 @@
+# Citation metadata for ARPAHLS/aura.
+# Add a Zenodo concept DOI under identifiers when registered.
+# Validate: pip install cffconvert && cffconvert -i CITATION.cff -f apalike
+cff-version: 1.2.0
+message: >-
+  If you use this software, please cite it using the metadata below.
+  Record the aura-harness version you used (PyPI or Git tag) for reproducibility.
+type: software
+title: AURA Harness
+abstract: >-
+  AURA Harness is an open-source Python runtime coat for agent loops. It wraps
+  existing hosts with a membrane model — ingress context, egress policy on tool
+  calls, prescriptive sequencer pipelines, observers, hash-chained audit trails,
+  conformance summaries, and structured audit reports — without replacing the
+  user's loop, model, or skill runtime.
+version: "0.3.0"
+date-released: "2026-08-20"
+license: MIT
+repository-code: "https://github.com/ARPAHLS/aura"
+url: "https://github.com/ARPAHLS/aura"
+authors:
+  - family-names: Peilivanidis
+    given-names: Vladimiros
+    alias: Ross Peili
+    email: vpeilivanidis@gmail.com
+    affiliation: "ARPA Hellenic Logical Systems"
+    website: "https://github.com/rosspeili"
+  - name: "ARPA Hellenic Logical Systems"
+    email: systems@arpacorp.net
+    website: "https://arpacorp.net"
+keywords:
+  - aura
+  - aura-harness
+  - python
+  - ai-agents
+  - agent-harness
+  - audit-trail
+  - compliance
+  - conformance
+  - governance
+  - observability
+  - policy
+  - runtime-membrane
+  - skillware
+  - open-source

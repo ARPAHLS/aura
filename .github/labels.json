@@ -1,0 +1,102 @@
+[
+  {
+    "name": "bug",
+    "color": "FFBCBC",
+    "description": "Something isn't working."
+  },
+  {
+    "name": "security",
+    "color": "CCCCF0",
+    "description": "Security, trust model, or policy bypass concerns."
+  },
+  {
+    "name": "core framework",
+    "color": "79B6D8",
+    "description": "Session, spine, constraints, conformance, identity, audit report."
+  },
+  {
+    "name": "cli",
+    "color": "79B6D8",
+    "description": "aura CLI commands and output."
+  },
+  {
+    "name": "sequencer",
+    "color": "B8D4E8",
+    "description": "Prescriptive step pipelines, gates, step telemetry."
+  },
+  {
+    "name": "hosts",
+    "color": "B8D4E8",
+    "description": "Skillware host, mock skills, egress wrapping."
+  },
+  {
+    "name": "membrane",
+    "color": "B8D4E8",
+    "description": "Ingress context and egress guarded tool calls."
+  },
+  {
+    "name": "observers",
+    "color": "B8D4E8",
+    "description": "Parallel audit trail subscribers."
+  },
+  {
+    "name": "audit & export",
+    "color": "C4D8C0",
+    "description": "Session export, OTel JSONL, compare, hash chain."
+  },
+  {
+    "name": "enhancement",
+    "color": "D4E4F1",
+    "description": "New feature or improvement request."
+  },
+  {
+    "name": "documentation",
+    "color": "F4ECC8",
+    "description": "Docs, README, or glossary updates."
+  },
+  {
+    "name": "examples",
+    "color": "FADFD0",
+    "description": "Runnable examples under examples/."
+  },
+  {
+    "name": "packaging",
+    "color": "DBD3DC",
+    "description": "PyPI, pyproject.toml, or release workflow."
+  },
+  {
+    "name": "ci",
+    "color": "DBD3DC",
+    "description": "GitHub Actions workflows."
+  },
+  {
+    "name": "testing",
+    "color": "DBD3DC",
+    "description": "pytest, black, flake8, or test coverage."
+  },
+  {
+    "name": "good first issue",
+    "color": "D2FFAE",
+    "description": "Good for newcomers."
+  },
+  {
+    "name": "help wanted",
+    "color": "C7E4CA",
+    "description": "Extra attention is needed."
+  },
+  {
+    "name": "question",
+    "color": "F4ECC8",
+    "description": "Further information is requested."
+  },
+  {
+    "name": "discussion",
+    "color": "F4ECC8",
+    "description": "Design discussion or RFC."
+  },
+  {
+    "name": "wontfix",
+    "color": "F0EFEB",
+    "description": "This will not be worked on."
+  }
+]

@@ -1,16 +1,19 @@
 <div align="center">
 
-<img src="https://raw.githubusercontent.com/ARPAHLS/aura/main/docs/assets/aura_splash.png" alt="αύρα — AURA Harness" width="480" />
+<img src="docs/assets/aura_splash.png" alt="αύρα — AURA Harness" width="480" />
 
 <br>
 
-**A runtime coat for agent loops — audit, policy, and compliance export.**
+**AURA Harness — The runtime coat around agent loops.**
 
 <br>
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
-[![Docs](https://img.shields.io/badge/docs-GitHub-555)](docs/INDEX.md)
+<div align="center">
+  <img src="https://img.shields.io/badge/License-MIT-e8c4c0?style=flat-square" alt="License">
+  <img src="https://img.shields.io/badge/Python-3.10+-bbd4e8?style=flat-square" alt="Python Version">
+  <img src="https://img.shields.io/badge/Status-Experimental-c4d8c0?style=flat-square" alt="Status">
+  <img src="https://img.shields.io/badge/Powered_by-ARPA_HLS-cfc8dc?style=flat-square" alt="ARPA HLS">
+</div>
 
 <br>
 
@@ -28,8 +31,6 @@
 
 **AURA Harness** wraps whatever runs your agent loop — a Python script, [Skillware](https://github.com/arpahls/skillware), LangGraph, or your own host. It does not replace the loop. It sits around it, records what happened, enforces your rules at tool boundaries, and exports a session you can ship to logs or compliance.
 
-Think of it as a **sidecar**: your body runs; AURA attaches, gates risky actions, and leaves a causal audit trail.
-
 | | |
 |---|---|
 | **For** | Teams that need provenance, policy, and repeatable pipelines around agents |
@@ -42,42 +43,51 @@ Think of it as a **sidecar**: your body runs; AURA attaches, gates risky actions
 
 ```mermaid
 flowchart LR
-    Host[Your host / loop] <-->|run skills & turns| Aura[AURA Harness]
-    Aura --> Audit[Audit trail]
-    Audit --> Export[Session export]
-    Audit -.-> Obs[Observers]
+    Host[Host] --> Aura[AURA]
+    Aura --> Audit[Audit Trail]
 ```
 
-1. Open a **session** for an agent (stable `agent_ref` + internal id).
-2. Your **host** runs — model loop, Skillware `execute()`, or a declared **sequencer** pipeline.
-3. AURA **egress** checks policy before tools fire; every step is logged.
-4. On close you get **JSONL + audit report + conformance summary** (and optional OTel export).
+Your **host** runs the loop. **AURA** attaches — policy at egress, causal logging. On close, the **audit trail** becomes session export (JSONL, summary, audit report).
 
-→ Details: [using-aura.md](docs/using-aura.md) · [skillware-integration.md](docs/skillware-integration.md)
+→ [using-aura.md](docs/using-aura.md) · [skillware-integration.md](docs/skillware-integration.md)
 
 ---
 
 ## Architecture
 
-AURA is the **harness** (ingress, policy, egress, record). It is not the body and not the same thing as egress — egress is the gate on the way out to tools, then control returns to the body.
+Optional inputs feed the **body**; AURA wraps it; audit and export follow.
 
 ```mermaid
 flowchart LR
-    IN[Ingress] --> BODY[Body / host loop]
-    BODY <-->|tool calls| EG[Egress gate]
-    EG --> BODY
-    EG --> AUDIT[Audit trail]
-    AUDIT --> EXPORT[Session export]
-    AUDIT -.-> OBS[Observers]
+    ID["Identity"] -.-> BODY["Body / Runtime"]
+    BRAIN["Brain"] -.-> BODY
+    MEM["Memory"] -.-> BODY
+    TOOLS["Tools"] -.-> BODY
+    CONST["Constitution"] -.-> BODY
+
+    BODY --> AURA["AURA Harness"]
+    AURA --> TRAIL["Audit Trail"]
+    TRAIL --> EXPORT["Session Export"]
+    TRAIL -.-> OBS["Observers"]
 ```
 
-Optional inputs (identity, brain, memory, tools, constitution) feed the body — see [stack-position.md](docs/stack-position.md).
+→ [architecture.md](docs/architecture.md) · [stack-position.md](docs/stack-position.md)
 
 ---
 
 ## Quick start
 
 Requires **Python 3.10+**.
+
+**Install from PyPI:**
+
+```bash
+pip install aura-harness
+# optional Skillware host extra:
+pip install "aura-harness[skillware]"
+```
+
+**Develop from source:**
 
 ```bash
 git clone https://github.com/ARPAHLS/aura.git
@@ -94,10 +104,10 @@ configure()
 
 ag = agent("acme/research-bot", policy_version="1")
 with ag.session() as run:
-    run.emit("turn.start", {"input": "screen this wallet"})
+    run.emit("turn.start", {"input": "hello"})
     run.emit("turn.end", {"tokens": 120})
 
-print(run.exports)  # jsonl, summary, audit_report, otel paths
+print(run.exports)
 ```
 
 CLI: `aura agent create`, `aura run`, `aura export`, `aura compare`, `aura export-otel`.
@@ -115,6 +125,16 @@ CLI: `aura agent create`, `aura run`, `aura export`, `aura compare`, `aura expor
 | **Identity & audit** | [trust-paths.md](docs/trust-paths.md) · [outputs.md](docs/outputs.md) |
 | **Compare & position** | [comparison.md](docs/comparison.md) · [ROADMAP.md](docs/ROADMAP.md) |
 | **Contribute** | [CONTRIBUTING.md](CONTRIBUTING.md) · [TESTING.md](docs/TESTING.md) · [PUBLISHING.md](docs/PUBLISHING.md) · [CHANGELOG.md](CHANGELOG.md) |
+
+**Notes**
+
+- **Experimental (alpha)** — API may change between minor releases until 1.0.
+- **Wrap, don't replace** — your host owns the loop; AURA records and gates at boundaries you wire through `emit()` or `SkillwareHost`.
+- **Security** — loaded skills and scripts run in your process; see [SECURITY.md](SECURITY.md).
+- **Citation** — [CITATION.cff](CITATION.cff) (GitHub **Cite this repository**).
+- **Support** — [issues](https://github.com/ARPAHLS/aura/issues) · systems@arpacorp.net
+
+Full ARPA stack vision: [Manifesto](https://github.com/ARPAHLS/manifesto) (separate repo).
 
 ---
 

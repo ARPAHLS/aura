@@ -1,0 +1,41 @@
+name: Integration
+description: Sequencer, hosts, membrane, observers, Skillware, exporters
+title: "[Integration]: "
+labels: ["hosts"]
+body:
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - sequencer
+        - Skillware host
+        - membrane (ingress / egress)
+        - observers
+        - audit & export (OTel, compare)
+        - examples
+    validations:
+      required: true
+
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Kind
+      options:
+        - bug
+        - enhancement
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+    validations:
+      required: true
+
+  - type: textarea
+    id: repro
+    attributes:
+      label: Repro or pipeline spec (optional)
+      description: Sequencer YAML, host snippet, or example path

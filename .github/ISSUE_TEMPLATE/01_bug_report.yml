@@ -1,0 +1,70 @@
+name: Bug report
+description: Something isn't working in aura-harness
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting. Include versions and a minimal repro if you can.
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - core framework
+        - cli
+        - sequencer
+        - hosts / Skillware
+        - membrane
+        - observers
+        - audit & export
+        - packaging / install
+        - unknown
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: aura-harness version
+      placeholder: "0.3.0 or pip show aura-harness"
+    validations:
+      required: true
+
+  - type: input
+    id: python
+    attributes:
+      label: Python version
+      placeholder: "3.12.0"
+    validations:
+      required: true
+
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to reproduce
+      placeholder: Minimal script, CLI command, or session snippet
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs / session export (optional)
+      description: Redact secrets. JSONL excerpt or summary.json is helpful.

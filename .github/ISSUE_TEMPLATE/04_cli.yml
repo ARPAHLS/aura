@@ -1,0 +1,34 @@
+name: CLI
+description: aura command-line interface
+title: "[CLI]: "
+labels: ["cli"]
+body:
+  - type: input
+    id: command
+    attributes:
+      label: Command
+      placeholder: "aura agent list, aura compare, …"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Kind
+      options:
+        - bug
+        - enhancement
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+    validations:
+      required: true
+
+  - type: textarea
+    id: output
+    attributes:
+      label: Actual output (optional)
