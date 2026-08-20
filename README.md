@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="docs/assets/aura_splash.png" alt="αύρα — AURA Harness" width="480" />
+<img src="https://raw.githubusercontent.com/ARPAHLS/aura/main/docs/assets/aura_splash.png" alt="αύρα — AURA Harness" width="480" />
 
 <br>
 
@@ -9,7 +9,7 @@
 <br>
 
 <div align="center">
-  <a href="https://pypi.org/project/aura-harness/"><img src="https://img.shields.io/pypi/v/aura-harness?label=Version&style=flat-square" alt="Version"></a>
+  <a href="https://pypi.org/project/aura-harness/"><img src="https://img.shields.io/pypi/v/aura-harness?label=Version&color=e8d4c0&style=flat-square" alt="Version"></a>
   <a href="https://doi.org/10.5281/zenodo.22031863"><img src="https://img.shields.io/badge/DOI-10.5281%2Fzenodo.22031863-d4dce8?style=flat-square" alt="DOI"></a>
   <a href="CHANGELOG.md"><img src="https://img.shields.io/badge/Status-Experimental-c4d8c0?style=flat-square" alt="Status"></a>
   <br>

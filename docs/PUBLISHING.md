@@ -75,9 +75,14 @@ Recorded in [CITATION.cff](../CITATION.cff) and `pyproject.toml` `[project.urls]
 
 ## README images on PyPI
 
-- **GitHub (private or public):** use a **relative** path in `README.md`, e.g. `docs/assets/aura_splash.png`.
-- **PyPI** (after the repo is **public**): pin a tag URL so the project page renders logos:
+PyPI **embeds the README at upload time**. Edits on GitHub do not update an already-published version — cut a new release (e.g. `0.3.1`) to refresh the project page.
 
-  `https://raw.githubusercontent.com/ARPAHLS/aura/v0.3.0/docs/assets/aura_splash.png`
+Use **raw GitHub URLs** so the same `README.md` renders on GitHub and PyPI (repo must be public):
 
-  Switch back to relative on `main` for GitHub if you prefer one README for both — PyPI will not resolve relative asset paths.
+```text
+https://raw.githubusercontent.com/ARPAHLS/aura/main/docs/assets/aura_splash.png
+```
+
+`main` keeps the logo working on GitHub between commits and tags. Pin to `vX.Y.Z` instead if you need a frozen asset per release.
+
+Badges: the dynamic PyPI Version badge supports `color=e8d4c0` (pastel) via shields.io. It updates automatically after each PyPI upload; shields.io cache may lag a few minutes.
