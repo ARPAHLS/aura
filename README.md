@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="docs/assets/aura_splash.png" alt="αύρα — AURA Harness" width="480" />
+<img src="https://raw.githubusercontent.com/ARPAHLS/aura/main/docs/assets/aura_splash.png" alt="αύρα — AURA Harness" width="480" />
 
 <br>
 
@@ -114,7 +114,7 @@ CLI: `aura agent create`, `aura run`, `aura export`, `aura compare`, `aura expor
 | **Integration** | [skillware-integration.md](docs/skillware-integration.md) · [sequencer.md](docs/sequencer.md) |
 | **Identity & audit** | [trust-paths.md](docs/trust-paths.md) · [outputs.md](docs/outputs.md) |
 | **Compare & position** | [comparison.md](docs/comparison.md) · [ROADMAP.md](docs/ROADMAP.md) |
-| **Contribute** | [CONTRIBUTING.md](CONTRIBUTING.md) · [TESTING.md](docs/TESTING.md) · [CHANGELOG.md](CHANGELOG.md) |
+| **Contribute** | [CONTRIBUTING.md](CONTRIBUTING.md) · [TESTING.md](docs/TESTING.md) · [PUBLISHING.md](docs/PUBLISHING.md) · [CHANGELOG.md](CHANGELOG.md) |
 
 ---
 
