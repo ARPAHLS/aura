@@ -3,16 +3,22 @@
 | Term | Meaning |
 |---|---|
 | **αύρα / AVRA / AURA** | Runtime coat / harness / field around the loop |
+| **Body** | Host loop while running — script, Skillware, framework |
+| **Membrane** | Ingress → body cavity → egress → audit sink |
+| **Ingress** | Session-open boundary; normalized context enters the cavity |
+| **Egress** | Policy gate before tool/skill execution leaves the cavity |
+| **Observer** | Parallel audit trail subscriber (does not block host) |
+| **Host** | Adapter that runs skills inside the body (`SkillwareHost`, mocks) |
 | **Aura Manifest** | Birth declaration — type bindings + spectrum + optional sequencer |
 | **AuraEvent** | Single append-only audit record |
 | **Aura Spectrum** | Levels, services, budgets, output profiles — control plane |
 | **Adapter** | Type plugin or runtime wrapper connecting foreign stack to harness |
 | **Binding** | One `{ type, config }` entry in manifest |
 | **Bridge** | Integration to ARPA stack (Live ID, Legacy, Rooms, …) |
-| **Conformance (Job A)** | Runtime ⊆ declared manifest |
+| **Conformance (Job A)** | Runtime ⊆ declared manifest + sequencer order |
 | **Audit trail** | Live append-only session log; code: audit spine / `AuraEvent` stream |
 | **Session export** | Closed-session deliverable — JSONL + conformance summary JSON |
-| **Constitution** | Rules, guardrails, constraints — what the run must obey (agent profile or adapters) |
+| **Constitution** | Rules, guardrails, constraints — what the run must obey |
 | **Tools** | Skills, MCP, APIs, bundles — capability surface (adapter) |
 | **Audit (Job B)** | Full causal log of session — same as audit trail |
 | **Envelope** | Outer ring — identity, trust, Legacy export |
@@ -24,7 +30,7 @@
 | **Middleware stack** | Ordered ops per step or model request |
 | **Operation (op)** | Pluggable handler — audit, limit, firewall, … |
 | **SCI** | Self-Centered Intelligence — agents reasoning from own center within constitution |
-| **Sequencer** | Ordered step pipeline inside session |
+| **Sequencer** | Ordered prescriptive step pipeline inside session (v0.2) |
 | **Session ID** | One runtime activation |
 | **Soma** | Body / host while running |
 | **SoulSig** | Birth contract on Live ID |

@@ -1,6 +1,20 @@
 # Sequencer
 
-Ordered pipelines inside a session — steps, retries, middleware, gates.
+Ordered **prescriptive** pipelines inside a session — steps, retries, gates, per-step telemetry.
+
+---
+
+## Philosophy: sequencer vs emergent loop
+
+| | **Sequencer** | **Emergent agent loop** |
+|---|---|---|
+| Who decides order | You, in the agent profile or YAML | Model at runtime |
+| Best for | Compliance SOPs, fixed pipelines | Open-ended chat, research |
+| Conformance | Declared step ids vs spine on close | Per-event rules only |
+
+The sequencer is **not** the runtime. It structures work **inside** a session while your **body** (Skillware host, script) executes each step.
+
+→ Usage: [using-aura.md](using-aura.md) · Skillware: [skillware-integration.md](skillware-integration.md)
 
 ---
 
@@ -8,16 +22,15 @@ Ordered pipelines inside a session — steps, retries, middleware, gates.
 
 The **Sequencer** runs declared work in sequence:
 
-- Skill invocations (any skills type)
-- Prompt and context assembly
-- Operation steps (validate, export, notify)
-- Sub-flows and branches
-
-The hook pipeline intercepts loop ticks. The Sequencer **structures** multi-step work when the manifest declares a pipeline.
+- **Skill** invocations (via `SkillwareHost` egress)
+- **Prompt** steps (declared; emit on spine)
+- **Operation** steps (validate, export, notify)
+- **Gate** steps and inline **gates** on any step
+- **Subflow** — nested step lists
 
 ---
 
-## Step Model
+## Step model
 
 ```yaml
 sequencer:
@@ -27,19 +40,58 @@ sequencer:
       ref: guardrails.check
     - id: run_task
       type: skill
-      ref: category/skill_name
-      version: ">=1.0.0"
+      ref: research
+      config:
+        tool: search
+        args: { query: "..." }
       retry: { max: 3, backoff: exponential }
       gates: [human_confirm]
+    - id: notify
+      type: skill
+      ref: gmail
+      config:
+        tool: send
+        args: { to: "team@example.com" }
 ```
 
-Each step emits telemetry on the audit spine: `step_id`, `trace_id`, latency, attempt count, skill reference and version when applicable.
+Each step emits telemetry on the audit spine: `sequencer.step.start`, `sequencer.step.end`, with `step_id`, attempt count, and refs.
+
+### Step types
+
+| Type | Behavior |
+|---|---|
+| `skill` | Routed through host egress (`tool.intent` / `tool.call` / `tool.result`) |
+| `op` | Emits `sequencer.op` |
+| `prompt` | Emits `sequencer.prompt` |
+| `gate` | Emits `sequencer.gate` |
+| `subflow` | Runs nested `config.steps` |
+
+### Gates (on any step)
+
+| Gate | When |
+|---|---|
+| `human_confirm` | Raises approval; resume with `run.approve(request_id)` |
+| `constitution` | Emits gate event; rules enforced on egress |
+| `budget` | Emits gate event; token rules apply on tool events |
 
 ---
 
-## Middleware Stack
+## SDK
 
-Ordered operations applied per step or per model request:
+```python
+with agent("bot", sequencer={"steps": [...]}).session() as run:
+    host = SkillwareHost(run._session)
+    host.register(mock_or_real_skill)
+    run.run_sequencer(host=host)
+```
+
+Override spec per session: `agent.session(sequencer={...})`.
+
+---
+
+## Middleware stack (roadmap)
+
+Ordered operations applied per step or per model request — schema exists; handlers are stubs:
 
 ```yaml
 middleware:
@@ -47,38 +99,29 @@ middleware:
   order:
     - op: firewall
     - op: pii_mask
-    - op: prompt_compress
 ```
 
-Policy can be preset or manifest-defined. Handlers register as operation plugins — same extensibility as input types.
+See [middleware-policy.schema.json](../spec/middleware-policy.schema.json).
 
 ---
 
-## Session State
+## Session state
 
-Context carried across steps and turns:
-
-- `task_id` — budget and limiter attribution
-- `session_state` — serializable key-value passed step to step
-- `turn_context` — thread, room, or host-specific handles
-- Constitution hash — from manifest; checked each step
+- `session.state["sequencer"]` — per-step results after completion
+- `step_id` on spine events links sequencer telemetry to tool egress
 
 ---
 
-## Gates
+## Conformance
 
-| Gate | When |
-|---|---|
-| Hard constraint validation | Before step — schema, guardrails, constitution |
-| Confirmation | Human approve before high-risk step |
-| Budget cap | Token, cost, time — via spectrum and `task_id` |
-
-Violations emit `conformance.violation` on the audit spine.
+On session close, declared step ids are compared to `sequencer.step.end` events with `status: ok`. Missing or out-of-order steps fail conformance.
 
 ---
 
 ## Schema
 
-[sequencer.schema.json](../spec/sequencer.schema.json) · [middleware-policy.schema.json](../spec/middleware-policy.schema.json)
+[sequencer.schema.json](../spec/sequencer.schema.json)
 
-Implementation: `aura/sequencer/`
+Implementation: `aura/sequencer/` — `SequencerRunner`, `SequencerEngine`
+
+Example: [examples/04-sequencer-pipeline](../examples/04-sequencer-pipeline/)

@@ -1,10 +1,10 @@
 # Roadmap
 
-What is **in v0.1**, what is **next**, and what is **explicitly deferred**. Nothing is deleted from vision — it is staged.
+What is **shipped**, what is **next**, and what is **explicitly deferred**. Nothing is deleted from vision — it is staged.
 
 ---
 
-## v0.1 (current) — Runnable kernel
+## v0.1 — Runnable kernel ✓
 
 | Delivered | Notes |
 |---|---|
@@ -19,25 +19,30 @@ What is **in v0.1**, what is **next**, and what is **explicitly deferred**. Noth
 
 ---
 
-## v0.2 — Adapters
+## v0.2 (current) — Membrane + Sequencer + Skillware host ✓
 
-| Item | Why |
+| Delivered | Notes |
 |---|---|
-| Type adapter contract (implemented bind lifecycle) | Plug brains, skills, memory without core changes |
-| Skillware reference adapter | [github.com/arpahls/skillware](https://github.com/arpahls/skillware) tool events on spine |
-| Brain adapter docs + one live provider | Gemini / Claude / Ollama examples |
-| Memory adapter docs | Frameworks + Postgres / vector / custom |
-| Headless-only example | No Python loop file — API emit only |
+| **Membrane** | Ingress event, egress `guarded_tool_call` (`tool.intent` / `tool.call` / `tool.result`) |
+| **Sequencer** | Linear steps, gates (`human_confirm`, …), retries, `step_id` on spine |
+| **Skillware host** | Optional extra `skillware>=0.5.1`; `MockSkill` for tests |
+| **Observers** | Registry + parallel dispatch on every event |
+| **Agent profile** | `skills`, `sequencer`, `observers` fields |
+| **Conformance** | Sequencer declared order vs completed steps |
+| **Example 04** | Research → draft → approve → notify pipeline |
+| **Docs** | [using-aura.md](using-aura.md), [skillware-integration.md](skillware-integration.md) |
 
 ---
 
-## v0.3 — Observers & templates
+## v0.3 — Adapters depth
 
 | Item | Why |
 |---|---|
-| Observer presets | Monitor, break, limit as spine subscribers — not twelve hardcoded modules |
-| Runtime templates | Spin up minimal Python loop scaffolds |
-| LangGraph / MCP probe docs | Reduce manual hook burden |
+| Type adapter contract (bind lifecycle) | Plug brains, skills, memory without core changes |
+| Brain adapter docs + one live provider | Gemini / Claude / Ollama examples |
+| Memory adapter docs | Frameworks + Postgres / vector / custom |
+| Observer presets | Monitor, break, limit as named spine subscribers |
+| Headless-only example | No Python loop file — API emit only |
 
 ---
 
@@ -45,9 +50,10 @@ What is **in v0.1**, what is **next**, and what is **explicitly deferred**. Noth
 
 | Item | Why |
 |---|---|
-| Autonomy levels | Tiered permissions (low → full) enforced on hooks |
+| Autonomy levels | Tiered permissions enforced on hooks |
 | Conformance plugins | Rules from external policy files |
-| Middleware ops | PII mask, prompt compress as ordered ops |
+| Middleware ops | PII mask, prompt compress as ordered ops (schema exists) |
+| Skill manifest rule merge | Constitution at bind time |
 
 ---
 
@@ -57,9 +63,9 @@ What is **in v0.1**, what is **next**, and what is **explicitly deferred**. Noth
 |---|---|
 | OTel exporter | Map AuraEvent → spans; enterprise observability |
 | Legacy / Rooms bridges | Optional ARPA stack export |
-| Sequencer module or separate product | Multi-step pipelines with retries/gates |
 | Analytics & compare-runs | Consumers of exported JSONL |
-| Auto-discovery | Framework introspection where stable |
+| Auto-discovery | LangGraph / MCP introspection where stable |
+| HTTP fleet API | Remote session management — deferred |
 
 ---
 
@@ -68,6 +74,7 @@ What is **in v0.1**, what is **next**, and what is **explicitly deferred**. Noth
 - Identity service or Live ID requirement
 - Hardcoded vendor list (models, memory backends)
 - Replacing user loops — AURA wraps, never owns the body
+- Full batch eval (RAGAS) — export feeds external eval
 
 ---
 

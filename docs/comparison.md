@@ -2,7 +2,7 @@
 
 AURA Harness is a **framework-agnostic runtime membrane** — a sidecar that wraps agent loops for audit and policy at the I/O boundary. It is **not** an orchestrator, eval suite, or tool framework.
 
-For architecture and v0.1 scope, see [architecture.md](architecture.md) and [ROADMAP.md](ROADMAP.md).
+For architecture and v0.2 scope, see [architecture.md](architecture.md) and [ROADMAP.md](ROADMAP.md).
 
 This document clarifies how AURA compares to **DeepSeek Harness (DSH)**, **LangGraph**, **CrewAI**, **LangSmith / eval harnesses**, **DeepEval / RAGAS**, **MCP**, and generic **observability** stacks.
 
@@ -167,18 +167,22 @@ Orchestrators optimize for **task completion**. Eval harnesses optimize for **qu
 
 ---
 
-## Where AURA is today (v0.1)
+## Where AURA is today (v0.2)
 
-Honest scope — not the full membrane yet:
+Honest scope — membrane and sequencer shipped; full zero-intrusion wiring still growing:
 
-| Shipped | Roadmap |
+| Shipped (v0.2) | Roadmap |
 | :--- | :--- |
-| Agent registry, sessions, SDK `emit()` | Ingress I/O normalizer |
-| Constraint engine on events | Egress intercept before network/shell |
-| Audit trail (JSONL) + session export | OTel, webhooks, Skillware adapter |
-| Python attach helper | LangGraph / MCP probe |
+| Agent registry, sessions, SDK `emit()` | OTel exporter |
+| Constraint engine on events | LangGraph / MCP auto-probe |
+| Audit trail (JSONL) + session export | Named observer presets (field services) |
+| **Ingress** event + context normalization | Full I/O normalizer for arbitrary transports |
+| **Egress** `guarded_tool_call` (Skillware host) | Network/shell intercept without host cooperation |
+| **Sequencer** — linear steps, gates, retries | Branching / parallel steps |
+| **Observers** — parallel spine subscribers | Webhooks, enterprise sinks |
+| Python attach helper | HTTP fleet API |
 
-The **doctrine** is membrane-first; the **implementation** grows toward zero-intrusion wiring per [ROADMAP.md](ROADMAP.md).
+The **doctrine** is membrane-first; v0.2 delivers the first egress path via Skillware/mock hosts per [skillware-integration.md](skillware-integration.md) and [ROADMAP.md](ROADMAP.md).
 
 ---
 

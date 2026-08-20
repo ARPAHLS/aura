@@ -34,7 +34,7 @@
 
 **AURA Harness** wraps whatever hosts your loop — a script, a framework, a device — and works **alongside** it, not instead of it. It records a causal audit log, enforces your rules, and exports session summaries you can ship to logs or observability tools.
 
-What you plug in is open-ended: models, tools, memory, identity, policy, and more — via adapters over time, not hardcoded vendors. **v0.1** ships the kernel: agent registry, sessions, constraints, JSONL export, and a Python SDK.
+What you plug in is open-ended: models, tools, memory, identity, policy, and more — via adapters over time, not hardcoded vendors. **v0.2** adds the **membrane** (ingress/egress), **sequencer**, **observers**, and a **Skillware host** (optional extra). The v0.1 kernel remains: agent registry, sessions, constraints, JSONL export, Python SDK.
 
 | | |
 |---|---|
@@ -49,15 +49,17 @@ This is the **AURA Harness** view — not the full [ARPA manifesto stack](https:
 
 ```mermaid
 flowchart LR
-    ID["Identity"] -.-> BODY["Body / Runtime"]
+    IN["Ingress"] --> BODY["Body / Runtime"]
+    ID["Identity"] -.-> BODY
     BRAIN["Brain"] -.-> BODY
     MEM["Memory"] -.-> BODY
     TOOLS["Tools"] -.-> BODY
     CONST["Constitution"] -.-> BODY
 
-    BODY --> AURA["Aura"]
-    AURA --> TRAIL["Audit Trail"]
+    BODY --> EG["Egress / Aura"]
+    EG --> TRAIL["Audit Trail"]
     TRAIL --> EXPORT["Session Export"]
+    TRAIL -.-> OBS["Observers"]
 ```
 
 | Layer | Role in AURA |
@@ -68,7 +70,9 @@ flowchart LR
 | **Tools** | Skills, MCP, APIs, [Skillware](https://github.com/arpahls/skillware) bundles (adapter) |
 | **Constitution** | Rules, guardrails, constraints — what the run must obey |
 | **Body / Runtime** | Whatever hosts the loop — script, framework, device |
-| **Aura** | **This project** — attach, enforce, record |
+| **Aura / Membrane** | **This project** — ingress, egress, attach, enforce, record |
+| **Observers** | Parallel subscribers to the audit trail (v0.2) |
+| **Sequencer** | Declarative step pipelines inside a session (v0.2) |
 | **Audit Trail** | Append-only causal event log during the run |
 | **Session Export** | JSONL log + conformance summary when the session closes |
 
@@ -80,26 +84,30 @@ All inputs are optional except a body to wrap. Use any subset; AURA adapts.
 
 ## How It Works
 
-**v0.1 flow:**
+**v0.2 flow:**
 
 ```
-Agent (AURA-000n)  →  Session open  →  emit events  →  enforce rules  →  close  →  JSONL + summary
+Agent (AURA-000n)  →  Session open (ingress)  →  body / sequencer  →  egress + emit  →  close  →  JSONL + summary
 ```
 
 | Component | Status | Role |
 | :--- | :--- | :--- |
 | **Agent registry** | Shipped | Permanent `AURA-000n` IDs, optional name, user ID trailer |
 | **Session** | Shipped | Modes: `script`, `task`, `continuous` |
+| **Membrane** | Shipped | Ingress context + egress guarded tool calls |
 | **Audit spine** | Shipped | Append-only JSONL with causal event IDs |
 | **Constraint engine** | Shipped | Token limits, confirm-before-action, allow/deny tools |
-| **Conformance summary** | Shipped | Declared rules vs observed events on close |
-| **Python SDK + CLI** | Shipped | `agent()`, `session()`, `emit()`, `approve()`, export |
-| **Type adapters** | Roadmap | Brain, skills, memory plugins — see [ROADMAP](docs/ROADMAP.md) |
-| **Sequencer / field services** | Roadmap | Pipelines and observer presets — deferred |
+| **Conformance summary** | Shipped | Rules + sequencer order vs observed events |
+| **Sequencer** | Shipped | Linear steps: skill, op, gate, prompt; retries, human_confirm |
+| **Skillware host** | Shipped | Optional `[skillware]` extra; mock skills for tests |
+| **Observers** | Shipped | Parallel spine subscribers |
+| **Python SDK + CLI** | Shipped | `agent()`, `session()`, `run_sequencer()`, export |
+| **Type adapters** | Roadmap | Brain, memory plugins — see [ROADMAP](docs/ROADMAP.md) |
+| **HTTP fleet API** | Roadmap | Remote session management — deferred |
 
 Lite identity: AURA assigns `AURA-0001`, `AURA-0002`, … if you provide no name. Your own IDs nest under `ids` — no identity service required.
 
-→ [concepts.md](docs/concepts.md) · [getting-started.md](docs/getting-started.md) · [examples/](examples/)
+→ [using-aura.md](docs/using-aura.md) · [concepts.md](docs/concepts.md) · [getting-started.md](docs/getting-started.md) · [examples/](examples/)
 
 ---
 
@@ -107,7 +115,8 @@ Lite identity: AURA assigns `AURA-0001`, `AURA-0002`, … if you provide no name
 
 | Topic | Links |
 | :--- | :--- |
-| **Start here** | [getting-started.md](docs/getting-started.md) · [concepts.md](docs/concepts.md) · [examples/](examples/) |
+| **Start here** | [getting-started.md](docs/getting-started.md) · [using-aura.md](docs/using-aura.md) · [concepts.md](docs/concepts.md) · [examples/](examples/) |
+| **Integration** | [skillware-integration.md](docs/skillware-integration.md) · [sequencer.md](docs/sequencer.md) |
 | **Comparison** | [comparison.md](docs/comparison.md) — vs DSH, LangGraph, eval harnesses, tracing |
 | **Index** | [docs/INDEX.md](docs/INDEX.md) |
 | **Architecture** | [architecture.md](docs/architecture.md) · [stack-position.md](docs/stack-position.md) |
@@ -122,10 +131,17 @@ Lite identity: AURA assigns `AURA-0001`, `AURA-0002`, … if you provide no name
 
 Requires **Python 3.10+**.
 
+Requires **Python 3.10+**. Use a local venv (`.venv/` is gitignored):
+
 ```bash
 git clone https://github.com/ARPAHLS/aura.git
 cd aura
+py -3.13 -m venv .venv
+.venv\Scripts\activate          # Windows
+# source .venv/bin/activate     # macOS/Linux
 pip install -e ".[dev]"
+# optional Skillware:
+pip install -e ".[dev,skillware]"
 pytest
 aura version
 ```
@@ -134,11 +150,12 @@ Quick start:
 
 ```python
 from aura import agent, configure
+from aura.hosts import MockSkill, SkillwareHost
 
 configure()
-with agent("my-bot").session() as run:
-    run.emit("turn.start", {"input": "hello"})
-    run.emit("turn.end", {"tokens": 10})
+ag = agent("my-bot", sequencer={"steps": [{"id": "ping", "type": "op", "ref": "health"}]})
+with ag.session() as run:
+    run.run_sequencer()
 print(run.exports)
 ```
 

@@ -18,6 +18,8 @@ from aura.core.constraints import (
     ConstraintViolation,
 )
 from aura.core.spine import AuditSpine
+from aura.membrane.ingress import ingress_event_payload
+from aura.observers.base import Observer, get_registry
 
 
 class SessionMode(str, Enum):
@@ -37,9 +39,11 @@ class Session:
     state: dict[str, Any] = field(default_factory=dict)
     snapshot_hash: str | None = None
     rules: list[dict[str, Any]] = field(default_factory=list)
+    sequencer_spec: dict[str, Any] | None = None
     spine: AuditSpine | None = None
     _engine: ConstraintEngine = field(default_factory=ConstraintEngine)
     _approved: set[str] = field(default_factory=set)
+    _observers: list[Observer] = field(default_factory=list)
     _open: bool = False
     _closed: bool = False
     _log_path: Path | None = None
@@ -56,6 +60,11 @@ class Session:
             log_path=self._log_path,
         )
         self._open = True
+        self._attach_profile_observers()
+        self.emit(
+            "membrane.ingress",
+            ingress_event_payload(self.profile, self.mode.value, self.snapshot_hash),
+        )
         self.emit(
             "session.open",
             {
@@ -64,6 +73,24 @@ class Session:
                 "purpose": self.profile.purpose,
             },
         )
+
+    def _attach_profile_observers(self) -> None:
+        for entry in self.profile.observers:
+            if not isinstance(entry, dict):
+                continue
+            obs_id = entry.get("id")
+            if not obs_id:
+                continue
+            handler = entry.get("handler")
+            if callable(handler):
+                from aura.observers.base import CallableObserver
+
+                self._observers.append(CallableObserver(obs_id, handler))
+            else:
+                reg = get_registry()
+                obs = reg.get(obs_id)
+                if obs:
+                    self._observers.append(obs)
 
     def close(self, reason: str = "normal") -> dict[str, Any]:
         if self._closed:
@@ -74,7 +101,13 @@ class Session:
         self._open = False
         return {"session_id": self.session_id, "log_path": str(self._log_path) if self._log_path else None}
 
-    def emit(self, kind: str, payload: dict[str, Any] | None = None) -> dict[str, Any]:
+    def emit(
+        self,
+        kind: str,
+        payload: dict[str, Any] | None = None,
+        *,
+        step_id: str | None = None,
+    ) -> dict[str, Any]:
         if not self.spine:
             raise RuntimeError("Session not open")
         ctx = ConstraintContext(
@@ -115,6 +148,7 @@ class Session:
             payload or {},
             agent_ids=self.profile.id_trailer(),
             task_id=self.task_id,
+            step_id=step_id,
         )
         if constraint_results:
             self.spine.append(
@@ -122,7 +156,32 @@ class Session:
                 {"results": constraint_results, "for_event": event.event_id},
                 agent_ids=self.profile.id_trailer(),
             )
+        self._dispatch_observers(event.to_dict())
         return event.to_dict()
+
+    def require_approval(
+        self,
+        request_id: str,
+        message: str,
+        rule: dict[str, Any],
+        *,
+        step_id: str | None = None,
+    ) -> None:
+        """Gate helper — log approval requirement and raise."""
+        if request_id in self._approved:
+            return
+        if self.spine:
+            self.spine.append(
+                "constraint.approval_required",
+                {
+                    "request_id": request_id,
+                    "message": message,
+                    "rule": rule,
+                },
+                agent_ids=self.profile.id_trailer(),
+                step_id=step_id,
+            )
+        raise ApprovalRequired(request_id, message, rule)
 
     def approve(self, request_id: str) -> None:
         self._approved.add(request_id)
@@ -132,6 +191,17 @@ class Session:
                 {"request_id": request_id},
                 agent_ids=self.profile.id_trailer(),
             )
+
+    def _dispatch_observers(self, event: dict[str, Any]) -> None:
+        for obs in self._observers:
+            try:
+                obs.on_event(event)
+            except Exception:
+                continue
+        get_registry().dispatch(event)
+
+    def register_observer(self, observer: Observer) -> None:
+        self._observers.append(observer)
 
     def complete_goal(self, result: dict[str, Any] | None = None) -> None:
         """Signal task completion (task mode)."""
@@ -155,6 +225,8 @@ def _snapshot_hash(profile: AgentProfile, rules: list[dict[str, Any]]) -> str:
             "purpose": profile.purpose,
             "variables": profile.variables,
             "rules": rules,
+            "skills": profile.skills,
+            "sequencer": profile.sequencer,
         },
         sort_keys=True,
     )

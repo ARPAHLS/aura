@@ -2,16 +2,26 @@
 
 ---
 
-## Start here (v0.1)
+## Start here (v0.2)
 
 | Doc | Content |
 |---|---|
 | [getting-started.md](getting-started.md) | Install, 5-minute example, CLI |
-| [concepts.md](concepts.md) | Agent, session, event, rule — no jargon |
+| [using-aura.md](using-aura.md) | Membrane, personas, SDK overview |
+| [concepts.md](concepts.md) | Agent, session, membrane, sequencer |
 | [comparison.md](comparison.md) | vs orchestrators, eval harnesses, tracing |
-| [architecture.md](architecture.md) | v0.1 core modules |
-| [ROADMAP.md](ROADMAP.md) | Deferred features (sequencer, adapters, …) |
-| [examples/](../examples/README.md) | Three runnable demos |
+| [architecture.md](architecture.md) | v0.2 modules |
+| [ROADMAP.md](ROADMAP.md) | Shipped vs deferred |
+| [examples/](../examples/README.md) | Four runnable demos |
+
+---
+
+## Integration
+
+| Doc | Content |
+|---|---|
+| [skillware-integration.md](skillware-integration.md) | Skillware host, egress, optional extra |
+| [sequencer.md](sequencer.md) | Prescriptive pipelines, gates, conformance |
 
 ---
 
@@ -26,7 +36,6 @@
 | [outputs.md](outputs.md) | AuraEvent, exporters |
 | [aura-levels.md](aura-levels.md) | Autonomy tiers (roadmap enforcement) |
 | [field-services.md](field-services.md) | Observer presets (roadmap) |
-| [sequencer.md](sequencer.md) | Pipelines (deferred) |
 | [three-rings.md](three-rings.md) | Envelope · Field · Adapter model |
 | [glossary.md](glossary.md) | Terms |
 
@@ -34,11 +43,12 @@
 
 ## Specifications
 
-Schemas for manifest, events, plugins — **stable contracts** for adapters. Core v0.1 runs without full manifest parser.
+Schemas for manifest, events, plugins — **stable contracts** for adapters.
 
 | File | Purpose |
 |---|---|
 | [aura-event.schema.json](../spec/aura-event.schema.json) | Audit record |
+| [sequencer.schema.json](../spec/sequencer.schema.json) | Step pipeline |
 | [manifest.schema.json](../spec/manifest.schema.json) | Session/agent declaration |
 | [type-plugin.contract.md](../spec/type-plugin.contract.md) | Adapter interface |
 | [capability.registry.json](../spec/capability.registry.json) | Operation ids (roadmap) |

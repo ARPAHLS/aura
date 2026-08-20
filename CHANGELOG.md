@@ -7,28 +7,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-08-20
+
 ### Added
 
-- **docs/comparison.md** — AURA vs DeepSeek Harness, LangGraph, CrewAI, LangSmith/tracing, DeepEval/RAGAS, MCP, OTel; orchestrator vs membrane framing; executive matrix; honest v0.1 scope.
-  - *Rationale:* Public positioning aligned with Skillware-style comparison doc; clarifies long-term differentiation without claiming unshipped membrane features as done.
+- **Membrane** (`aura/membrane/`) — ingress context at session open; egress `guarded_tool_call` (`tool.intent` → `tool.call` → `tool.result`).
+  - *Rationale:* Official membrane terminology with a concrete Skillware egress path.
+- **Sequencer** (`aura/sequencer/runner.py`, `engine.py`) — linear steps (`skill`, `op`, `prompt`, `gate`, `subflow`), retries, gates (`human_confirm`, `constitution`, `budget`), per-step `step_id` on spine.
+  - *Rationale:* Prescriptive pipelines distinct from emergent agent loops; conformance on declared order.
+- **Skillware host** (`aura/hosts/skillware.py`) — wrap skill `execute()` through egress; `MockSkill` for tests/examples.
+  - *Rationale:* Reference host for enterprise compliance flows; optional `pip install "aura-harness[skillware]"` (≥ 0.5.1).
+- **Observers** (`aura/observers/`) — registry + parallel dispatch on every spine event.
+- **Agent profile fields** — `skills`, `sequencer`, `observers` persisted in registry JSON.
+- **SDK** — `SessionRun.run_sequencer(host=...)`, `session(sequencer=...)`, `emit(..., step_id=...)`, `session.require_approval()`.
+- **Conformance** — sequencer declared vs completed step order in summary.
+- **Example 04** — `examples/04-sequencer-pipeline/` (research → draft → approve → notify).
+- **Tests** — `tests/test_v02.py` (7 tests).
+- **Docs** — [using-aura.md](docs/using-aura.md), [skillware-integration.md](docs/skillware-integration.md); updated architecture, concepts, glossary, sequencer, ROADMAP, comparison.
 
 ### Changed
 
-- **`pyproject.toml`** — description, expanded keywords, PyPI classifiers (AI, monitoring, audiences), `[project.urls]` with Homepage `arpacorp.net`.
-  - *Rationale:* PyPI/GitHub metadata reflects product identity; no "record enforce export" tagline.
-- **README.md**, **docs/INDEX.md**, **architecture.md**, **getting-started.md**, **spec/type-plugin.contract.md** — links to comparison doc; getting-started Next section wording aligned.
-
-### Changed (prior)
-
-- **AURA architecture diagram** — replaced manifesto stack (Soul, Rooms, Legacy) with harness-specific flow: Identity, Brain, Memory, Tools, Constitution → Body / Runtime → Aura → **Audit Trail** → **Session Export**.
-  - *Rationale:* README and docs must reflect AURA's model, not copy manifesto; Soul removed; Identity is a peer input.
-  - *Affected:* `README.md`, `docs/stack-position.md`, `docs/architecture.md`, `docs/concepts.md`, `docs/glossary.md`.
-- **Official output names** — **Audit trail** (live log) and **Session export** (JSONL + summary on close). Code term `AuditSpine` unchanged.
-
-### Changed (prior)
-
-- **README.md** — fixed broken stack table (blank line between header and rows broke Markdown rendering); updated to reflect v0.1 shipped vs roadmap; added getting-started/examples badges; removed aspirational mechanisms presented as current; lite identity note.
-  - *Rationale:* GitHub README must match runnable repo state; table must render correctly.
+- **Version** — `0.2.0` in `pyproject.toml` and `aura.__version__`.
+- **Session open** — emits `membrane.ingress` before `session.open`.
+- **README** — v0.2 component table, membrane diagram with observers.
 
 ## [0.1.0] - 2026-08-18
 
@@ -79,5 +80,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - v0.1 is a **runnable kernel**, not the full manifesto stack.
 - Type plugin registry (`aura/core/registry.py`) retained for future adapters; not required to run basic sessions.
 
-[Unreleased]: https://github.com/ARPAHLS/aura/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/ARPAHLS/aura/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/ARPAHLS/aura/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/ARPAHLS/aura/releases/tag/v0.1.0

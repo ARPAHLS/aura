@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "aura-harness"
-version = "0.1.0"
-description = "The field that wraps agent loops — a framework-agnostic runtime membrane for audit and policy."
+version = "0.2.0"
+description = "Runtime membrane around agent loops — audit, policy, sequencer, and Skillware egress."
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "MIT" }
@@ -53,6 +53,7 @@ Changelog = "https://github.com/ARPAHLS/aura/blob/main/CHANGELOG.md"
 
 [project.optional-dependencies]
 dev = ["pytest>=7.0", "pytest-cov>=4.0"]
+skillware = ["skillware>=0.5.1"]
 
 [project.scripts]
 aura = "aura.cli.main:main"

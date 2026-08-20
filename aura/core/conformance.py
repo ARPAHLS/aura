@@ -36,6 +36,7 @@ class ConformanceEngine:
         spine: AuditSpine,
         declared_rules: list[dict[str, Any]],
         snapshot_hash: str | None = None,
+        sequencer_spec: dict[str, Any] | None = None,
     ) -> ConformanceReport:
         events = spine.stream()
         violations = [
@@ -54,6 +55,14 @@ class ConformanceEngine:
             checks.append({"rule": rule, "type": rtype, "declared": True})
 
         passed = not violations and not unapproved
+        seq_check = self._check_sequencer(spine, sequencer_spec)
+        if seq_check:
+            checks.append(seq_check)
+            if not seq_check.get("passed", True):
+                passed = False
+                for item in seq_check.get("violations", []):
+                    violations.append(item)
+
         return ConformanceReport(
             passed=passed,
             violations=violations,
@@ -62,3 +71,37 @@ class ConformanceEngine:
             event_count=len(events),
             snapshot_hash=snapshot_hash,
         )
+
+    def _check_sequencer(
+        self,
+        spine: AuditSpine,
+        sequencer_spec: dict[str, Any] | None,
+    ) -> dict[str, Any] | None:
+        if not sequencer_spec or not sequencer_spec.get("steps"):
+            return None
+        declared = [s["id"] for s in sequencer_spec["steps"]]
+        started = [e.step_id for e in spine.stream() if e.kind == "sequencer.step.start" and e.step_id]
+        ended_ok = [
+            e.step_id
+            for e in spine.stream()
+            if e.kind == "sequencer.step.end" and e.step_id and e.payload.get("status") == "ok"
+        ]
+        missing = [sid for sid in declared if sid not in ended_ok]
+        order_ok = started == declared[: len(started)] if started else True
+        passed = not missing and order_ok and len(ended_ok) == len(declared)
+        result: dict[str, Any] = {
+            "type": "sequencer",
+            "declared_steps": declared,
+            "completed_steps": ended_ok,
+            "passed": passed,
+        }
+        if not passed:
+            result["violations"] = [
+                {
+                    "kind": "sequencer.conformance",
+                    "message": "Sequencer did not complete declared step order",
+                    "missing": missing,
+                    "order_ok": order_ok,
+                }
+            ]
+        return result

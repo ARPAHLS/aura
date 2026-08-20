@@ -16,6 +16,9 @@ class AgentProfile:
     purpose: str | None = None
     variables: dict[str, Any] = field(default_factory=dict)
     rules: list[dict[str, Any]] = field(default_factory=list)
+    skills: list[str] = field(default_factory=list)
+    sequencer: dict[str, Any] | None = None
+    observers: list[dict[str, Any]] = field(default_factory=list)
     default_mode: str = "script"
     archived: bool = False
 
@@ -27,6 +30,9 @@ class AgentProfile:
             "purpose": self.purpose,
             "variables": self.variables,
             "rules": self.rules,
+            "skills": self.skills,
+            "sequencer": self.sequencer,
+            "observers": self.observers,
             "default_mode": self.default_mode,
             "archived": self.archived,
         }
@@ -40,6 +46,9 @@ class AgentProfile:
             purpose=data.get("purpose"),
             variables=dict(data.get("variables") or {}),
             rules=list(data.get("rules") or []),
+            skills=list(data.get("skills") or []),
+            sequencer=data.get("sequencer"),
+            observers=list(data.get("observers") or []),
             default_mode=data.get("default_mode", "script"),
             archived=bool(data.get("archived", False)),
         )

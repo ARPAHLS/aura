@@ -41,6 +41,17 @@ class SessionRun:
     def complete_goal(self, result: dict[str, Any] | None = None) -> None:
         self._session.complete_goal(result)
 
+    def run_sequencer(
+        self,
+        spec: dict[str, Any] | None = None,
+        *,
+        host: Any | None = None,
+    ) -> dict[str, Any]:
+        from aura.sequencer.engine import SequencerEngine
+
+        engine = SequencerEngine(self._session, host=host, spec=spec)
+        return engine.run(spec)
+
 
 _current_run: ContextVar[SessionRun | None] = ContextVar("aura_current_run", default=None)
 
@@ -62,9 +73,10 @@ class AgentHandle:
         *,
         rules: list[dict[str, Any]] | None = None,
         export: bool | None = None,
+        sequencer: dict[str, Any] | None = None,
     ) -> Iterator[SessionRun]:
         cfg = get_config()
-        session = _build_session(self, mode, rules)
+        session = _build_session(self, mode, rules, sequencer)
         run = SessionRun(_session=session)
         session.open(cfg.sessions_dir())
         token = _current_run.set(run)
@@ -76,7 +88,10 @@ class AgentHandle:
             do_export = export if export is not None else cfg.values.get("export_on_close", True)
             if do_export and session.spine:
                 report = ConformanceEngine().summarize(
-                    session.spine, session.rules, session.snapshot_hash
+                    session.spine,
+                    session.rules,
+                    session.snapshot_hash,
+                    sequencer_spec=session.sequencer_spec or session.profile.sequencer,
                 )
                 run.exports = export_session(session, cfg.sessions_dir(), conformance=report)
 
@@ -85,6 +100,7 @@ def _build_session(
     agent: AgentHandle,
     mode: str | None,
     rules: list[dict[str, Any]] | None,
+    sequencer: dict[str, Any] | None,
 ) -> Session:
     mode_str = mode or agent.profile.default_mode
     try:
@@ -94,7 +110,15 @@ def _build_session(
     merged_rules = list(agent.profile.rules)
     if rules:
         merged_rules.extend(rules)
-    return Session(profile=agent.profile, mode=session_mode, rules=merged_rules)
+    from aura.sequencer.spec import merge_sequencer_spec
+
+    seq_spec = merge_sequencer_spec(agent.profile.sequencer, sequencer)
+    return Session(
+        profile=agent.profile,
+        mode=session_mode,
+        rules=merged_rules,
+        sequencer_spec=seq_spec if seq_spec.get("steps") else None,
+    )
 
 
 def configure(project_dir: str | Path | None = None, **overrides: Any) -> Any:
