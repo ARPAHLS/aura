@@ -1,5 +1,4 @@
 # Citation metadata for ARPAHLS/aura.
-# Add a Zenodo concept DOI under identifiers when registered.
 # Validate: pip install cffconvert && cffconvert -i CITATION.cff -f apalike
 cff-version: 1.2.0
 message: >-
@@ -18,6 +17,13 @@ date-released: "2026-08-20"
 license: MIT
 repository-code: "https://github.com/ARPAHLS/aura"
 url: "https://github.com/ARPAHLS/aura"
+identifiers:
+  - type: doi
+    value: "10.5281/zenodo.22031863"
+    description: Zenodo concept DOI (all versions)
+  - type: url
+    value: "https://doi.org/10.5281/zenodo.22031863"
+    description: Zenodo record
 authors:
   - family-names: Peilivanidis
     given-names: Vladimiros

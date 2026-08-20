@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **OTel export** — `aura export-otel`, `.otel.jsonl` on session close.
 - **Compare runs** — `aura compare <session_a> <session_b>`.
 - **Lint tooling** — `black` + `flake8` in `[dev]`; [docs/TESTING.md](docs/TESTING.md), PR template.
+- **Zenodo concept DOI** — [10.5281/zenodo.22031863](https://doi.org/10.5281/zenodo.22031863) in [CITATION.cff](CITATION.cff) and package metadata.
 
 ### Changed
 

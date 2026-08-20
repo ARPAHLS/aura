@@ -10,6 +10,7 @@
 
 <div align="center">
   <a href="https://pypi.org/project/aura-harness/"><img src="https://img.shields.io/pypi/v/aura-harness?label=Version&style=flat-square" alt="Version"></a>
+  <a href="https://doi.org/10.5281/zenodo.22031863"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.22031863.svg" alt="DOI"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-e8c4c0?style=flat-square" alt="License"></a>
   <a href="docs/getting-started.md"><img src="https://img.shields.io/badge/Python-3.10+-bbd4e8?style=flat-square" alt="Python Version"></a>
   <a href="CHANGELOG.md"><img src="https://img.shields.io/badge/Status-Experimental-c4d8c0?style=flat-square" alt="Status"></a>
@@ -132,7 +133,7 @@ CLI: `aura agent create`, `aura run`, `aura export`, `aura compare`, `aura expor
 - **Experimental (alpha)** — API may change between minor releases until 1.0.
 - **Wrap, don't replace** — your host owns the loop; AURA records and gates at boundaries you wire through `emit()` or `SkillwareHost`.
 - **Security** — loaded skills and scripts run in your process; see [SECURITY.md](SECURITY.md).
-- **Citation** — [CITATION.cff](CITATION.cff) (GitHub **Cite this repository**).
+- **Citation** — [CITATION.cff](CITATION.cff) · [DOI 10.5281/zenodo.22031863](https://doi.org/10.5281/zenodo.22031863) (Zenodo concept DOI)
 - **Support** — [issues](https://github.com/ARPAHLS/aura/issues) · systems@arpacorp.net
 
 ---

@@ -50,6 +50,8 @@ Documentation = "https://github.com/ARPAHLS/aura#readme"
 Repository = "https://github.com/ARPAHLS/aura"
 Issues = "https://github.com/ARPAHLS/aura/issues"
 Changelog = "https://github.com/ARPAHLS/aura/blob/main/CHANGELOG.md"
+DOI = "https://doi.org/10.5281/zenodo.22031863"
+Zenodo = "https://doi.org/10.5281/zenodo.22031863"
 
 [project.optional-dependencies]
 dev = ["pytest>=7.0", "pytest-cov>=4.0", "black>=24.0", "flake8>=7.0"]
