@@ -1,4 +1,6 @@
-# Publish aura-harness to PyPI when a GitHub Release is published or a v* tag is pushed.
+# Publish aura-harness to PyPI when a GitHub Release is published (or manual dispatch).
+# Do not also trigger on tag push — publishing a Release for a v* tag would run twice
+# and the second upload fails with PyPI "File already exists" (400).
 #
 # Setup (one-time on PyPI):
 #   A) Trusted publishing (recommended): https://docs.pypi.org/trusted-publishers/
@@ -12,9 +14,6 @@ name: Publish to PyPI
 on:
   release:
     types: [published]
-  push:
-    tags:
-      - "v*"
   workflow_dispatch:
 
 permissions:
@@ -54,6 +53,7 @@ jobs:
           python -m build
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          skip-existing: true
         # Optional token auth — uncomment if not using PyPI trusted publishing:
-        # with:
         #   password: ${{ secrets.PYPI_API_TOKEN }}

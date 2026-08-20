@@ -2,9 +2,10 @@
 
 Releases are published automatically by [`.github/workflows/publish-pypi.yml`](../.github/workflows/publish-pypi.yml) when:
 
-- you **publish a GitHub Release**, or
-- you push a **`v*` tag** (e.g. `v0.3.0`), or
+- you **publish a GitHub Release** (recommended — single trigger per version), or
 - you **Run workflow** manually (Actions → Publish to PyPI → Run workflow)
+
+Pushing a `v*` tag alone does **not** publish; create and publish the GitHub Release from that tag.
 
 The workflow runs tests, builds sdist/wheel, then uploads to PyPI.
 
@@ -56,14 +57,16 @@ You do **not** need a new GitHub Release if tests already passed:
 2. Actions → **Publish to PyPI** → open the failed run → **Re-run failed jobs**,  
    **or** Actions → **Publish to PyPI** → **Run workflow** (manual dispatch).
 
-PyPI rejects uploading the **same version twice**. If `0.3.0` partially uploaded, delete the release on PyPI (if allowed) or bump to `0.3.1` before re-publishing.
+PyPI rejects uploading the **same version twice** (`400 File already exists`). If a version is already on PyPI, bump the version before publishing again. Manual workflow re-runs use `skip-existing` so a duplicate attempt exits cleanly instead of failing the deployment.
+
+Previously, the workflow also ran on tag push; publishing a Release for the same tag caused **two runs** (first succeeds, second failed — red `pypi` deployment on GitHub despite a live package). That duplicate trigger was removed after v0.3.2.
 
 ## Release checklist
 
 1. Bump `version` in `pyproject.toml` and `aura/__init__.py`.
 2. Update `CHANGELOG.md` and `CITATION.cff` (`version`, `date-released`).
 3. Commit, push, tag: `git tag v0.3.0 && git push origin v0.3.0`
-4. Create GitHub Release from the tag (or publish release — either triggers the workflow).
+4. Create and **publish** a GitHub Release from the tag (this triggers the workflow once).
 5. Confirm the [Publish to PyPI](https://github.com/ARPAHLS/aura/actions/workflows/publish-pypi.yml) workflow succeeded.
 6. Confirm [pypi.org/project/aura-harness](https://pypi.org/project/aura-harness/) shows the new version.
 
