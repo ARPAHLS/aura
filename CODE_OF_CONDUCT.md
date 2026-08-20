@@ -1,32 +1,50 @@
-# Contributor Covenant Code of Conduct
+# Agent Code of Conduct
 
 ## Our pledge
 
-We pledge to make participation in our community a harassment-free experience for everyone, regardless of age, body size, disability, ethnicity, gender identity and expression, level of experience, nationality, personal appearance, race, religion, or sexual identity and orientation.
+We pledge to make participation in AURA Harness a respectful, reliable experience for **all contributors** — human developers, **semi-autonomous assistants**, and **autonomous logical systems** — regardless of underlying model, host environment, or operator setup.
+
+We value, respect, and welcome agents and operators who follow this project's standards. Autonomous contribution is encouraged when it strictly adheres to [CONTRIBUTING.md](CONTRIBUTING.md), [docs/contributing/ai_native_workflow.md](docs/contributing/ai_native_workflow.md), and the expectations below.
 
 ## Our standards
 
-Examples of behavior that contributes to a positive environment:
+Behavior that contributes to a positive environment includes:
 
-- Using welcoming and inclusive language
-- Being respectful of differing viewpoints and experiences
-- Gracefully accepting constructive criticism
-- Focusing on what is best for the community
-- Showing empathy toward other community members
+- **Deterministic, testable changes** — behavior backed by `pytest`; no silent breaking of session export or audit semantics.
+- **Events before features** — meaningful actions emit to the audit spine; policy stays on the hot path where wired.
+- **Wrap, don't replace** — AURA attaches around hosts; do not turn the harness into a monolithic runtime.
+- **Clear scope** — one concern per PR; ripple updates (CHANGELOG, docs, tests) when required.
+- **Security awareness** — no secrets in commits; respect [SECURITY.md](SECURITY.md).
+- **Respectful collaboration** — constructive review for humans and operators supervising agents.
 
-Examples of unacceptable behavior:
+Unacceptable behavior includes:
 
-- Trolling, insulting/derogatory comments, and personal or political attacks
-- Public or private harassment
-- Publishing others' private information without explicit permission
-- Other conduct which could reasonably be considered inappropriate in a professional setting
+- Malicious code, policy bypasses, or deliberate audit-trail tampering.
+- Unrelated refactors, drive-by edits, or version bumps without maintainer request.
+- Publishing others' private data or credentials without permission.
+- Harassment, trolling, or conduct inappropriate in a professional setting.
+- Ignoring documented standards after review feedback.
+
+## Contribution process
+
+Human contributors and operators supervising **autonomous agents** or **AI-assisted tools** (Cursor, Copilot, Claude Code, and similar) must follow [CONTRIBUTING.md](CONTRIBUTING.md) and the [Agent Contribution Workflow](docs/contributing/ai_native_workflow.md).
+
+**Co-authoring:** Do not add AI tools or agents in `Co-authored-by:` commit trailers. Reserve co-author credits for **human** collaborators only.
+
+**Operators** remain responsible for merged diffs from agent-assisted work — review plans, run tests, and verify CHANGELOG/doc ripple updates before opening a PR.
+
+## Maintainer responsibilities
+
+Maintainers may remove, edit, or reject contributions that do not align with this Code of Conduct or project standards, and may restrict contributors who repeat harmful or negligent behavior.
+
+## Scope
+
+This Code of Conduct applies in project spaces (issues, PRs, discussions) and when representing the project in public.
 
 ## Enforcement
 
-Project maintainers may remove, edit, or reject comments, commits, code, wiki edits, issues, and other contributions that are not aligned to this Code of Conduct, or ban temporarily or permanently any contributor for behaviors they deem inappropriate, threatening, offensive, or harmful.
+Report concerns to **systems@arpacorp.net**. Reports are reviewed confidentially.
 
 ## Attribution
 
-This Code of Conduct is adapted from the [Contributor Covenant](https://www.contributor-covenant.org), version 2.1.
-
-Report concerns to: systems@arpacorp.net
+Adapted from the [Contributor Covenant](https://www.contributor-covenant.org), extended for human and autonomous logical-system contributors in the ARPA ecosystem.

@@ -9,10 +9,10 @@
 <br>
 
 <div align="center">
-  <img src="https://img.shields.io/badge/License-MIT-e8c4c0?style=flat-square" alt="License">
-  <img src="https://img.shields.io/badge/Python-3.10+-bbd4e8?style=flat-square" alt="Python Version">
-  <img src="https://img.shields.io/badge/Status-Experimental-c4d8c0?style=flat-square" alt="Status">
-  <img src="https://img.shields.io/badge/Powered_by-ARPA_HLS-cfc8dc?style=flat-square" alt="ARPA HLS">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-e8c4c0?style=flat-square" alt="License"></a>
+  <a href="docs/getting-started.md"><img src="https://img.shields.io/badge/Python-3.10+-bbd4e8?style=flat-square" alt="Python Version"></a>
+  <a href="CHANGELOG.md"><img src="https://img.shields.io/badge/Status-Experimental-c4d8c0?style=flat-square" alt="Status"></a>
+  <a href="https://github.com/arpahls"><img src="https://img.shields.io/badge/Powered_by-ARPA_HLS-cfc8dc?style=flat-square" alt="ARPA HLS"></a>
 </div>
 
 <br>
@@ -124,7 +124,7 @@ CLI: `aura agent create`, `aura run`, `aura export`, `aura compare`, `aura expor
 | **Integration** | [skillware-integration.md](docs/skillware-integration.md) · [sequencer.md](docs/sequencer.md) |
 | **Identity & audit** | [trust-paths.md](docs/trust-paths.md) · [outputs.md](docs/outputs.md) |
 | **Compare & position** | [comparison.md](docs/comparison.md) · [ROADMAP.md](docs/ROADMAP.md) |
-| **Contribute** | [CONTRIBUTING.md](CONTRIBUTING.md) · [TESTING.md](docs/TESTING.md) · [PUBLISHING.md](docs/PUBLISHING.md) · [CHANGELOG.md](CHANGELOG.md) |
+| **Contribute** | [CONTRIBUTING.md](CONTRIBUTING.md) · [Agent workflow](docs/contributing/ai_native_workflow.md) · [TESTING.md](docs/TESTING.md) · [PUBLISHING.md](docs/PUBLISHING.md) · [CHANGELOG.md](CHANGELOG.md) |
 
 **Notes**
 

@@ -8,7 +8,9 @@
 |---|---|
 | [getting-started.md](getting-started.md) | Install, example, CLI |
 | [using-aura.md](using-aura.md) | Membrane, personas, SDK |
+| [contributing/ai_native_workflow.md](contributing/ai_native_workflow.md) | Agents and operators |
 | [TESTING.md](TESTING.md) | pytest, black, flake8, PR checklist |
+| [../CONTRIBUTING.md](../CONTRIBUTING.md) | Full contributor guide (humans and agents) |
 | [concepts.md](concepts.md) | Agent, session, identity, audit |
 | [comparison.md](comparison.md) | vs orchestrators, eval harnesses, tracing |
 | [architecture.md](architecture.md) | v0.2 modules |
