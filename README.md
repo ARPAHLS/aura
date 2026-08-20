@@ -11,10 +11,7 @@
 <div align="center">
   <a href="https://pypi.org/project/aura-harness/"><img src="https://img.shields.io/pypi/v/aura-harness?label=Version&color=e8d4c0&style=flat-square" alt="Version"></a>
   <a href="https://doi.org/10.5281/zenodo.22031863"><img src="https://img.shields.io/badge/DOI-10.5281%2Fzenodo.22031863-d4dce8?style=flat-square" alt="DOI"></a>
-  <a href="CHANGELOG.md"><img src="https://img.shields.io/badge/Status-Experimental-c4d8c0?style=flat-square" alt="Status"></a>
-  <br>
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-e8c4c0?style=flat-square" alt="License"></a>
-  <a href="docs/getting-started.md"><img src="https://img.shields.io/badge/Python-3.10+-bbd4e8?style=flat-square" alt="Python Version"></a>
   <a href="https://github.com/arpahls"><img src="https://img.shields.io/badge/Powered_by-ARPA_HLS-cfc8dc?style=flat-square" alt="ARPA HLS"></a>
 </div>
 
