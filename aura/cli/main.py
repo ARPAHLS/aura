@@ -9,9 +9,11 @@ import sys
 from pathlib import Path
 
 from aura import __version__
-from aura.agents.registry import AgentRegistry
+from aura.agents.registry import AgentRegistry, AgentNotFoundError
 from aura.api import agent, configure, create_agent
+from aura.core.compare import compare_sessions
 from aura.core.spine import AuditSpine
+from aura.exporters.otel import export_session_otel
 from aura.runtime.python import run_script
 
 
@@ -33,14 +35,17 @@ def main() -> None:
     agent_sub = agent_p.add_subparsers(dest="agent_command")
 
     create_p = agent_sub.add_parser("create", help="Create an agent")
-    create_p.add_argument("name", nargs="?", help="Agent name")
+    create_p.add_argument("name", nargs="?", help="Agent name or agent_ref")
+    create_p.add_argument("--ref", dest="agent_ref", help="Stable agent_ref (tenant/slug)")
+    create_p.add_argument("--aura-id", help="Supply your own internal aura_id")
     create_p.add_argument("--purpose", help="Agent purpose / drive")
+    create_p.add_argument("--policy-version", default="1", help="Policy version label")
     create_p.add_argument("--mode", default="script", help="Default session mode")
 
     agent_sub.add_parser("list", help="List agents")
 
     show_p = agent_sub.add_parser("show", help="Show agent profile")
-    show_p.add_argument("name", help="Agent name or AURA-000n id")
+    show_p.add_argument("name", help="Name, agent_ref, or aura_id")
 
     run_p = sub.add_parser("run", help="Run a script under an agent session")
     run_p.add_argument("target", help="Agent name or script path")
@@ -52,6 +57,13 @@ def main() -> None:
 
     export_p = sub.add_parser("export", help="Print session summary JSON")
     export_p.add_argument("session_id", help="Session id")
+
+    otel_p = sub.add_parser("export-otel", help="Export session as OTel-style JSONL")
+    otel_p.add_argument("session_id", help="Session id")
+
+    compare_p = sub.add_parser("compare", help="Compare two session summaries")
+    compare_p.add_argument("session_a", help="First session id")
+    compare_p.add_argument("session_b", help="Second session id")
 
     args = parser.parse_args()
     _apply_global_args(args)
@@ -66,6 +78,10 @@ def main() -> None:
         _cmd_logs(args)
     elif args.command == "export":
         _cmd_export(args)
+    elif args.command == "export-otel":
+        _cmd_export_otel(args)
+    elif args.command == "compare":
+        _cmd_compare(args)
     elif args.command is None:
         parser.print_help()
     else:
@@ -81,19 +97,28 @@ def _apply_global_args(args: argparse.Namespace) -> None:
 
 def _cmd_agent(args: argparse.Namespace) -> None:
     if args.agent_command == "create":
-        handle = create_agent(name=args.name, purpose=args.purpose, default_mode=args.mode)
+        handle = create_agent(
+            name=args.name,
+            agent_ref=args.agent_ref,
+            aura_id=args.aura_id,
+            purpose=args.purpose,
+            policy_version=args.policy_version,
+            default_mode=args.mode,
+        )
         print(json.dumps(handle.profile.to_dict(), indent=2))
     elif args.agent_command == "list":
         reg = AgentRegistry()
         for p in reg.list_agents():
+            ref = p.agent_ref or "-"
             label = p.name or "(unnamed)"
-            print(f"{p.aura_id}  {label}")
+            print(f"{p.aura_id}  {ref}  {label}")
     elif args.agent_command == "show":
         reg = AgentRegistry()
         try:
-            profile = reg.get_by_name(args.name)
-        except KeyError:
-            profile = reg.get_by_id(args.name)
+            profile = reg.resolve(args.name)
+        except AgentNotFoundError:
+            print(f"not found: {args.name}", file=sys.stderr)
+            sys.exit(1)
         print(json.dumps(profile.to_dict(), indent=2))
     else:
         print("usage: aura agent {create|list|show}", file=sys.stderr)
@@ -134,6 +159,24 @@ def _cmd_export(args: argparse.Namespace) -> None:
         print(f"not found: {path}", file=sys.stderr)
         sys.exit(1)
     print(path.read_text(encoding="utf-8"))
+
+
+def _cmd_export_otel(args: argparse.Namespace) -> None:
+    from aura.config import get_config
+
+    path = export_session_otel(args.session_id, get_config().sessions_dir())
+    print(path.read_text(encoding="utf-8"))
+
+
+def _cmd_compare(args: argparse.Namespace) -> None:
+    from aura.config import get_config
+
+    base = get_config().sessions_dir()
+    result = compare_sessions(
+        base / f"{args.session_a}.summary.json",
+        base / f"{args.session_b}.summary.json",
+    )
+    print(json.dumps(result, indent=2))
 
 
 if __name__ == "__main__":

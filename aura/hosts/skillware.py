@@ -60,7 +60,9 @@ class SkillwareHost:
         """Build host from installed Skillware skill instances."""
         host = cls(session)
         for skill in skills:
-            skill_id = getattr(skill, "skill_id", None) or getattr(skill, "id", type(skill).__name__)
+            skill_id = getattr(skill, "skill_id", None) or getattr(
+                skill, "id", type(skill).__name__
+            )
             host.register_by_id(str(skill_id), skill)
         return host
 

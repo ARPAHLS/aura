@@ -38,7 +38,9 @@ def run_script(
     return {"session_id": run.session_id, "exports": run.exports}
 
 
-def aura_wrapped(agent: AgentHandle, mode: str | None = None) -> Callable[[Callable[..., Any]], Callable[..., Any]]:
+def aura_wrapped(
+    agent: AgentHandle, mode: str | None = None
+) -> Callable[[Callable[..., Any]], Callable[..., Any]]:
     """Decorator to run a callable inside an AURA session."""
 
     def decorator(fn: Callable[..., Any]) -> Callable[..., Any]:

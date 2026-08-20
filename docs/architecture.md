@@ -1,70 +1,45 @@
-# Architecture (v0.2)
+# Architecture (v0.3)
 
-AURA wraps any agent loop:
+AURA is the **harness** around your host loop — ingress, policy, egress, record. Egress is a gate **inside** AURA, not a separate product name for the whole harness.
 
 ```
-ATTACH → INGRESS → [ BODY ] → EGRESS → RECORD → EXPORT
-                      ↑
-                 Observers (parallel)
+Ingress → Body ↔ Egress (policy) → Audit trail → Session export
+                ↑                      ↓
+           (tool execute)          Observers
 ```
 
-## Membrane flow
+## Data flow
 
 ```mermaid
 flowchart LR
-    IN["Ingress"] --> BODY["Body / Host"]
-    BODY --> EG["Egress"]
-    EG --> TRAIL["Audit Trail"]
-    TRAIL --> EXPORT["Session Export"]
-    TRAIL -.-> OBS["Observers"]
+    IN[Ingress] --> BODY[Body / host]
+    BODY <-->|skills & turns| EG[Egress gate]
+    EG --> BODY
+    EG --> AUDIT[Audit trail]
+    AUDIT --> EXPORT[Session export]
+    AUDIT -.-> OBS[Observers]
 ```
 
-Parallel inputs (Identity, Brain, Memory, Tools, Constitution) feed the body — see [stack-position.md](stack-position.md).
+→ Usage: [using-aura.md](using-aura.md) · Identity: [trust-paths.md](trust-paths.md)
 
-→ Positioning: [comparison.md](comparison.md) · Usage: [using-aura.md](using-aura.md)
-
-## Core (v0.1 kernel)
+## Core modules
 
 | Module | Role |
 |---|---|
-| `aura/agents/` | Registry, `AURA-000n`, ID trailer |
-| `aura/config.py` | Global + project paths |
-| `aura/core/session.py` | Session modes, open/close, observers |
-| `aura/core/spine.py` | Audit trail (append-only JSONL) |
-| `aura/core/constraints.py` | Modular rules |
-| `aura/core/conformance.py` | Rules + sequencer order on close |
-| `aura/api.py` | Public SDK |
-| `aura/runtime/python.py` | Python attach helper |
-| `aura/exporters/jsonl.py` | Session export |
-
-## v0.2 additions
-
-| Module | Role |
-|---|---|
-| `aura/membrane/` | Ingress context, egress `guarded_tool_call` |
-| `aura/sequencer/` | Declarative step runner (`skill`, `op`, `gate`, …) |
-| `aura/hosts/` | Skillware host + mock skills for tests |
-| `aura/observers/` | Parallel audit subscribers |
+| `aura/agents/` | Registry — ULID, `agent_ref`, ID trailer |
+| `aura/core/session.py` | Sessions, approve + principal |
+| `aura/core/spine.py` | Audit trail + hash chain |
+| `aura/core/constraints.py` | Live policy on emit |
+| `aura/core/conformance.py` | Declared vs observed |
+| `aura/core/audit_report.py` | Findings + recommendations |
+| `aura/membrane/` | Ingress context, egress guarded calls |
+| `aura/sequencer/` | Prescriptive step pipelines |
+| `aura/hosts/` | Skillware / mock skill host |
+| `aura/observers/` | Parallel subscribers |
+| `aura/exporters/` | JSONL summary, OTel JSONL |
 
 ## Extension surface (roadmap)
 
-| Module | Role |
-|---|---|
-| `aura/core/registry.py` | Type plugins (brain, skills, memory) |
-| `aura/ops/` | Named observer presets |
-| `aura/bridges/` | Optional ARPA stack exporters |
+Type plugins, named observer presets, HTTP fleet API — see [ROADMAP.md](ROADMAP.md).
 
 **Principle:** new capabilities emit or subscribe to the spine — core loop unchanged.
-
-## Sequencer vs hook pipeline
-
-- **Sequencer** — prescriptive multi-step runs with per-step `step_id` on spine (shipped v0.2)
-- **Hook pipeline** — intercept loop ticks (`pre_turn`, `pre_tool`, …) — partial; use `emit()` today
-
-See [sequencer.md](sequencer.md) and [pipeline.py](../aura/core/pipeline.py) for hook enum definitions.
-
-## ARPA stack (optional)
-
-AURA works standalone. In the wider ARPA stack, aura sits around Soma and may export to Rooms or Legacy — via adapters, never required.
-
-→ [stack-position.md](stack-position.md) · [Manifesto](https://github.com/ARPAHLS/manifesto)

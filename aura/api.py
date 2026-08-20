@@ -35,8 +35,8 @@ class SessionRun:
     def emit(self, kind: str, payload: dict[str, Any] | None = None) -> dict[str, Any]:
         return self._session.emit(kind, payload)
 
-    def approve(self, request_id: str) -> None:
-        self._session.approve(request_id)
+    def approve(self, request_id: str, *, principal: str | None = None) -> None:
+        self._session.approve(request_id, principal=principal)
 
     def complete_goal(self, result: dict[str, Any] | None = None) -> None:
         self._session.complete_goal(result)
@@ -132,7 +132,7 @@ def agent(
     aura_id: str | None = None,
     **profile_kwargs: Any,
 ) -> AgentHandle:
-    """Get or create an agent by name or aura_id."""
+    """Get or create an agent by name, agent_ref, or aura_id."""
     reg = AgentRegistry()
     if aura_id:
         profile = reg.get_by_id(aura_id)
@@ -140,7 +140,7 @@ def agent(
         if create:
             profile = reg.get_or_create(name, **profile_kwargs)
         else:
-            profile = reg.get_by_name(name)
+            profile = reg.resolve(name)
     else:
         profile = reg.create(**profile_kwargs)
     return AgentHandle(profile=profile, _registry=reg)

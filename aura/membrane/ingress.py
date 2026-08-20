@@ -7,12 +7,17 @@ from typing import Any
 from aura.agents.profile import AgentProfile
 
 
-def build_ingress_context(profile: AgentProfile, overrides: dict[str, Any] | None = None) -> dict[str, Any]:
+def build_ingress_context(
+    profile: AgentProfile,
+    overrides: dict[str, Any] | None = None,
+) -> dict[str, Any]:
     """Normalize agent profile into run context for the host cavity."""
     ctx: dict[str, Any] = {
         "aura_id": profile.aura_id,
+        "agent_ref": profile.agent_ref,
         "name": profile.name,
         "purpose": profile.purpose,
+        "policy_version": profile.policy_version,
         "ids": dict(profile.ids),
         "variables": dict(profile.variables),
         "skills": list(profile.skills),
@@ -22,7 +27,11 @@ def build_ingress_context(profile: AgentProfile, overrides: dict[str, Any] | Non
     return ctx
 
 
-def ingress_event_payload(profile: AgentProfile, mode: str, snapshot_hash: str | None) -> dict[str, Any]:
+def ingress_event_payload(
+    profile: AgentProfile,
+    mode: str,
+    snapshot_hash: str | None,
+) -> dict[str, Any]:
     return {
         "membrane": "ingress",
         "mode": mode,
@@ -30,4 +39,6 @@ def ingress_event_payload(profile: AgentProfile, mode: str, snapshot_hash: str |
         "context": build_ingress_context(profile),
         "skills": profile.skills,
         "observers": [o.get("id") for o in profile.observers if isinstance(o, dict)],
+        "agent_ref": profile.agent_ref,
+        "policy_version": profile.policy_version,
     }

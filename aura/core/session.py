@@ -71,6 +71,8 @@ class Session:
                 "mode": self.mode.value,
                 "snapshot_hash": self.snapshot_hash,
                 "purpose": self.profile.purpose,
+                "policy_version": self.profile.policy_version,
+                "agent_ref": self.profile.agent_ref,
             },
         )
 
@@ -99,7 +101,10 @@ class Session:
             self.emit("session.close", {"reason": reason, "goal_reached": self._goal_reached})
         self._closed = True
         self._open = False
-        return {"session_id": self.session_id, "log_path": str(self._log_path) if self._log_path else None}
+        return {
+            "session_id": self.session_id,
+            "log_path": str(self._log_path) if self._log_path else None,
+        }
 
     def emit(
         self,
@@ -183,12 +188,15 @@ class Session:
             )
         raise ApprovalRequired(request_id, message, rule)
 
-    def approve(self, request_id: str) -> None:
+    def approve(self, request_id: str, *, principal: str | None = None) -> None:
         self._approved.add(request_id)
         if self.spine:
+            payload: dict[str, Any] = {"request_id": request_id}
+            if principal:
+                payload["principal"] = principal
             self.spine.append(
                 "constraint.approved",
-                {"request_id": request_id},
+                payload,
                 agent_ids=self.profile.id_trailer(),
             )
 
@@ -221,8 +229,10 @@ def _snapshot_hash(profile: AgentProfile, rules: list[dict[str, Any]]) -> str:
     blob = json.dumps(
         {
             "aura_id": profile.aura_id,
+            "agent_ref": profile.agent_ref,
             "name": profile.name,
             "purpose": profile.purpose,
+            "policy_version": profile.policy_version,
             "variables": profile.variables,
             "rules": rules,
             "skills": profile.skills,

@@ -1,57 +1,51 @@
-# Outputs & Bridges
+# Outputs
 
-Normalized output — regardless of input stack.
-
----
-
-## Audit Spine
-
-**AuraEvent** — append-only, causal, timestamped.
-
-| Invariant | Meaning |
-|---|---|
-| Everything material is logged | Tools, APIs, files, corrections, human overrides |
-| Causal IDs | `parent_id`, `trace_id`, `step_id`, `task_id` |
-| OTel-compatible + ARPA extensions | UBH, constitution hash, input references |
-
-Schema: [aura-event.schema.json](../spec/aura-event.schema.json)
+What a session produces on close (v0.3).
 
 ---
 
-## Output Layers
+## Per session
 
-| Layer | Contents |
-|---|---|
-| **Event stream** | Full causal log — replay, debug, compliance |
-| **Session summary** | Cost, duration, outcome, anomalies |
-| **Audit pack** | Signed bundle + constitution hash |
-| **Analytics slice** | Metrics for improvement and training |
-| **Exports** | JSON, CSV, OTel, webhook |
-
-Implementation: `aura/exporters/`
-
----
-
-## Bridges
-
-Optional integrations when the ARPA stack is present:
-
-| Bridge | Project | Role |
+| Artifact | Path | Contents |
 |---|---|---|
-| `liveid` | Live ID | Manifest, session registry, UBH |
-| `legacy` | Legacy Protocol | Continuity stream |
-| `rooms` | Rooms | Session environment |
-| `skills` | Skills frameworks | Native bundle integration |
-| `synapuls` | Synapuls | Surface security |
-| `mnemolink` | MnemoLink | Memory policy |
+| **Audit trail** | `{session_id}.jsonl` | Append-only AuraEvents with causal ids + hash chain |
+| **Summary** | `{session_id}.summary.json` | Metadata, conformance, audit report |
+| **OTel JSONL** | `{session_id}.otel.jsonl` | Span-style records mapped from events |
 
-Export profiles:
+CLI: `aura export`, `aura export-otel`, `aura compare`.
 
-```yaml
-spectrum:
-  output: [aura-json, otel, csv, legacy-stream, webhook]
+---
+
+## Audit report (summary JSON)
+
+```json
+{
+  "verdict": "pass",
+  "scorecard": { "policy": {}, "tools": {}, "sequencer": {}, "events": 12 },
+  "findings": [],
+  "recommendations": ["..."],
+  "hash_chain_valid": true
+}
 ```
 
+Rule-based today — findings cite `event_id`s; recommendations suggest next steps (policy, sequencer, approvals).
+
 ---
 
-See [sequencer.md](sequencer.md) · [trust-paths.md](trust-paths.md)
+## Conformance
+
+Binary pass/fail plus violations list — declared rules and sequencer step order vs observed spine.
+
+---
+
+## Hash chain
+
+Each event includes `prev_hash` and `content_hash` (SHA-256). Tampering or corruption breaks verification in the audit report.
+
+---
+
+## Identity on exports
+
+Summary includes `agent_ref`, `aura_id`, `policy_version`, `snapshot_hash`, and full `agent_ids` trailer.
+
+→ [trust-paths.md](trust-paths.md) · [aura-event.schema.json](../spec/aura-event.schema.json)

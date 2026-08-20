@@ -6,11 +6,10 @@ import pytest
 
 from aura import agent, configure, ApprovalRequired
 from aura.core.conformance import ConformanceEngine
-from aura.core.spine import AuditSpine
 from aura.hosts.mock import MockSkill
 from aura.hosts.skillware import SkillwareHost
 from aura.observers.base import CallableObserver, get_registry
-from aura.sequencer import load_steps, SequencerEngine
+from aura.sequencer import load_steps
 
 
 @pytest.fixture
@@ -24,7 +23,12 @@ def aura_home(tmp_path, monkeypatch):
 
 PIPELINE = {
     "steps": [
-        {"id": "research", "type": "skill", "ref": "research", "config": {"tool": "search", "args": {"q": "aura"}}},
+        {
+            "id": "research",
+            "type": "skill",
+            "ref": "research",
+            "config": {"tool": "search", "args": {"q": "aura"}},
+        },
         {"id": "draft", "type": "op", "ref": "compose"},
         {
             "id": "send",
@@ -40,7 +44,12 @@ PIPELINE = {
 def test_sequencer_linear_steps(aura_home):
     spec = {
         "steps": [
-            {"id": "research", "type": "skill", "ref": "research", "config": {"tool": "search", "args": {"q": "aura"}}},
+            {
+                "id": "research",
+                "type": "skill",
+                "ref": "research",
+                "config": {"tool": "search", "args": {"q": "aura"}},
+            },
             {"id": "draft", "type": "op", "ref": "compose"},
         ]
     }

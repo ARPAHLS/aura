@@ -71,7 +71,11 @@ class AuraConfig:
         return path
 
     def state_file(self) -> Path:
-        base = self.project_aura_dir if self.values.get("storage") == "project" and self.project_aura_dir else self.home
+        base = (
+            self.project_aura_dir
+            if self.values.get("storage") == "project" and self.project_aura_dir
+            else self.home
+        )
         base.mkdir(parents=True, exist_ok=True)
         return base / "registry_state.json"
 

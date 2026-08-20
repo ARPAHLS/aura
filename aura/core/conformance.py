@@ -40,14 +40,10 @@ class ConformanceEngine:
     ) -> ConformanceReport:
         events = spine.stream()
         violations = [
-            e.to_dict()
-            for e in events
-            if e.kind in ("constraint.violated", "session.error")
+            e.to_dict() for e in events if e.kind in ("constraint.violated", "session.error")
         ]
         approval_pending = any(e.kind == "constraint.approval_required" for e in events)
-        unapproved = approval_pending and not any(
-            e.kind == "constraint.approved" for e in events
-        )
+        unapproved = approval_pending and not any(e.kind == "constraint.approved" for e in events)
 
         checks: list[dict[str, Any]] = []
         for rule in declared_rules:
@@ -80,7 +76,9 @@ class ConformanceEngine:
         if not sequencer_spec or not sequencer_spec.get("steps"):
             return None
         declared = [s["id"] for s in sequencer_spec["steps"]]
-        started = [e.step_id for e in spine.stream() if e.kind == "sequencer.step.start" and e.step_id]
+        started = [
+            e.step_id for e in spine.stream() if e.kind == "sequencer.step.start" and e.step_id
+        ]
         ended_ok = [
             e.step_id
             for e in spine.stream()

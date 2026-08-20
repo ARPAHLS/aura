@@ -24,7 +24,9 @@ def load_steps(spec: dict[str, Any] | None) -> list[SequencerStep]:
     ]
 
 
-def merge_sequencer_spec(profile_spec: dict[str, Any] | None, override: dict[str, Any] | None) -> dict[str, Any]:
+def merge_sequencer_spec(
+    profile_spec: dict[str, Any] | None, override: dict[str, Any] | None
+) -> dict[str, Any]:
     base = dict(profile_spec or {})
     if override:
         base.update(override)

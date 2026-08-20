@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-08-20
+
+### Added
+
+- **Layered identity** — `agent_ref` (tenant/slug), ULID internal `aura_id`, optional user-supplied `aura_id`, `ids.tenant`, `policy_version` on profile and spine trailer.
+- **Audit report** (`aura/core/audit_report.py`) — verdict, scorecard, findings, recommendations on session export.
+- **Hash chain** — `prev_hash` / `content_hash` on every spine event; verification on report build.
+- **Approver principal** — `approve(request_id, principal=...)` recorded on spine.
+- **OTel export** — `aura export-otel`, `.otel.jsonl` on session close.
+- **Compare runs** — `aura compare <session_a> <session_b>`.
+- **Lint tooling** — `black` + `flake8` in `[dev]`; [docs/TESTING.md](docs/TESTING.md), PR template.
+
+### Changed
+
+- **Registry** — ULID default ids; `resolve()` by ref, name, or id; legacy `AURA-000n` profiles still load.
+- **README** — minimal narrative layout; architecture clarifies Body ↔ Aura egress gate (not “Aura = egress”).
+- **Version** — `0.3.0` across package and docs.
+
 ## [0.2.0] - 2026-08-20
 
 ### Added
@@ -80,6 +98,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - v0.1 is a **runnable kernel**, not the full manifesto stack.
 - Type plugin registry (`aura/core/registry.py`) retained for future adapters; not required to run basic sessions.
 
-[Unreleased]: https://github.com/ARPAHLS/aura/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/ARPAHLS/aura/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/ARPAHLS/aura/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/ARPAHLS/aura/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/ARPAHLS/aura/releases/tag/v0.1.0

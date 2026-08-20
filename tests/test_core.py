@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import json
-import os
 from pathlib import Path
 
 import pytest
@@ -11,7 +10,7 @@ import pytest
 from aura import agent, configure, ApprovalRequired
 from aura.agents.registry import AgentRegistry, DuplicateAgentError
 from aura.core.constraints import ConstraintEngine, ConstraintContext
-from aura.core.conformance import ConformanceEngine
+from aura.core.ids import is_ulid
 from aura.core.spine import AuditSpine
 from aura.core.spectrum import Spectrum
 
@@ -31,15 +30,17 @@ def test_spectrum_from_manifest_defaults():
     assert "audit" in s.services
 
 
-def test_registry_monotonic_ids(aura_home: Path):
+def test_registry_ulid_ids(aura_home: Path):
     reg = AgentRegistry()
-    a1 = reg.create(name="alpha")
-    a2 = reg.create(name="beta")
-    assert a1.aura_id == "AURA-0001"
-    assert a2.aura_id == "AURA-0002"
+    a1 = reg.create(name="alpha", agent_ref="acme/alpha")
+    a2 = reg.create(name="beta", agent_ref="acme/beta")
+    assert is_ulid(a1.aura_id)
+    assert is_ulid(a2.aura_id)
+    assert a1.aura_id != a2.aura_id
+    assert a1.agent_ref == "acme/alpha"
     reg.archive(a2.aura_id)
-    a3 = reg.create(name="gamma")
-    assert a3.aura_id == "AURA-0003"
+    a3 = reg.create(name="gamma", agent_ref="acme/gamma")
+    assert is_ulid(a3.aura_id)
 
 
 def test_registry_duplicate_name(aura_home: Path):
@@ -96,6 +97,7 @@ def test_session_export_summary(aura_home: Path):
     data = json.loads(summary_path.read_text(encoding="utf-8"))
     assert data["aura_id"] == ag.profile.aura_id
     assert data["conformance"]["passed"] is True
+    assert data.get("audit_report", {}).get("verdict") == "pass"
     assert data["event_count"] >= 3
 
 

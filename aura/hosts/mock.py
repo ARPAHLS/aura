@@ -8,7 +8,9 @@ from typing import Any, Callable
 class MockSkill:
     """Minimal skill with a tool → handler map."""
 
-    def __init__(self, skill_id: str, handlers: dict[str, Callable[[dict[str, Any]], Any]] | None = None) -> None:
+    def __init__(
+        self, skill_id: str, handlers: dict[str, Callable[[dict[str, Any]], Any]] | None = None
+    ) -> None:
         self.skill_id = skill_id
         self._handlers = dict(handlers or {})
 

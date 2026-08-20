@@ -2,13 +2,14 @@
 
 ---
 
-## Start here (v0.2)
+## Start here
 
 | Doc | Content |
 |---|---|
-| [getting-started.md](getting-started.md) | Install, 5-minute example, CLI |
-| [using-aura.md](using-aura.md) | Membrane, personas, SDK overview |
-| [concepts.md](concepts.md) | Agent, session, membrane, sequencer |
+| [getting-started.md](getting-started.md) | Install, example, CLI |
+| [using-aura.md](using-aura.md) | Membrane, personas, SDK |
+| [TESTING.md](TESTING.md) | pytest, black, flake8, PR checklist |
+| [concepts.md](concepts.md) | Agent, session, identity, audit |
 | [comparison.md](comparison.md) | vs orchestrators, eval harnesses, tracing |
 | [architecture.md](architecture.md) | v0.2 modules |
 | [ROADMAP.md](ROADMAP.md) | Shipped vs deferred |
