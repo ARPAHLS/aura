@@ -2,7 +2,7 @@
 
 AURA Harness is a **framework-agnostic runtime membrane** — a sidecar that wraps agent loops for audit and policy at the I/O boundary. It is **not** an orchestrator, eval suite, or tool framework.
 
-For architecture and v0.2 scope, see [architecture.md](architecture.md) and [ROADMAP.md](ROADMAP.md).
+For architecture and current scope, see [architecture.md](architecture.md) and [ROADMAP.md](ROADMAP.md).
 
 This document clarifies how AURA compares to **DeepSeek Harness (DSH)**, **LangGraph**, **CrewAI**, **LangSmith / eval harnesses**, **DeepEval / RAGAS**, **MCP**, and generic **observability** stacks.
 
@@ -16,7 +16,7 @@ This document clarifies how AURA compares to **DeepSeek Harness (DSH)**, **LangG
 
 | Approach | Build inside their stack? | Full causal audit | Policy before world effects | Works with existing script |
 | :--- | :--- | :--- | :--- | :--- |
-| **AURA Harness** | No — wrap what you have | Yes (audit trail + export) | Yes (constitution / rules; egress roadmap) | Yes (SDK v0.1; membrane proxies roadmap) |
+| **AURA Harness** | No — wrap what you have | Yes (JSONL + audit report + hash chain) | Yes (constitution, gates, egress on wired paths) | Yes (SDK + Skillware host; broader intercept roadmap) |
 | **DeepSeek Harness** | Yes — plugins, profiles, session model | Yes (SessionEvent log) | Partial (sandbox, approval in base) | No — adopt DSH runtime |
 | **LangGraph** | Yes — graph nodes and state | Via LangSmith / custom | Via graph logic you write | No — model as graph |
 | **CrewAI** | Yes — crews, roles, tasks | Via external logging | Via agent/task design | No — CrewAI workflow |
@@ -42,10 +42,31 @@ External in → Ingress → [ Your logic — black box ] → Egress → World + 
 | **Owns control flow** | Yes | No |
 | **Owns model/tools** | Often bundled | No — any subset inside cavity |
 | **You build for it** | Yes | No — drop in what exists |
-| **Primary output** | Completed task | Audit trail + session export |
+| **Primary output** | Completed task | Session export + audit report (receipt) |
 | **Long-term role** | Application framework | Infrastructure coat |
 
 You can run LangGraph, CrewAI, DSH, or a 10-year-old script **inside** the cavity and wrap it with AURA.
+
+---
+
+## Prompt harness vs. membrane configuration
+
+Much of today's agent engineering — prompt libraries, reviewer agents, merge gates, "define done in the system prompt" — optimizes **inside the cavity**: better instructions, more orchestration, more models reviewing each other.
+
+AURA optimizes **at the boundary**: ingress normalization, egress policy, mechanical gates, and a **session receipt** on close.
+
+| Concern | Typical workflow / prompt harness | AURA membrane |
+| :--- | :--- | :--- |
+| **What "done" means** | Described in prompts; humans judge output | Declared in **gates**, rules, and export invariants; **verdict** on session close |
+| **Rules** | Documented for the model to read | Encoded in **constitution / constraints**; violations on the spine |
+| **Review** | Secondary reviewer agents or human diff review | **Constraint engine** blocks or denies at egress; humans **steer policy**, not every token |
+| **Failure handling** | Rewrite prompts, add examples | **Gate deny → structured event → retry step** (sequencer); tighten membrane rules so the class of failure cannot exit again |
+| **Proof** | Logs, traces, screenshots | **Causal audit trail** (JSONL) + summary + **audit report** + hash chain (signed packs on roadmap) |
+| **Your job** | Babysit the agent loop | **Configure the coat** — profile, rules, gates, approvals — then review the receipt |
+
+This is the same insight behind repeatability-and-constraints thinking in modern AI engineering — but implemented as **runtime enforcement and provenance**, not as another layer of prompts or orchestrator nodes.
+
+AURA is **not** a guide for building the agent. It is infrastructure for **configuring what may cross the perimeter** and **proving what did**.
 
 ---
 
@@ -62,7 +83,7 @@ You can run LangGraph, CrewAI, DSH, or a 10-year-old script **inside** the cavit
 ### Key differences
 
 * **Positioning**: DSH is a **runtime you adopt** — "everything is a plugin" *inside* DSH. AURA is a **wrapper around whatever runtime you already have**.
-* **Identity / accountability chain**: DSH focuses on session integrity; AURA adds lite agent IDs (`AURA-000n`) and an ID trailer without requiring an identity service (long-term: optional enrichment adapters).
+* **Identity / accountability chain**: DSH focuses on session integrity; AURA adds `agent_ref` (ULID), audit report, and hash-chained spine events without requiring a central identity service (optional enrichment adapters on roadmap).
 * **Long term**: DSH competes on composable agent OS; AURA competes on **agnostic governance layer** — including the option to wrap DSH itself inside the cavity.
 
 ---
@@ -74,7 +95,7 @@ You can run LangGraph, CrewAI, DSH, or a 10-year-old script **inside** the cavit
 ### Key differences
 
 * **Graph is the product**: LangGraph requires you to structure work as a graph. AURA does not require a graph, steps, or nodes.
-* **Observability**: LangGraph pairs with LangSmith for traces. AURA produces a **session-native audit trail** (JSONL + conformance summary) designed for provenance, not only LLM debugging.
+* **Observability**: LangGraph pairs with LangSmith for traces. AURA produces a **session-native audit trail** (JSONL + audit report + conformance summary) designed for provenance and compliance export, not only LLM debugging.
 * **Complementary**: LangGraph inside the cavity; AURA on the boundary — policy and audit outside the graph definition.
 
 ---
@@ -97,9 +118,9 @@ You can run LangGraph, CrewAI, DSH, or a 10-year-old script **inside** the cavit
 
 ### Key differences
 
-* **Observe vs. enforce**: Tracers record what happened; they rarely **block** an action before execution. AURA's constitution and constraint engine target **policy at the boundary** (egress gate is the long-term goal).
+* **Observe vs. enforce**: Tracers record what happened; they rarely **block** an action before execution. AURA's constitution and constraint engine enforce **policy at the boundary** on wired egress paths (broader intercept on roadmap).
 * **Scope**: Tracing tools center on model calls and chains. AURA's audit trail is **agent-run scoped** — tools, approvals, violations, session lifecycle — not only tokens.
-* **Complementary**: Export audit JSONL to OTel or ingest into LangSmith later ([ROADMAP](ROADMAP.md)).
+* **Complementary**: Export audit JSONL to OTel ([outputs.md](outputs.md)) or ingest into LangSmith later ([ROADMAP](ROADMAP.md)).
 
 ---
 
@@ -110,7 +131,7 @@ You can run LangGraph, CrewAI, DSH, or a 10-year-old script **inside** the cavit
 ### Key differences
 
 * **When**: Eval harnesses run **offline** on test cases. AURA runs **inline** on production or dev sessions.
-* **Output**: Eval scores and metrics vs. **causal audit trail + conformance summary**.
+* **Output**: Eval scores and metrics vs. **causal audit trail + audit report + conformance summary**.
 * **Purpose**: Eval answers "how good is the model?" AURA answers "what did this agent do, under which rules, with what provenance?"
 * **Complementary**: Session exports can **feed** eval pipelines later; AURA is not a replacement for RAGAS.
 
@@ -135,7 +156,7 @@ OpenTelemetry and structured logging provide **telemetry primitives** — spans,
 
 * **Agent semantics**: AURA events carry **agent identity**, session mode, constitution violations, and conformance — not generic spans alone.
 * **Policy**: Logging does not enforce confirm-before-action or token budgets; AURA constraints do (v0.1 on explicit events; membrane intercept roadmap).
-* **Complementary**: OTel exporter planned; audit trail maps to spans ([ROADMAP](ROADMAP.md)).
+* **Complementary**: OTel exporter shipped (v0.3); audit trail maps to spans ([outputs.md](outputs.md), [ROADMAP](ROADMAP.md)).
 
 ---
 
@@ -145,10 +166,10 @@ Regardless of competitor category:
 
 | Job | Meaning |
 | :--- | :--- |
-| **Conformance** | Did the run stay within declared rules? |
-| **Auditability** | Full causal record from session open to close |
+| **Conformance** | Did the run stay within declared rules? (constraints, gates, sequencer steps) |
+| **Auditability** | Full causal record from session open to close — replayable export with integrity checks |
 
-Orchestrators optimize for **task completion**. Eval harnesses optimize for **quality scores**. AURA optimizes for **accountable execution**.
+Orchestrators optimize for **task completion**. Eval harnesses optimize for **quality scores**. Prompt-heavy harnesses optimize for **better instructions and reviewer loops**. AURA optimizes for **accountable execution** — mechanical boundaries and a receipt, not hope that the model understood "done."
 
 ---
 
@@ -160,29 +181,32 @@ Orchestrators optimize for **task completion**. Eval harnesses optimize for **qu
 | **Architecture** | **Sidecar / wrapper** | Plugin-based runtime | Graph framework | Agent workflow framework | SaaS / SDK tracing | Test harness |
 | **Build inside it** | **No** | Yes | Yes | Yes | Instrument only | N/A |
 | **Black-box agent OK** | **Yes (target)** | Partial | No | No | Partial | N/A |
-| **Live policy gate** | **Yes (v0.1 rules; egress roadmap)** | Sandbox / approval | DIY in graph | DIY in tasks | No | No |
-| **Causal audit trail** | **Yes (native)** | Yes (SessionEvent) | Via external tools | Via external tools | Traces | Post-hoc |
+| **Live policy gate** | **Yes (constraints + gates + wired egress)** | Sandbox / approval | DIY in graph | DIY in tasks | No | No |
+| **Session receipt / proof** | **Yes (audit report + hash chain)** | SessionEvent log | Via external tools | Via external tools | Traces | Post-hoc |
+| **Causal audit trail** | **Yes (native JSONL)** | Yes (SessionEvent) | Via external tools | Via external tools | Traces | Post-hoc |
 | **Framework lock-in** | **None (intent)** | DSH ecosystem | LangChain stack | Crew/AutoGen APIs | Vendor optional | Eval library |
-| **Best for** | Provenance, compliance, wrap existing loops | Greenfield DSH apps | Graph workflows | Role-based multi-agent | Debug LLM apps | Benchmark RAG/agents |
+| **Best for** | Provenance, compliance, configure-the-membrane | Greenfield DSH apps | Graph workflows | Role-based multi-agent | Debug LLM apps | Benchmark RAG/agents |
 
 ---
 
-## Where AURA is today (v0.2)
+## Where AURA is today (v0.3.2)
 
-Honest scope — membrane and sequencer shipped; full zero-intrusion wiring still growing:
+Honest scope — membrane, sequencer, and identity/audit layers shipped; full zero-intrusion wiring on every transport still growing:
 
-| Shipped (v0.2) | Roadmap |
+| Shipped (through v0.3) | Roadmap |
 | :--- | :--- |
-| Agent registry, sessions, SDK `emit()` | OTel exporter |
-| Constraint engine on events | LangGraph / MCP auto-probe |
-| Audit trail (JSONL) + session export | Named observer presets (field services) |
-| **Ingress** event + context normalization | Full I/O normalizer for arbitrary transports |
-| **Egress** `guarded_tool_call` (Skillware host) | Network/shell intercept without host cooperation |
-| **Sequencer** — linear steps, gates, retries | Branching / parallel steps |
+| Agent registry, sessions, SDK `emit()` | LangGraph / MCP auto-probe |
+| Constraint engine on events | Full I/O normalizer for arbitrary transports |
+| Audit trail (JSONL) + session export + **audit report** | Signed audit packs |
+| **Hash chain** on spine events + compare CLI | Network/shell intercept without host cooperation |
+| **`agent_ref` (ULID)** + policy version on export | Skill manifest rule merge at bind |
+| **Ingress** event + context normalization | Branching / parallel sequencer steps |
+| **Egress** `guarded_tool_call` (Skillware host + mocks) | Broader egress adapters |
+| **Sequencer** — linear steps, gates, retries | Named observer presets (monitor, break, limit) |
 | **Observers** — parallel spine subscribers | Webhooks, enterprise sinks |
-| Python attach helper | HTTP fleet API |
+| **OTel exporter** | HTTP fleet API |
 
-The **doctrine** is membrane-first; v0.2 delivers the first egress path via Skillware/mock hosts per [skillware-integration.md](skillware-integration.md) and [ROADMAP.md](ROADMAP.md).
+The **doctrine** is membrane-first: configure gates, rules, and export invariants at the boundary; keep the cavity a black box. v0.3 adds the **receipt** layer (audit report + integrity chain); v0.2 delivered the first egress path via Skillware/mock hosts per [skillware-integration.md](skillware-integration.md) and [sequencer.md](sequencer.md).
 
 ---
 
