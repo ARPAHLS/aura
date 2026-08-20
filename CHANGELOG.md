@@ -16,7 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **`pyproject.toml`** — description, expanded keywords, PyPI classifiers (AI, monitoring, audiences), `[project.urls]` with Homepage `arpacorp.net`.
   - *Rationale:* PyPI/GitHub metadata reflects product identity; no "record enforce export" tagline.
-- **README.md**, **docs/INDEX.md**, **architecture.md**, **getting-started.md**, **spec/type-plugin.contract.md** — links to comparison doc.
+- **README.md**, **docs/INDEX.md**, **architecture.md**, **getting-started.md**, **spec/type-plugin.contract.md** — links to comparison doc; getting-started Next section wording aligned.
 
 ### Changed (prior)
 

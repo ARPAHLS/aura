@@ -65,5 +65,6 @@ See [examples/](../examples/README.md) for three runnable demos.
 ## Next
 
 - [concepts.md](concepts.md) — agent, session, event, rule
+- [comparison.md](comparison.md) — vs orchestrators and eval harnesses
 - [ROADMAP.md](ROADMAP.md) — what comes after v0.1
-- [architecture.md](architecture.md) — attach, record, enforce, export
+- [architecture.md](architecture.md) — attach → audit trail → export
