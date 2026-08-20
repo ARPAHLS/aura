@@ -13,6 +13,7 @@
 [![Getting started](https://img.shields.io/badge/docs-getting%20started-d4e4f7?labelColor=e8e0e4&style=flat-square)](docs/getting-started.md)
 [![Architecture](https://img.shields.io/badge/docs-architecture-c8dde8?labelColor=e8e0e4&style=flat-square)](docs/architecture.md)
 [![Examples](https://img.shields.io/badge/examples-runnable-b8d4e8?labelColor=e8e0e4&style=flat-square)](examples/)
+[![Comparison](https://img.shields.io/badge/docs-comparison-c8dde8?labelColor=e8e0e4&style=flat-square)](docs/comparison.md)
 [![Spec](https://img.shields.io/badge/spec-schemas-e8f0f8?labelColor=e8e0e4&style=flat-square)](spec/)
 
 <br>
@@ -107,6 +108,7 @@ Lite identity: AURA assigns `AURA-0001`, `AURA-0002`, … if you provide no name
 | Topic | Links |
 | :--- | :--- |
 | **Start here** | [getting-started.md](docs/getting-started.md) · [concepts.md](docs/concepts.md) · [examples/](examples/) |
+| **Comparison** | [comparison.md](docs/comparison.md) — vs DSH, LangGraph, eval harnesses, tracing |
 | **Index** | [docs/INDEX.md](docs/INDEX.md) |
 | **Architecture** | [architecture.md](docs/architecture.md) · [stack-position.md](docs/stack-position.md) |
 | **Identity** | [trust-paths.md](docs/trust-paths.md) — lite ID trailer, no Live ID required |

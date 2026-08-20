@@ -55,4 +55,4 @@ class TypeCapabilities:
 
 New roles require no core change — only documentation and capability registry entry.
 
-See [architecture.md](../docs/architecture.md) · [capability.registry.json](capability.registry.json).
+See [architecture.md](../docs/architecture.md) · [comparison.md](../docs/comparison.md) · [capability.registry.json](capability.registry.json).

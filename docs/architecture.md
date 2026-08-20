@@ -21,7 +21,7 @@ flowchart LR
     TRAIL --> EXPORT["Session Export"]
 ```
 
-→ Layer definitions: [stack-position.md](stack-position.md)
+→ Layer definitions: [stack-position.md](stack-position.md) · Positioning: [comparison.md](comparison.md)
 
 ## Core (shipped in v0.1)
 

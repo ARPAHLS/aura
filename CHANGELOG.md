@@ -7,7 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **docs/comparison.md** — AURA vs DeepSeek Harness, LangGraph, CrewAI, LangSmith/tracing, DeepEval/RAGAS, MCP, OTel; orchestrator vs membrane framing; executive matrix; honest v0.1 scope.
+  - *Rationale:* Public positioning aligned with Skillware-style comparison doc; clarifies long-term differentiation without claiming unshipped membrane features as done.
+
 ### Changed
+
+- **`pyproject.toml`** — description, expanded keywords, PyPI classifiers (AI, monitoring, audiences), `[project.urls]` with Homepage `arpacorp.net`.
+  - *Rationale:* PyPI/GitHub metadata reflects product identity; no "record enforce export" tagline.
+- **README.md**, **docs/INDEX.md**, **architecture.md**, **getting-started.md**, **spec/type-plugin.contract.md** — links to comparison doc.
+
+### Changed (prior)
 
 - **AURA architecture diagram** — replaced manifesto stack (Soul, Rooms, Legacy) with harness-specific flow: Identity, Brain, Memory, Tools, Constitution → Body / Runtime → Aura → **Audit Trail** → **Session Export**.
   - *Rationale:* README and docs must reflect AURA's model, not copy manifesto; Soul removed; Identity is a peer input.

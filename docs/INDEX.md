@@ -8,6 +8,7 @@
 |---|---|
 | [getting-started.md](getting-started.md) | Install, 5-minute example, CLI |
 | [concepts.md](concepts.md) | Agent, session, event, rule — no jargon |
+| [comparison.md](comparison.md) | vs orchestrators, eval harnesses, tracing |
 | [architecture.md](architecture.md) | v0.1 core modules |
 | [ROADMAP.md](ROADMAP.md) | Deferred features (sequencer, adapters, …) |
 | [examples/](../examples/README.md) | Three runnable demos |
