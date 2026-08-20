@@ -4,11 +4,12 @@
 
 <br>
 
-**AURA Harness — The runtime coat around agent loops.**
+**AURA Harness - A runtime coat for agent loops — audit, policy, and compliance export.**
 
 <br>
 
 <div align="center">
+  <a href="https://pypi.org/project/aura-harness/"><img src="https://img.shields.io/pypi/v/aura-harness?label=Version&style=flat-square" alt="Version"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-e8c4c0?style=flat-square" alt="License"></a>
   <a href="docs/getting-started.md"><img src="https://img.shields.io/badge/Python-3.10+-bbd4e8?style=flat-square" alt="Python Version"></a>
   <a href="CHANGELOG.md"><img src="https://img.shields.io/badge/Status-Experimental-c4d8c0?style=flat-square" alt="Status"></a>
@@ -133,8 +134,6 @@ CLI: `aura agent create`, `aura run`, `aura export`, `aura compare`, `aura expor
 - **Security** — loaded skills and scripts run in your process; see [SECURITY.md](SECURITY.md).
 - **Citation** — [CITATION.cff](CITATION.cff) (GitHub **Cite this repository**).
 - **Support** — [issues](https://github.com/ARPAHLS/aura/issues) · systems@arpacorp.net
-
-Full ARPA stack vision: [Manifesto](https://github.com/ARPAHLS/manifesto) (separate repo).
 
 ---
 

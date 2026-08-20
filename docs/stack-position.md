@@ -1,8 +1,8 @@
 # AURA Architecture
 
-How **AURA Harness** models a run — distinct from the full [ARPA manifesto stack](https://github.com/ARPAHLS/manifesto).
+How **AURA Harness** models a run — a harness-centric view of the broader ARPA stack.
 
-The manifesto diagram covers Identity → Soul → Body → Aura → Rooms / Legacy. **This repo uses a harness-centric view:** parallel inputs, one body, one coat, one audit trail out.
+The full stack diagram covers Identity → Soul → Body → Aura → Rooms / Legacy. **This repo uses a harness-centric view:** parallel inputs, one body, one coat, one audit trail out.
 
 ---
 
@@ -53,9 +53,9 @@ flowchart LR
 
 ---
 
-## vs ARPA manifesto stack
+## vs full ARPA stack
 
-| Manifesto | AURA Harness |
+| Full ARPA stack | AURA Harness |
 | :--- | :--- |
 | Identity → Soul → Body chain | Identity is an input alongside brain, memory, tools |
 | Soul / SoulSig | Folded into **Constitution** + optional `ids` metadata |
@@ -63,7 +63,7 @@ flowchart LR
 | Aura → Rooms / Legacy | Aura → Audit Trail → Export (bridges to Rooms/Legacy later) |
 | Sovereignty | Security rules in **Constitution** or future adapter |
 
-→ [README.md](../README.md) · [architecture.md](architecture.md) · [Manifesto](https://github.com/ARPAHLS/manifesto)
+→ [README.md](../README.md) · [architecture.md](architecture.md)
 
 ---
 

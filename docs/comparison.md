@@ -193,6 +193,5 @@ The **doctrine** is membrane-first; v0.2 delivers the first egress path via Skil
 | [Skillware](https://github.com/arpahls/skillware) | Tools **inside** the cavity |
 | [Rooms](https://github.com/arpahls/rooms) | Environment **outside** — optional export bridge |
 | [Legacy Protocol](https://github.com/arpahls/legacy-protocol) | Long-term audit / continuity sink |
-| [Manifesto](https://github.com/ARPAHLS/manifesto) | Full stack vision — AURA uses a harness-specific diagram |
 
 → [getting-started.md](getting-started.md) · [stack-position.md](stack-position.md)

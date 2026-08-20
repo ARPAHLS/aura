@@ -62,7 +62,6 @@ Schemas for manifest, events, plugins — **stable contracts** for adapters.
 
 | Project | Link |
 |---|---|
-| Manifesto | [github.com/ARPAHLS/manifesto](https://github.com/ARPAHLS/manifesto) |
 | Skillware | [github.com/arpahls/skillware](https://github.com/arpahls/skillware) |
 | Rooms | [github.com/arpahls/rooms](https://github.com/arpahls/rooms) |
 | Legacy Protocol | [github.com/arpahls/legacy-protocol](https://github.com/arpahls/legacy-protocol) |
