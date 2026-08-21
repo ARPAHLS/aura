@@ -16,7 +16,17 @@ pip install -e ".[dev,skillware]"
 
 Requires Python 3.10+.
 
-## Five-minute example
+## CLI
+
+After install, run `aura` with no arguments for the interactive menu (ASCII splash + agents/sessions/run/home/help). Subcommands work the same in scripts and CI:
+
+```bash
+aura version
+aura agent list
+aura --help
+```
+
+---
 
 ```python
 from aura import agent, configure

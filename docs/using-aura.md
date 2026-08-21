@@ -106,11 +106,15 @@ Profile observers (by id) attach at session open. Handlers must be non-blocking.
 Mirrors the SDK for agent management and script runs:
 
 ```bash
+aura                    # interactive splash + menu (after pip install)
+aura --help             # grouped command reference
 aura agent create my-bot --purpose "compliance"
 aura run my-bot examples/04-sequencer-pipeline/main.py
 aura logs aura_sess_xxxxxxxxxxxx
 aura export aura_sess_xxxxxxxxxxxx
 ```
+
+Interactive menu options: agents, sessions (logs/export/compare), run script, home paths, help, version.
 
 ---
 

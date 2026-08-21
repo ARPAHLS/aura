@@ -34,15 +34,23 @@ def project_dir(tmp_path: Path) -> Path:
 def run_aura(aura_home: Path):
     """Run `python -m aura.cli.main` with isolated AURA_HOME."""
 
-    def _run(*args: str, cwd: Path | None = None) -> subprocess.CompletedProcess[str]:
+    def _run(
+        *args: str,
+        cwd: Path | None = None,
+        input_text: str | None = None,
+    ) -> subprocess.CompletedProcess[str]:
         env = os.environ.copy()
         env["AURA_HOME"] = str(aura_home)
+        env.setdefault("PYTHONIOENCODING", "utf-8")
         return subprocess.run(
             [sys.executable, "-m", "aura.cli.main", *args],
             env=env,
             cwd=str(cwd) if cwd else None,
             capture_output=True,
             text=True,
+            encoding="utf-8",
+            errors="replace",
+            input=input_text,
         )
 
     return _run

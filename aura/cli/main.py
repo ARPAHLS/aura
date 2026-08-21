@@ -1,24 +1,31 @@
-"""AURA CLI."""
+"""AURA CLI entry point."""
 
 from __future__ import annotations
 
 import argparse
-import json
 import os
 import sys
-from pathlib import Path
 
 from aura import __version__
-from aura.agents.registry import AgentRegistry, AgentNotFoundError
-from aura.api import agent, configure, create_agent
-from aura.core.compare import compare_sessions
-from aura.core.spine import AuditSpine
-from aura.exporters.otel import export_session_otel
-from aura.runtime.python import run_script
+from aura.cli import commands
+from aura.cli.help_ui import cmd_help
+from aura.cli.interactive import cmd_interactive
+from aura.config import configure
 
 
-def main() -> None:
-    parser = argparse.ArgumentParser(prog="aura", description="AURA Harness")
+def build_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(prog="aura", description="AURA Harness", add_help=False)
+    parser.add_argument(
+        "-h",
+        "--help",
+        action="store_true",
+        help="Show grouped help and exit.",
+    )
+    parser.add_argument(
+        "--version",
+        action="version",
+        version=f"aura-harness {__version__}",
+    )
     parser.add_argument(
         "--home",
         help="AURA home directory (default: ~/.aura or AURA_HOME)",
@@ -65,118 +72,70 @@ def main() -> None:
     compare_p.add_argument("session_a", help="First session id")
     compare_p.add_argument("session_b", help="Second session id")
 
-    args = parser.parse_args()
-    _apply_global_args(args)
-
-    if args.command == "version":
-        print(f"aura-harness {__version__}")
-    elif args.command == "agent":
-        _cmd_agent(args)
-    elif args.command == "run":
-        _cmd_run(args)
-    elif args.command == "logs":
-        _cmd_logs(args)
-    elif args.command == "export":
-        _cmd_export(args)
-    elif args.command == "export-otel":
-        _cmd_export_otel(args)
-    elif args.command == "compare":
-        _cmd_compare(args)
-    elif args.command is None:
-        parser.print_help()
-    else:
-        parser.print_help()
+    return parser
 
 
-def _apply_global_args(args: argparse.Namespace) -> None:
+def apply_global_args(args: argparse.Namespace) -> None:
     if getattr(args, "home", None):
         os.environ["AURA_HOME"] = args.home
     project = getattr(args, "project", None)
     configure(project_dir=project)
 
 
-def _cmd_agent(args: argparse.Namespace) -> None:
+def dispatch(args: argparse.Namespace) -> int:
+    if args.command == "version":
+        return commands.cmd_version()
+    if args.command == "agent":
+        return _dispatch_agent(args)
+    if args.command == "run":
+        return commands.cmd_run(args.target, args.script, mode=args.mode)
+    if args.command == "logs":
+        return commands.cmd_logs(args.session_id)
+    if args.command == "export":
+        return commands.cmd_export(args.session_id)
+    if args.command == "export-otel":
+        return commands.cmd_export_otel(args.session_id)
+    if args.command == "compare":
+        return commands.cmd_compare(args.session_a, args.session_b)
+    if args.command is None:
+        if args.help:
+            cmd_help()
+            return 0
+        cmd_interactive()
+        return 0
+    return 2
+
+
+def _dispatch_agent(args: argparse.Namespace) -> int:
     if args.agent_command == "create":
-        handle = create_agent(
-            name=args.name,
+        return commands.cmd_agent_create(
+            args.name,
             agent_ref=args.agent_ref,
             aura_id=args.aura_id,
             purpose=args.purpose,
             policy_version=args.policy_version,
-            default_mode=args.mode,
+            mode=args.mode,
         )
-        print(json.dumps(handle.profile.to_dict(), indent=2))
-    elif args.agent_command == "list":
-        reg = AgentRegistry()
-        for p in reg.list_agents():
-            ref = p.agent_ref or "-"
-            label = p.name or "(unnamed)"
-            print(f"{p.aura_id}  {ref}  {label}")
-    elif args.agent_command == "show":
-        reg = AgentRegistry()
-        try:
-            profile = reg.resolve(args.name)
-        except AgentNotFoundError:
-            print(f"not found: {args.name}", file=sys.stderr)
-            sys.exit(1)
-        print(json.dumps(profile.to_dict(), indent=2))
-    else:
-        print("usage: aura agent {create|list|show}", file=sys.stderr)
-        sys.exit(1)
+    if args.agent_command == "list":
+        return commands.cmd_agent_list()
+    if args.agent_command == "show":
+        return commands.cmd_agent_show(args.name)
+    print("usage: aura agent {create|list|show}", file=sys.stderr)
+    return 1
 
 
-def _cmd_run(args: argparse.Namespace) -> None:
-    script: Path | None = None
-    agent_name: str | None = None
-    if args.script:
-        agent_name = args.target
-        script = Path(args.script)
-    elif Path(args.target).suffix == ".py":
-        script = Path(args.target)
-    else:
-        agent_name = args.target
-        print("error: provide a .py script path", file=sys.stderr)
-        sys.exit(1)
+def main() -> None:
+    parser = build_parser()
+    args = parser.parse_args()
+    apply_global_args(args)
 
-    handle = agent(agent_name) if agent_name else agent()
-    result = run_script(handle, script, mode=args.mode)
-    print(json.dumps(result, indent=2))
+    if args.help and args.command is not None:
+        parser.print_help()
+        raise SystemExit(0)
 
-
-def _cmd_logs(args: argparse.Namespace) -> None:
-    from aura.config import get_config
-
-    path = get_config().sessions_dir() / f"{args.session_id}.jsonl"
-    for row in AuditSpine.read_jsonl(path):
-        print(json.dumps(row))
-
-
-def _cmd_export(args: argparse.Namespace) -> None:
-    from aura.config import get_config
-
-    path = get_config().sessions_dir() / f"{args.session_id}.summary.json"
-    if not path.is_file():
-        print(f"not found: {path}", file=sys.stderr)
-        sys.exit(1)
-    print(path.read_text(encoding="utf-8"))
-
-
-def _cmd_export_otel(args: argparse.Namespace) -> None:
-    from aura.config import get_config
-
-    path = export_session_otel(args.session_id, get_config().sessions_dir())
-    print(path.read_text(encoding="utf-8"))
-
-
-def _cmd_compare(args: argparse.Namespace) -> None:
-    from aura.config import get_config
-
-    base = get_config().sessions_dir()
-    result = compare_sessions(
-        base / f"{args.session_a}.summary.json",
-        base / f"{args.session_b}.summary.json",
-    )
-    print(json.dumps(result, indent=2))
+    code = dispatch(args)
+    if code:
+        raise SystemExit(code)
 
 
 if __name__ == "__main__":
