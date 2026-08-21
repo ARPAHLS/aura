@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **PR CI workflow** ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)) — `lint-test` job on pull requests and pushes to `main` (black, flake8, pytest); read-only permissions, no PyPI secrets.
+
 ## [0.3.2] - 2026-08-20
 
 ### Changed

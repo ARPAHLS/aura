@@ -127,7 +127,7 @@ Follow the [Code of Conduct](CODE_OF_CONDUCT.md). We welcome autonomous logical 
   flake8 aura tests
   ```
 
-- CI runs on PRs: tests, black, flake8 (see [publish-pypi.yml](.github/workflows/publish-pypi.yml) test job pattern).
+- CI runs on PRs via [`.github/workflows/ci.yml`](.github/workflows/ci.yml) (job **`lint-test`**: pytest, black, flake8). See [TESTING.md](docs/TESTING.md).
 - Wait for green checks before requesting review.
 
 ### CHANGELOG
@@ -155,6 +155,7 @@ Pure internal refactors with no user-visible effect may omit CHANGELOG; ask on t
 | New example | `examples/README.md`, optional link from `docs/getting-started.md` |
 | Architecture terminology | `docs/architecture.md`, `README.md` diagrams (keep in sync) |
 | Release / PyPI behavior | `docs/PUBLISHING.md`, `.github/workflows/publish-pypi.yml`, CHANGELOG |
+| PR CI workflow | `.github/workflows/ci.yml`, `docs/TESTING.md`, `CONTRIBUTING.md`; keep publish test job in sync |
 | Issue template fields | `.github/labels.json` if new label needed; run label sync |
 | Version (maintainer only) | `pyproject.toml`, `aura/__init__.py`, `CITATION.cff`, CHANGELOG release section, Zenodo if archived |
 
