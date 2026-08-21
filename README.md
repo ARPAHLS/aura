@@ -6,6 +6,8 @@
 
 **AURA Harness - A runtime coat for agent loops — audit, policy, and compliance export.**
 
+Run your agent on your env with your tools, AURA proves what happened and stops what shouldn't, without owning your loop or your credentials.
+
 <br>
 
 <div align="center">
