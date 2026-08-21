@@ -7,14 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.3] - 2026-08-21
+
 ### Added
 
-- **Test suite infrastructure** — shared `tests/conftest.py` (`aura_home`, `run_aura` CLI helper), `skillware` pytest marker.
-- **`tests/test_cli.py`** — CLI coverage for version, agent CRUD, run, logs, export, export-otel, compare.
-- **`tests/test_core_gaps.py`** — config merge, registry archive/legacy ids, hash-chain tamper, compare/export/OTel/runtime/middleware/session modes.
-- **`tests/test_examples_smoke.py`** — parametrized smoke runs for all `examples/*/main.py` scripts.
-- **CI** — `pytest --cov=aura` report-only output in `lint-test` job.
-- **PR CI workflow** ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)) — `lint-test` on pull requests and pushes to `main` (merged via #5).
+- **PR CI workflow** ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)) — `lint-test` job on pull requests and pushes to `main` (black, flake8, pytest).
+- **Test suite** — shared `tests/conftest.py`; new `test_cli.py`, `test_core_gaps.py`, and `test_examples_smoke.py` (49 tests; example script smoke runs).
+- **CI coverage report** — `pytest --cov=aura --cov-report=term-missing` in PR and publish workflows (report only, no gate).
+
+### Changed
+
+- **`docs/comparison.md`** — membrane vs prompt-harness positioning, session receipt language, shipped scope through v0.3.3.
+- **`docs/TESTING.md`**, **`CONTRIBUTING.md`**, **`docs/PUBLISHING.md`** — CI parity, coverage expectations, publish trigger docs.
+
+### Fixed
+
+- **Publish workflow** — removed duplicate `v*` tag trigger (tag + GitHub Release no longer double-publishes); `skip-existing: true` for safe manual re-runs.
 
 ## [0.3.2] - 2026-08-20
 
@@ -125,7 +133,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - v0.1 is a **runnable kernel**, not the full manifesto stack.
 - Type plugin registry (`aura/core/registry.py`) retained for future adapters; not required to run basic sessions.
 
-[Unreleased]: https://github.com/ARPAHLS/aura/compare/v0.3.2...HEAD
+[Unreleased]: https://github.com/ARPAHLS/aura/compare/v0.3.3...HEAD
+[0.3.3]: https://github.com/ARPAHLS/aura/compare/v0.3.2...v0.3.3
 [0.3.2]: https://github.com/ARPAHLS/aura/compare/v0.3.1...v0.3.2
 [0.3.1]: https://github.com/ARPAHLS/aura/compare/v0.3.0...v0.3.1
 [0.3.0]: https://github.com/ARPAHLS/aura/compare/v0.2.0...v0.3.0

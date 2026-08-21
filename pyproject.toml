@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "aura-harness"
-version = "0.3.2"
+version = "0.3.3"
 description = "Runtime membrane around agent loops — audit, policy, identity, and compliance export."
 readme = "README.md"
 requires-python = ">=3.10"

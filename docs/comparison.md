@@ -189,7 +189,7 @@ Orchestrators optimize for **task completion**. Eval harnesses optimize for **qu
 
 ---
 
-## Where AURA is today (v0.3.2)
+## Where AURA is today (v0.3.3)
 
 Honest scope — membrane, sequencer, and identity/audit layers shipped; full zero-intrusion wiring on every transport still growing:
 
