@@ -1,0 +1,37 @@
+# PR and main-branch CI — lint and test only (no secrets, no PyPI OIDC).
+# Keep install/lint/test steps in sync with publish-pypi.yml test job until issue #7
+# (reusable workflow) lands.
+
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install dev dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e ".[dev]"
+      - name: black
+        run: black --check aura tests
+      - name: flake8
+        run: flake8 aura tests
+      - name: pytest
+        run: pytest

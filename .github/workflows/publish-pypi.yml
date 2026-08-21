@@ -21,6 +21,7 @@ permissions:
   contents: read
 
 jobs:
+  # Steps must match .github/workflows/ci.yml lint-test job (see docs/TESTING.md).
   test:
     runs-on: ubuntu-latest
     steps:

@@ -41,6 +41,7 @@ Written for **autonomous and semi-autonomous agents** working on AURA Harness. H
 - [ ] `pytest` passes
 - [ ] `black aura tests` — no diff
 - [ ] `flake8 aura tests` — clean
+- [ ] CI green — [`lint-test`](../../.github/workflows/ci.yml) job on the PR
 - [ ] Tests added/updated for behavior changes
 - [ ] [CHANGELOG.md](../../CHANGELOG.md) updated under `[Unreleased]` when user-visible
 - [ ] Docs/examples updated per [ripple table](../../CONTRIBUTING.md#ripple-effects-if-you-change-x-update-y)
