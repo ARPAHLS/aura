@@ -127,7 +127,8 @@ Follow the [Code of Conduct](CODE_OF_CONDUCT.md). We welcome autonomous logical 
   flake8 aura tests
   ```
 
-- CI runs on PRs via [`.github/workflows/ci.yml`](.github/workflows/ci.yml) (job **`lint-test`**: pytest, black, flake8). See [TESTING.md](docs/TESTING.md).
+- Shared fixtures: **`tests/conftest.py`** (`aura_home`, `run_aura` for CLI subprocess tests).
+- CI runs on PRs via [`.github/workflows/ci.yml`](.github/workflows/ci.yml) (job **`lint-test`**: pytest with coverage report, black, flake8). See [TESTING.md](docs/TESTING.md).
 - Wait for green checks before requesting review.
 
 ### CHANGELOG

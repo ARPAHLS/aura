@@ -7,21 +7,12 @@ from pathlib import Path
 
 import pytest
 
-from aura import agent, configure, ApprovalRequired
+from aura import agent, ApprovalRequired
 from aura.agents.registry import AgentRegistry, DuplicateAgentError
 from aura.core.constraints import ConstraintEngine, ConstraintContext
 from aura.core.ids import is_ulid
 from aura.core.spine import AuditSpine
 from aura.core.spectrum import Spectrum
-
-
-@pytest.fixture
-def aura_home(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
-    home = tmp_path / "aura_home"
-    home.mkdir()
-    monkeypatch.setenv("AURA_HOME", str(home))
-    configure()
-    return home
 
 
 def test_spectrum_from_manifest_defaults():

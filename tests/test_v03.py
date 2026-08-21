@@ -7,7 +7,7 @@ from pathlib import Path
 
 import pytest
 
-from aura import agent, configure, ApprovalRequired
+from aura import agent, ApprovalRequired
 from aura.agents.registry import AgentRegistry, DuplicateAgentError
 from aura.core.audit_report import AuditReportBuilder
 from aura.core.compare import compare_sessions
@@ -15,15 +15,6 @@ from aura.core.conformance import ConformanceEngine
 from aura.core.ids import is_ulid, new_ulid, validate_agent_ref
 from aura.core.spine import AuditSpine, verify_hash_chain
 from aura.exporters.otel import events_to_spans
-
-
-@pytest.fixture
-def aura_home(tmp_path, monkeypatch):
-    home = tmp_path / "aura_home"
-    home.mkdir()
-    monkeypatch.setenv("AURA_HOME", str(home))
-    configure()
-    return home
 
 
 def test_new_ulid_format():

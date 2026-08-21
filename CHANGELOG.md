@@ -9,7 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- **PR CI workflow** ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)) — `lint-test` job on pull requests and pushes to `main` (black, flake8, pytest); read-only permissions, no PyPI secrets.
+- **Test suite infrastructure** — shared `tests/conftest.py` (`aura_home`, `run_aura` CLI helper), `skillware` pytest marker.
+- **`tests/test_cli.py`** — CLI coverage for version, agent CRUD, run, logs, export, export-otel, compare.
+- **`tests/test_core_gaps.py`** — config merge, registry archive/legacy ids, hash-chain tamper, compare/export/OTel/runtime/middleware/session modes.
+- **`tests/test_examples_smoke.py`** — parametrized smoke runs for all `examples/*/main.py` scripts.
+- **CI** — `pytest --cov=aura` report-only output in `lint-test` job.
+- **PR CI workflow** ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)) — `lint-test` on pull requests and pushes to `main` (merged via #5).
 
 ## [0.3.2] - 2026-08-20
 

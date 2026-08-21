@@ -12,7 +12,7 @@ pip install -e ".[dev]"
 
 ```bash
 pytest
-pytest -v tests/test_v03.py
+pytest --cov=aura --cov-report=term-missing
 ```
 
 ## Lint (required before PR)
@@ -46,14 +46,36 @@ pytest
 
 **Maintainers:** after the first green `lint-test` run on `main`, enable **branch protection** → required status check **`lint-test`**.
 
+## Coverage expectations
+
+- **New behavior needs a test** — extend the closest file (`test_core.py`, `test_v02.py`, `test_v03.py`, `test_cli.py`, or `test_core_gaps.py`).
+- Shared fixtures live in **`tests/conftest.py`** — do not duplicate `aura_home` in test modules.
+- Optional Skillware-only tests use `@pytest.mark.skillware` and `pytest.importorskip("skillware")`.
+- CI prints **`pytest --cov=aura --cov-report=term-missing`** for visibility; there is **no coverage gate** yet.
+
+## Test layout
+
+| File | Focus |
+|---|---|
+| `conftest.py` | `aura_home`, `run_aura`, example runner |
+| `test_core.py` | Registry, spine, constraints, session export (v0.1) |
+| `test_v02.py` | Sequencer, observers, membrane, Skillware host |
+| `test_v03.py` | Identity, audit report, hash chain, compare |
+| `test_cli.py` | `aura` CLI commands and exit codes |
+| `test_core_gaps.py` | Config, exporters, runtime, middleware, archive, tamper |
+| `test_examples_smoke.py` | Runnable example scripts |
+
 ## What we test
 
 | Area | Tests |
 |---|---|
-| Identity | ULID ids, `agent_ref`, custom `aura_id`, resolve lookup |
-| Audit | Hash chain, audit report, approver principal, session export |
-| Core | Registry, spine, constraints, conformance, sequencer (see `test_core.py`, `test_v02.py`) |
-| Compare / OTel | `test_v03.py` |
+| Identity | ULID ids, `agent_ref`, custom `aura_id`, resolve lookup, legacy `AURA-000n`, archive |
+| Audit | Hash chain (valid + tamper), audit report, approver principal, session export |
+| Core | Registry, spine, constraints, conformance, sequencer (`test_core.py`, `test_v02.py`) |
+| CLI | Version, agent CRUD, run, logs, export, export-otel, compare (`test_cli.py`) |
+| Config / runtime | YAML merge, `run_script`, middleware, session modes (`test_core_gaps.py`) |
+| Compare / OTel | Summary diff, OTel JSONL export (`test_v03.py`, `test_core_gaps.py`) |
+| Examples | Smoke run all `examples/*/main.py` (`test_examples_smoke.py`) |
 
 ## Pre-PR checklist
 
