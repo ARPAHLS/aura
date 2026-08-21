@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **Interactive CLI** — bare `aura` opens an ASCII splash and numbered menu (agents, sessions, run, home, help, version); grouped `aura --help` reference.
+- **`rich` dependency** — terminal tables and gradient splash for the CLI.
+- **CLI module split** — `aura/cli/commands.py`, `splash.py`, `interactive.py`, `help_ui.py`.
+
+### Changed
+
+- **`aura` console script** — unchanged entry point (`aura.cli.main:main`); wheel installs the `aura` command with interactive default when no subcommand is given.
+
 ## [0.3.3] - 2026-08-21
 
 ### Added

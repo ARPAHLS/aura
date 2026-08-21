@@ -95,3 +95,29 @@ def test_cli_run_requires_script(run_aura):
     result = run_aura("run", "agent-only")
     assert result.returncode == 1
     assert "script" in result.stderr.lower()
+
+
+def test_cli_help_grouped(run_aura):
+    result = run_aura("--help")
+    assert result.returncode == 0
+    assert "agents" in result.stdout.lower()
+    assert "aura agent list" in result.stdout
+    assert "interactive" in result.stdout.lower()
+
+
+def test_cli_interactive_splash_and_exit(run_aura):
+    result = run_aura(input_text="0\n")
+    assert result.returncode == 0
+    combined = result.stdout + result.stderr
+    assert "AURA Harness" in combined
+    from aura.cli.splash import splash_contains_aura
+
+    assert splash_contains_aura(combined)
+    assert "Bye." in combined
+
+
+def test_aura_console_script_entry_point():
+    import importlib.metadata
+
+    scripts = {ep.name: ep.value for ep in importlib.metadata.entry_points(group="console_scripts")}
+    assert scripts.get("aura") == "aura.cli.main:main"
