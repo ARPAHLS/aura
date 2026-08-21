@@ -11,6 +11,7 @@ from rich.text import Text
 from aura.cli import commands
 from aura.cli.help_text import MAIN_MENU, _NAV_BACK, _NAV_EXIT
 from aura.cli.help_ui import _parse_nav, _print_nav_footer, _read_line, cmd_help_submenu
+from aura.cli.paths_ui import cmd_paths_submenu
 from aura.cli.splash import cli_console, print_splash
 from aura.cli.styles import MENU_STYLE, TABLE_STYLE
 
@@ -32,12 +33,15 @@ def _agents_submenu(
         "show": "show",
         "3": "create",
         "create": "create",
+        "4": "edit",
+        "edit": "edit",
     }
     while True:
         console.print(Text("Agents", style=f"bold {TABLE_STYLE}"))
         console.print("    [1] list   — registered agents", style=MENU_STYLE)
         console.print("    [2] show   — profile by name or agent_ref", style=MENU_STYLE)
         console.print("    [3] create — register a new agent", style=MENU_STYLE)
+        console.print("    [4] edit   — update ref, purpose, skills, variables", style=MENU_STYLE)
         _print_nav_footer(console, show_back=True)
 
         raw = _read_line("  agents> ", input_fn)
@@ -79,6 +83,42 @@ def _agents_submenu(
             )
             if rc:
                 console.print(f"  create exited with status {rc}", style="dim #FF9AA2")
+        elif command == "edit":
+            name = _read_line("  name or agent_ref> ", input_fn)
+            if name is None or not name.strip():
+                console.print("  Cancelled.", style="dim")
+                continue
+            agent_ref = _read_line("  agent_ref (Enter to skip)> ", input_fn)
+            if agent_ref is None:
+                console.print("  Cancelled.", style="dim")
+                continue
+            purpose = _read_line("  purpose (Enter to skip)> ", input_fn)
+            if purpose is None:
+                console.print("  Cancelled.", style="dim")
+                continue
+            skills_raw = _read_line("  skills comma-separated (Enter to skip)> ", input_fn)
+            if skills_raw is None:
+                console.print("  Cancelled.", style="dim")
+                continue
+            variable = _read_line("  variable key=value (Enter to skip)> ", input_fn)
+            if variable is None:
+                console.print("  Cancelled.", style="dim")
+                continue
+            kwargs: dict = {}
+            if agent_ref.strip():
+                kwargs["agent_ref"] = agent_ref.strip()
+            if purpose.strip():
+                kwargs["purpose"] = purpose.strip()
+            if skills_raw.strip():
+                kwargs["skills"] = [s.strip() for s in skills_raw.split(",") if s.strip()]
+            if variable.strip():
+                kwargs["variables"] = [variable.strip()]
+            if not kwargs:
+                console.print("  Nothing to update.", style="dim")
+                continue
+            rc = commands.cmd_agent_set(name.strip(), console=console, **kwargs)
+            if rc:
+                console.print(f"  edit exited with status {rc}", style="dim #FF9AA2")
         else:
             console.print(f"  Unknown choice: '{choice}'", style="dim #FF9AA2")
         console.print()
@@ -182,8 +222,9 @@ def cmd_interactive(
         "sessions": "sessions",
         "3": "run",
         "run": "run",
-        "4": "home",
-        "home": "home",
+        "4": "paths",
+        "paths": "paths",
+        "home": "paths",
         "5": "help",
         "help": "help",
         "6": "version",
@@ -219,8 +260,11 @@ def cmd_interactive(
                 return
         elif command == "run":
             _run_prompt(console, input_fn=input_fn)
-        elif command == "home":
-            commands.cmd_home(console=console)
+        elif command == "paths":
+            paths_nav = cmd_paths_submenu(console=console, input_fn=input_fn)
+            if paths_nav == _NAV_EXIT:
+                console.print("  Bye.", style="dim")
+                return
         elif command == "help":
             help_nav = cmd_help_submenu(console=console, input_fn=input_fn)
             if help_nav == _NAV_EXIT:

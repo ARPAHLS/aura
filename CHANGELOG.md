@@ -9,13 +9,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- **Interactive CLI** — bare `aura` opens an ASCII splash and numbered menu (agents, sessions, run, home, help, version); grouped `aura --help` reference.
-- **`rich` dependency** — terminal tables and gradient splash for the CLI.
-- **CLI module split** — `aura/cli/commands.py`, `splash.py`, `interactive.py`, `help_ui.py`.
+- **`aura agent set`** — update `agent_ref`, purpose, skills, variables, ids, and rules on existing profiles.
+- **`aura config show`** — merged global/project config and resolved registry/sessions paths.
+- **`aura paths`** — view paths; **`set-project`** and **`set-storage`** persist settings to YAML.
+- **Interactive paths submenu** — replaces read-only home; agents menu adds **edit** wizard.
+- **Splash polish** — blank line above ASCII logo; smoother Rich truecolor gradient on Windows Terminal.
 
 ### Changed
 
-- **`aura` console script** — unchanged entry point (`aura.cli.main:main`); wheel installs the `aura` command with interactive default when no subcommand is given.
+- **`AgentRegistry.update_profile`** — registry ref/alias maps stay consistent when `agent_ref` changes.
+- **Global config** — optional persisted `project_dir` in `~/.aura/config.yaml`.
 
 ## [0.3.3] - 2026-08-21
 

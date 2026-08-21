@@ -36,10 +36,9 @@ def _lerp_rgb(
     return tuple(int(start[i] + (end[i] - start[i]) * t) for i in range(3))
 
 
-def _splash_gradient_color(column: int, width: int) -> str:
-    if width <= 1:
-        return _rgb_to_hex(SPLASH_GRADIENT_START)
-    t = column / (width - 1)
+def _gradient_style_at(t: float) -> str:
+    """Map 0..1 to a smooth three-stop pastel gradient."""
+    t = max(0.0, min(1.0, t))
     if t <= 0.5:
         rgb = _lerp_rgb(SPLASH_GRADIENT_START, SPLASH_GRADIENT_MID, t / 0.5)
     else:
@@ -47,10 +46,20 @@ def _splash_gradient_color(column: int, width: int) -> str:
     return _rgb_to_hex(rgb)
 
 
+def _splash_gradient_color(column: int, width: int) -> str:
+    if width <= 1:
+        return _gradient_style_at(0.0)
+    return _gradient_style_at(column / (width - 1))
+
+
 def gradient_text_line(line: str, width: int) -> Text:
     text = Text()
-    for column, char in enumerate(line):
-        text.append(char, style=_splash_gradient_color(column, width))
+    padded = line.ljust(width)
+    for column, char in enumerate(padded):
+        if char == " ":
+            text.append(char)
+        else:
+            text.append(char, style=_splash_gradient_color(column, width))
     return text
 
 
@@ -68,7 +77,13 @@ def cli_console(*, stderr: bool = False) -> Console:
     import sys
 
     stream = sys.stderr if stderr else sys.stdout
-    return Console(file=stream, legacy_windows=stream.isatty(), force_terminal=stream.isatty())
+    is_tty = stream.isatty()
+    return Console(
+        file=stream,
+        legacy_windows=False,
+        force_terminal=is_tty,
+        color_system="truecolor" if is_tty else "auto",
+    )
 
 
 def print_splash(console: Console | None = None, *, version: str | None = None) -> None:
@@ -78,6 +93,7 @@ def print_splash(console: Console | None = None, *, version: str | None = None) 
     version = version if version is not None else __version__
     logo_width = max(len(line) for line in _SPLASH_LOGO_LINES)
 
+    console.print()
     try:
         console.print(gradient_splash_text(_SPLASH_LOGO_LINES))
         console.print(

@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import os
 import sys
+from pathlib import Path
 
 from aura import __version__
 from aura.cli import commands
@@ -54,6 +55,45 @@ def build_parser() -> argparse.ArgumentParser:
     show_p = agent_sub.add_parser("show", help="Show agent profile")
     show_p.add_argument("name", help="Name, agent_ref, or aura_id")
 
+    set_p = agent_sub.add_parser("set", help="Update agent profile fields")
+    set_p.add_argument("name", help="Name, agent_ref, or aura_id")
+    set_p.add_argument("--ref", dest="agent_ref", help="Stable agent_ref (tenant/slug)")
+    set_p.add_argument("--purpose", help="Agent purpose / drive")
+    set_p.add_argument("--policy-version", help="Policy version label")
+    set_p.add_argument("--mode", dest="default_mode", help="Default session mode")
+    set_p.add_argument(
+        "--skill",
+        action="append",
+        dest="skills",
+        help="Skill id (repeatable; replaces skills list)",
+    )
+    set_p.add_argument(
+        "--variable",
+        action="append",
+        dest="variables",
+        help="Profile variable key=value (repeatable; merges)",
+    )
+    set_p.add_argument(
+        "--id",
+        action="append",
+        dest="ids",
+        help="External id key=value (repeatable; merges)",
+    )
+    set_p.add_argument("--rules-file", type=Path, help="JSON file with rules array")
+    set_p.add_argument("--rules-json", help="Inline JSON array of rules")
+
+    config_p = sub.add_parser("config", help="Configuration")
+    config_sub = config_p.add_subparsers(dest="config_command")
+    config_sub.add_parser("show", help="Show merged config and paths")
+
+    paths_p = sub.add_parser("paths", help="Path resolution and storage")
+    paths_sub = paths_p.add_subparsers(dest="paths_command")
+    paths_sub.add_parser("show", help="Show resolved paths (default)")
+    set_proj = paths_sub.add_parser("set-project", help="Persist default project directory")
+    set_proj.add_argument("directory", help="Project directory path")
+    set_storage = paths_sub.add_parser("set-storage", help="Persist storage mode")
+    set_storage.add_argument("mode", choices=["global", "project"], help="Storage mode")
+
     run_p = sub.add_parser("run", help="Run a script under an agent session")
     run_p.add_argument("target", help="Agent name or script path")
     run_p.add_argument("script", nargs="?", help="Script path when agent given first")
@@ -87,6 +127,13 @@ def dispatch(args: argparse.Namespace) -> int:
         return commands.cmd_version()
     if args.command == "agent":
         return _dispatch_agent(args)
+    if args.command == "config":
+        if args.config_command == "show" or args.config_command is None:
+            return commands.cmd_config_show()
+        print("usage: aura config show", file=sys.stderr)
+        return 1
+    if args.command == "paths":
+        return _dispatch_paths(args)
     if args.command == "run":
         return commands.cmd_run(args.target, args.script, mode=args.mode)
     if args.command == "logs":
@@ -120,8 +167,31 @@ def _dispatch_agent(args: argparse.Namespace) -> int:
         return commands.cmd_agent_list()
     if args.agent_command == "show":
         return commands.cmd_agent_show(args.name)
-    print("usage: aura agent {create|list|show}", file=sys.stderr)
+    if args.agent_command == "set":
+        return commands.cmd_agent_set(
+            args.name,
+            agent_ref=args.agent_ref,
+            purpose=args.purpose,
+            policy_version=args.policy_version,
+            default_mode=args.default_mode,
+            skills=args.skills,
+            variables=args.variables,
+            ids=args.ids,
+            rules_file=args.rules_file,
+            rules_json=args.rules_json,
+        )
+    print("usage: aura agent {create|list|show|set}", file=sys.stderr)
     return 1
+
+
+def _dispatch_paths(args: argparse.Namespace) -> int:
+    if args.paths_command in (None, "show"):
+        return commands.cmd_paths()
+    if args.paths_command == "set-project":
+        return commands.cmd_paths_set_project(args.directory)
+    if args.paths_command == "set-storage":
+        return commands.cmd_paths_set_storage(args.mode)
+    return 2
 
 
 def main() -> None:

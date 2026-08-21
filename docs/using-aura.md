@@ -108,13 +108,18 @@ Mirrors the SDK for agent management and script runs:
 ```bash
 aura                    # interactive splash + menu (after pip install)
 aura --help             # grouped command reference
+aura config show        # merged config + resolved paths
+aura paths              # view paths; set-project / set-storage persist YAML
 aura agent create my-bot --purpose "compliance"
+aura agent set my-bot --ref acme/my-bot --skill research --variable model=llama3.2
 aura run my-bot examples/04-sequencer-pipeline/main.py
 aura logs aura_sess_xxxxxxxxxxxx
 aura export aura_sess_xxxxxxxxxxxx
 ```
 
-Interactive menu options: agents, sessions (logs/export/compare), run script, home paths, help, version.
+Profiles live as JSON under `{AURA_HOME}/agents/`. Global defaults: `~/.aura/config.yaml`. Project overrides: `{project}/aura.project.yaml`. Use env vars for API keys; store non-secret refs in profile `variables`.
+
+Interactive menu: **agents** (list/show/create/edit), **sessions**, **run**, **paths**, help, version.
 
 ---
 
