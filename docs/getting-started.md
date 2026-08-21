@@ -18,13 +18,17 @@ Requires Python 3.10+.
 
 ## CLI
 
-After install, run `aura` with no arguments for the interactive menu (ASCII splash + agents/sessions/run/home/help). Subcommands work the same in scripts and CI:
+After install, run `aura` with no arguments for the interactive menu (ASCII splash + agents/sessions/run/paths/help). Subcommands work the same in scripts and CI:
 
 ```bash
 aura version
+aura config show
 aura agent list
+aura agent set my-bot --ref tenant/slug --purpose "experiments"
 aura --help
 ```
+
+**Storage:** default `~/.aura/` (override with `AURA_HOME` or `aura --home`). Persist a default project with `aura paths set-project /path/to/repo`. Toggle project-scoped `.aura/` with `aura paths set-storage project` and `aura.project.yaml`.
 
 ---
 

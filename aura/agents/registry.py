@@ -131,6 +131,53 @@ class AgentRegistry:
         with path.open("w", encoding="utf-8") as f:
             json.dump(profile.to_dict(), f, indent=2)
 
+    def profile_path(self, aura_id: str) -> Path:
+        return self._agent_path(aura_id)
+
+    def update_profile(self, key: str, **updates: Any) -> AgentProfile:
+        """Apply partial updates to an existing agent profile."""
+        profile = self.resolve(key)
+        aura_id = profile.aura_id
+
+        if "name" in updates and updates["name"] is not None:
+            new_name = updates["name"]
+            if new_name != profile.name:
+                self._register_alias(new_name, aura_id)
+                profile.name = new_name
+
+        if "agent_ref" in updates:
+            new_ref_raw = updates["agent_ref"]
+            new_ref = validate_agent_ref(new_ref_raw) if new_ref_raw else None
+            old_ref = profile.agent_ref
+            refs: dict[str, str] = self._state.setdefault("refs", {})
+            if old_ref and refs.get(old_ref) == aura_id and old_ref != new_ref:
+                del refs[old_ref]
+                self._save_state()
+            if new_ref:
+                self._register_ref(new_ref, aura_id)
+            profile.agent_ref = new_ref
+            tenant = tenant_from_ref(new_ref)
+            if tenant:
+                profile.ids.setdefault("tenant", tenant)
+
+        if "purpose" in updates and updates["purpose"] is not None:
+            profile.purpose = updates["purpose"]
+        if "policy_version" in updates and updates["policy_version"] is not None:
+            profile.policy_version = str(updates["policy_version"])
+        if "default_mode" in updates and updates["default_mode"] is not None:
+            profile.default_mode = updates["default_mode"]
+        if updates.get("skills") is not None:
+            profile.skills = list(updates["skills"])
+        if updates.get("variables") is not None:
+            profile.variables.update(dict(updates["variables"]))
+        if updates.get("ids") is not None:
+            profile.ids.update(dict(updates["ids"]))
+        if updates.get("rules") is not None:
+            profile.rules = list(updates["rules"])
+
+        self.save(profile)
+        return profile
+
     def get_by_id(self, aura_id: str) -> AgentProfile:
         path = self._agent_path(aura_id)
         if not path.is_file() and is_legacy_aura_id(aura_id):

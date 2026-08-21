@@ -109,11 +109,61 @@ def test_cli_interactive_splash_and_exit(run_aura):
     result = run_aura(input_text="0\n")
     assert result.returncode == 0
     combined = result.stdout + result.stderr
+    assert combined.startswith("\n") or combined.startswith("\r\n")
     assert "AURA Harness" in combined
     from aura.cli.splash import splash_contains_aura
 
     assert splash_contains_aura(combined)
     assert "Bye." in combined
+
+
+def test_cli_agent_set(run_aura):
+    run_aura("agent", "create", "setter-bot")
+    result = run_aura(
+        "agent",
+        "set",
+        "setter-bot",
+        "--ref",
+        "acme/setter",
+        "--purpose",
+        "testing",
+        "--skill",
+        "research",
+        "--variable",
+        "model=llama3.2",
+    )
+    assert result.returncode == 0
+    profile = json.loads(result.stdout)
+    assert profile["agent_ref"] == "acme/setter"
+    assert profile["purpose"] == "testing"
+    assert profile["skills"] == ["research"]
+    assert profile["variables"]["model"] == "llama3.2"
+
+
+def test_cli_config_show_and_paths(run_aura, aura_home: Path, project_dir: Path):
+    import yaml
+
+    (aura_home / "config.yaml").write_text(
+        yaml.dump({"default_session_mode": "task"}),
+        encoding="utf-8",
+    )
+    config = run_aura("config", "show")
+    assert config.returncode == 0
+    data = json.loads(config.stdout)
+    assert data["values"]["default_session_mode"] == "task"
+    assert str(aura_home) in data["home"]
+
+    paths = run_aura("paths")
+    assert paths.returncode == 0
+    assert "registry:" in paths.stdout
+
+    set_proj = run_aura("paths", "set-project", str(project_dir))
+    assert set_proj.returncode == 0
+    assert "project_dir saved" in set_proj.stdout
+
+    set_storage = run_aura("paths", "set-storage", "global")
+    assert set_storage.returncode == 0
+    assert "storage=global saved" in set_storage.stdout
 
 
 def test_aura_console_script_entry_point():

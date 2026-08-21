@@ -15,6 +15,7 @@ HELP_GROUPS: List[Tuple[str, List[Tuple[str, str]], str]] = [
             ("aura agent create <name>", "register agent profile (optional --ref)"),
             ("aura agent list", "list aura_id, agent_ref, and name"),
             ("aura agent show <id>", "JSON profile by name, agent_ref, or aura_id"),
+            ("aura agent set <id> …", "update ref, purpose, skills, variables, rules"),
         ],
         _DOCS_CLI,
     ),
@@ -32,8 +33,12 @@ HELP_GROUPS: List[Tuple[str, List[Tuple[str, str]], str]] = [
     (
         "Paths",
         [
+            ("aura paths", "show resolved registry and sessions dirs"),
+            ("aura paths set-project <dir>", "persist default project directory"),
+            ("aura paths set-storage global|project", "persist storage mode"),
+            ("aura config show", "merged global + project YAML and paths"),
             ("aura --home <dir>", "override AURA_HOME for this invocation"),
-            ("aura --project <dir>", "enable project-scoped .aura/ storage"),
+            ("aura --project <dir>", "one-shot project-scoped .aura/ storage"),
         ],
         _DOCS_GETTING_STARTED,
     ),
@@ -49,7 +54,7 @@ HELP_GROUPS: List[Tuple[str, List[Tuple[str, str]], str]] = [
 ]
 
 _HELP_MENU: List[Tuple[str, str, str, Union[int, str]]] = [
-    ("1", "agents", "create, list, show", 0),
+    ("1", "agents", "create, list, show, set", 0),
     ("2", "sessions", "run, logs, export, compare", 1),
     ("3", "paths", "AURA_HOME and project storage", 2),
     ("4", "general", "menu, help, version", 3),
@@ -60,7 +65,10 @@ _HELP_MENU: List[Tuple[str, str, str, Union[int, str]]] = [
 
 CLI_USAGE_EXAMPLES: Tuple[str, ...] = (
     "aura agent create demo-bot --ref acme/demo",
+    "aura agent set demo-bot --ref acme/demo --purpose compliance",
     "aura agent list",
+    "aura config show",
+    "aura paths set-project .",
     "aura run cli-runner path/to/script.py",
     "aura export aura_sess_01H...",
     "aura compare sess_a sess_b",
@@ -68,10 +76,10 @@ CLI_USAGE_EXAMPLES: Tuple[str, ...] = (
 )
 
 MAIN_MENU: List[Tuple[str, str, str]] = [
-    ("1", "agents", "list, show, or create agent profiles"),
+    ("1", "agents", "list, show, create, or edit profiles"),
     ("2", "sessions", "logs, export, compare, or export-otel"),
     ("3", "run", "run a Python script under an agent session"),
-    ("4", "home", "show AURA_HOME, registry, and sessions paths"),
+    ("4", "paths", "view/edit AURA_HOME, project, and config"),
     ("5", "help", "grouped CLI reference and doc links"),
     ("6", "version", "installed package version"),
 ]
