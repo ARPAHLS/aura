@@ -67,6 +67,9 @@ include = ["aura*"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["."]
+markers = [
+    "skillware: requires skillware extra (pip install -e '.[skillware]')",
+]
 
 [tool.black]
 line-length = 100

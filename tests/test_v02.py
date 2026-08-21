@@ -4,22 +4,12 @@ from __future__ import annotations
 
 import pytest
 
-from aura import agent, configure, ApprovalRequired
+from aura import agent, ApprovalRequired
 from aura.core.conformance import ConformanceEngine
 from aura.hosts.mock import MockSkill
 from aura.hosts.skillware import SkillwareHost
 from aura.observers.base import CallableObserver, get_registry
 from aura.sequencer import load_steps
-
-
-@pytest.fixture
-def aura_home(tmp_path, monkeypatch):
-    home = tmp_path / "aura_home"
-    home.mkdir()
-    monkeypatch.setenv("AURA_HOME", str(home))
-    configure()
-    return home
-
 
 PIPELINE = {
     "steps": [

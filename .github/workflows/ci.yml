@@ -34,4 +34,4 @@ jobs:
       - name: flake8
         run: flake8 aura tests
       - name: pytest
-        run: pytest
+        run: pytest --cov=aura --cov-report=term-missing
