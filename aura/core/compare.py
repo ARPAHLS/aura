@@ -22,14 +22,20 @@ def compare_sessions(path_a: Path, path_b: Path) -> dict[str, Any]:
     conf_b = (b.get("conformance") or {}).get("passed")
     audit_a = (a.get("audit_report") or {}).get("verdict")
     audit_b = (b.get("audit_report") or {}).get("verdict")
+    chain_a = (a.get("audit_report") or {}).get("hash_chain_valid")
+    chain_b = (b.get("audit_report") or {}).get("hash_chain_valid")
+    ref_a = a.get("agent_ref")
+    ref_b = b.get("agent_ref")
 
     return {
         "session_a": a.get("session_id"),
         "session_b": b.get("session_id"),
-        "agent_ref_a": a.get("agent_ref"),
-        "agent_ref_b": b.get("agent_ref"),
+        "agent_ref_a": ref_a,
+        "agent_ref_b": ref_b,
+        "agent_ref": {"a": ref_a, "b": ref_b, "same": ref_a == ref_b},
         "conformance": {"a": conf_a, "b": conf_b, "same": conf_a == conf_b},
         "audit_verdict": {"a": audit_a, "b": audit_b, "same": audit_a == audit_b},
+        "hash_chain_valid": {"a": chain_a, "b": chain_b, "same": chain_a == chain_b},
         "event_count": {
             "a": a.get("event_count"),
             "b": b.get("event_count"),

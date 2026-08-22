@@ -62,7 +62,7 @@ pytest
 | `test_v02.py` | Sequencer, observers, membrane, Skillware host |
 | `test_v03.py` | Identity, audit report, hash chain, compare |
 | `test_cli.py` | `aura` CLI commands and exit codes |
-| `test_core_gaps.py` | Config, exporters, runtime, middleware, archive, tamper |
+| `test_core_gaps.py` | Config, exporters, runtime, middleware, archive, tamper, compare edge cases (GH #4) |
 | `test_examples_smoke.py` | Runnable example scripts |
 
 ## What we test
@@ -74,7 +74,7 @@ pytest
 | Core | Registry, spine, constraints, conformance, sequencer (`test_core.py`, `test_v02.py`) |
 | CLI | Version, agent CRUD, run, logs, export, export-otel, compare (`test_cli.py`) |
 | Config / runtime | YAML merge, `run_script`, middleware, session modes (`test_core_gaps.py`) |
-| Compare / OTel | Summary diff, OTel JSONL export (`test_v03.py`, `test_core_gaps.py`) |
+| Compare / OTel | Summary diff incl. `agent_ref` + `hash_chain_valid`, OTel JSONL export (`test_v03.py`, `test_core_gaps.py`) |
 | Examples | Smoke run all `examples/*/main.py` (`test_examples_smoke.py`) |
 
 ## Pre-PR checklist
