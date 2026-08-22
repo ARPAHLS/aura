@@ -7,7 +7,7 @@ Releases are published automatically by [`.github/workflows/publish-pypi.yml`](.
 
 Pushing a `v*` tag alone does **not** publish; create and publish the GitHub Release from that tag.
 
-The workflow runs tests, builds sdist/wheel, then uploads to PyPI. **Pull requests** are gated separately by [`.github/workflows/ci.yml`](.github/workflows/ci.yml) (`lint-test` on every PR to `main`).
+The workflow runs tests (Python 3.12), builds sdist/wheel, then uploads to PyPI. **Pull requests** are gated separately by [`.github/workflows/ci.yml`](.github/workflows/ci.yml) (Python 3.10–3.13 matrix; `lint-test` on every PR to `main`).
 
 ## One-time PyPI setup
 

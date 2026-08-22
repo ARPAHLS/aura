@@ -22,27 +22,35 @@ black aura tests
 flake8 aura tests
 ```
 
-CI expectation: **pytest**, **black**, and **flake8** all pass on `aura/` and `tests/`.
+CI expectation: **pytest**, **black**, and **flake8** all pass on `aura/` and `tests/` for every supported Python version.
 
 ## Continuous integration
 
-GitHub Actions workflow **[`.github/workflows/ci.yml`](../.github/workflows/ci.yml)** (job name: **`lint-test`**) runs on:
+GitHub Actions workflow **[`.github/workflows/ci.yml`](../.github/workflows/ci.yml)** runs on:
 
 - every **pull request** targeting `main`
 - every **push** to `main` (post-merge sanity)
 
-Steps (Python 3.12 on Ubuntu):
+Python matrix on **ubuntu-latest** (`fail-fast: true` — one version failure cancels the rest):
+
+```yaml
+python-version: ["3.10", "3.11", "3.12", "3.13"]
+```
+
+Each cell runs the same steps:
 
 ```bash
 pip install -e ".[dev]"
 black --check aura tests
 flake8 aura tests
-pytest
+pytest --cov=aura --cov-report=term-missing
 ```
+
+The workflow also emits a gate job named **`lint-test`** that succeeds only when every matrix cell passed. That is the check to require in branch protection.
 
 **Fork PRs:** the workflow uses `permissions: contents: read` only — no repository secrets, no PyPI OIDC, no deploy environment.
 
-**Publish workflow:** [`.github/workflows/publish-pypi.yml`](../.github/workflows/publish-pypi.yml) runs the same lint/test steps before release upload; keep both in sync until a reusable workflow lands (separate CI follow-up issue).
+**Publish workflow:** [`.github/workflows/publish-pypi.yml`](../.github/workflows/publish-pypi.yml) runs the same install/lint/test commands on a single Python 3.12 before release upload. Full 3.10–3.13 coverage is the PR CI matrix; keep the *commands* in sync until a reusable workflow lands (separate CI follow-up issue).
 
 **Maintainers:** after the first green `lint-test` run on `main`, enable **branch protection** → required status check **`lint-test`**.
 
