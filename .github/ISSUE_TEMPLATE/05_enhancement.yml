@@ -3,6 +3,21 @@ description: New feature or improvement
 title: "[Enhancement]: "
 labels: ["enhancement"]
 body:
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area (optional)
+      description: Helps route the issue; leave as general if unsure
+      options:
+        - general
+        - integrations
+        - examples
+        - cli
+        - core framework
+        - docs / onboarding
+        - ci / testing
+        - packaging
+
   - type: textarea
     id: problem
     attributes:

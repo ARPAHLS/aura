@@ -3,6 +3,9 @@ contact_links:
   - name: Contributing Guide
     url: https://github.com/ARPAHLS/aura/blob/main/CONTRIBUTING.md
     about: Read before opening a pull request
+  - name: Integrations index
+    url: https://github.com/ARPAHLS/aura/blob/main/docs/integrations/README.md
+    about: Pick your stack — models, tools, frameworks
   - name: Agent workflow
     url: https://github.com/ARPAHLS/aura/blob/main/docs/contributing/ai_native_workflow.md
     about: For autonomous agents and supervising operators

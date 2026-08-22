@@ -27,7 +27,7 @@
   {
     "name": "hosts",
     "color": "B8D4E8",
-    "description": "Skillware host, mock skills, egress wrapping."
+    "description": "Tool adapters — ToolHost, SkillwareHost, egress wrapping."
   },
   {
     "name": "membrane",
@@ -37,12 +37,17 @@
   {
     "name": "observers",
     "color": "B8D4E8",
-    "description": "Parallel audit trail subscribers."
+    "description": "Parallel audit trail subscribers and SLO monitors."
   },
   {
     "name": "audit & export",
     "color": "C4D8C0",
-    "description": "Session export, OTel JSONL, compare, hash chain."
+    "description": "Session export, OTel JSONL, compare, hash chain, verify."
+  },
+  {
+    "name": "integrations",
+    "color": "FADFD0",
+    "description": "Stack attach paths under integrations/ — models, tools, frameworks."
   },
   {
     "name": "enhancement",
@@ -57,7 +62,7 @@
   {
     "name": "examples",
     "color": "FADFD0",
-    "description": "Runnable examples under examples/."
+    "description": "Core patterns under examples/ and integration demos."
   },
   {
     "name": "packaging",
@@ -73,6 +78,11 @@
     "name": "testing",
     "color": "DBD3DC",
     "description": "pytest, black, flake8, or test coverage."
+  },
+  {
+    "name": "rfc",
+    "color": "E8D5F5",
+    "description": "Design RFC or discussion before implementation."
   },
   {
     "name": "good first issue",

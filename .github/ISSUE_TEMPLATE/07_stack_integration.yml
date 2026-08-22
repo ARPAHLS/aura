@@ -1,0 +1,52 @@
+name: Stack integration
+description: Attach AURA to a model, tool runtime, or framework (integrations/)
+title: "[Integration]: "
+labels:
+  - integrations
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Stack-specific integration under `integrations/<stack>/` — demos, docs, optional notebooks. Core AURA patterns without a vendor belong in `examples/` (use **Enhancement** or **Membrane & pipeline**).
+
+  - type: dropdown
+    id: stack
+    attributes:
+      label: Stack
+      options:
+        - Ollama (local models)
+        - OpenAI
+        - Anthropic (Claude)
+        - Google (Gemini)
+        - Skillware (tools)
+        - LangGraph
+        - CrewAI
+        - plain Python loop
+        - other
+    validations:
+      required: true
+
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Kind
+      options:
+        - bug
+        - enhancement
+        - documentation
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: What to ship, prerequisites, and how AURA attaches to this stack
+    validations:
+      required: true
+
+  - type: textarea
+    id: repro
+    attributes:
+      label: Paths, .env vars, or run command (optional)
+      description: e.g. integrations/ollama/llama_loop.py, OLLAMA_MODEL, pip extras

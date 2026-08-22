@@ -1,19 +1,26 @@
-name: Integration
-description: Sequencer, hosts, membrane, observers, Skillware, exporters
+name: Membrane & pipeline
+description: Sequencer, ingress/egress, observers, hosts/adapters, audit export, coat ops
 title: "[Integration]: "
-labels: ["hosts"]
+labels:
+  - enhancement
 body:
+  - type: markdown
+    attributes:
+      value: |
+        Membrane and pipeline integration (core package). For stack attach work under `integrations/` (Ollama, cloud APIs, Skillware, frameworks), use the **Stack integration** template.
+
   - type: dropdown
     id: area
     attributes:
       label: Area
       options:
-        - sequencer
-        - Skillware host
+        - hosts / adapters (ToolHost, SkillwareHost)
         - membrane (ingress / egress)
+        - sequencer
         - observers
-        - audit & export (OTel, compare)
-        - examples
+        - audit & export (OTel, compare, verify)
+        - coat ops
+        - core examples (examples/)
     validations:
       required: true
 
@@ -38,4 +45,4 @@ body:
     id: repro
     attributes:
       label: Repro or pipeline spec (optional)
-      description: Sequencer YAML, host snippet, or example path
+      description: Sequencer YAML, host snippet, example path, or session export excerpt

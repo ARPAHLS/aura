@@ -15,12 +15,15 @@ body:
       options:
         - core framework
         - cli
+        - integrations (stack)
+        - hosts / adapters
         - sequencer
-        - hosts / Skillware
         - membrane
         - observers
         - audit & export
+        - examples
         - packaging / install
+        - ci / testing
         - unknown
     validations:
       required: true

@@ -28,7 +28,8 @@ Welcome. AURA Harness is a **runtime coat** around agent loops — audit, policy
 | **Bug fix** | Paths named in issue | `bug` | [Bug report](.github/ISSUE_TEMPLATE/01_bug_report.yml) | Repro + `pytest`; add regression test when possible |
 | **Core framework** | `aura/core/`, `aura/agents/`, `aura/api.py` | `core framework` | [Core issue](.github/ISSUE_TEMPLATE/03_core_framework.yml) | `pytest tests/test_core.py tests/test_core_gaps.py` + related |
 | **CLI** | `aura/cli/` | `cli` | [CLI issue](.github/ISSUE_TEMPLATE/04_cli.yml) | `pytest tests/test_cli.py` + manual CLI check |
-| **Integration** | `aura/sequencer/`, `aura/hosts/`, `aura/membrane/`, `aura/observers/`, exporters | `sequencer`, `hosts`, `membrane`, `observers`, `audit & export` | [Integration issue](.github/ISSUE_TEMPLATE/06_integration.yml) | `pytest tests/test_v02.py tests/test_v03.py tests/test_core_gaps.py`; update integration docs |
+| **Membrane & pipeline** | `aura/sequencer/`, `aura/hosts/`, `aura/membrane/`, `aura/observers/`, exporters | `sequencer`, `hosts`, `membrane`, `observers`, `audit & export` | [Membrane & pipeline](.github/ISSUE_TEMPLATE/06_integration.yml) | `pytest tests/test_v02.py tests/test_v03.py tests/test_core_gaps.py`; update integration docs |
+| **Stack integration** | `integrations/`, stack-specific demos and docs | `integrations`, `examples`, `documentation` | [Stack integration](.github/ISSUE_TEMPLATE/07_stack_integration.yml) | Mock-first; `.env.example` for API keys; no secrets in repo |
 | **Documentation** | `docs/`, `README.md` | `documentation` | [Documentation issue](.github/ISSUE_TEMPLATE/02_documentation.yml) | Links valid; tone matches repo |
 | **Enhancement** | New behavior in scope of issue | `enhancement` | [Enhancement issue](.github/ISSUE_TEMPLATE/05_enhancement.yml) | Tests + CHANGELOG + ripple docs |
 | **Examples** | `examples/` | `examples` | Issue or enhancement | Script runs; update `examples/README.md` |
@@ -232,7 +233,7 @@ Autonomous and semi-autonomous agents are **welcome** when they:
 | [SECURITY.md](SECURITY.md) | Vulnerability reporting |
 | [PUBLISHING.md](docs/PUBLISHING.md) | PyPI and release tags |
 | [ROADMAP.md](docs/ROADMAP.md) | Shipped vs deferred (do not re-delete vision) |
-| [Issue templates](.github/ISSUE_TEMPLATE/) | Bug, docs, core, CLI, enhancement, integration |
+| [Issue templates](.github/ISSUE_TEMPLATE/) | Bug, docs, core, CLI, enhancement, membrane & pipeline, stack integration |
 | [`.github/labels.json`](.github/labels.json) | Label definitions |
 | [CHANGELOG.md](CHANGELOG.md) | User-facing history |
 | [CITATION.cff](CITATION.cff) | Software citation metadata |
