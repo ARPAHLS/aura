@@ -9,7 +9,7 @@ from pathlib import Path
 from aura import __version__, agent, create_agent
 from aura.agents.registry import AgentNotFoundError, AgentRegistry, DuplicateAgentError
 from aura.core.compare import compare_sessions
-from aura.core.spine import AuditSpine, compute_content_hash, verify_hash_chain
+from aura.core.spine import AuditSpine, first_broken_event_id, verify_hash_chain
 from aura.exporters.otel import export_session_otel
 from aura.runtime.python import run_script
 
@@ -231,14 +231,9 @@ def cmd_verify_chain(path: str, *, console: Console | None = None) -> int:
     valid = verify_hash_chain(spine) is True
     result: dict[str, object] = {"hash_chain_valid": valid}
     if not valid:
-        previous_hash: str | None = None
-        for event in spine.stream():
-            if event.content_hash is None:
-                continue
-            if compute_content_hash(event, previous_hash) != event.content_hash:
-                result["event_id"] = event.event_id
-                break
-            previous_hash = event.content_hash
+        event_id = first_broken_event_id(spine)
+        if event_id is not None:
+            result["event_id"] = event_id
 
     payload = json.dumps(result)
     if console is None:

@@ -180,6 +180,18 @@ def verify_hash_chain(spine: AuditSpine) -> bool | None:
     return True if saw_hash else None
 
 
+def first_broken_event_id(spine: AuditSpine) -> str | None:
+    """Return the first event_id whose content hash does not match the chain."""
+    prev: str | None = None
+    for event in spine.stream():
+        if event.content_hash is None:
+            continue
+        if compute_content_hash(event, prev) != event.content_hash:
+            return event.event_id
+        prev = event.content_hash
+    return None
+
+
 def verify_hash_chain_dicts(events: list[dict[str, Any]]) -> bool | None:
     prev: str | None = None
     saw_hash = False

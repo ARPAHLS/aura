@@ -123,6 +123,7 @@ def test_cli_help_grouped(run_aura):
     assert result.returncode == 0
     assert "agents" in result.stdout.lower()
     assert "aura agent list" in result.stdout
+    assert "aura verify chain path/to/session.jsonl" in result.stdout
     assert "interactive" in result.stdout.lower()
 
 

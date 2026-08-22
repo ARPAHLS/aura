@@ -137,6 +137,8 @@ def _sessions_submenu(
         "otel": "export-otel",
         "4": "compare",
         "compare": "compare",
+        "5": "verify",
+        "verify": "verify",
     }
     while True:
         console.print(Text("Sessions", style=f"bold {TABLE_STYLE}"))
@@ -144,6 +146,7 @@ def _sessions_submenu(
         console.print("    [2] export       — session summary JSON", style=MENU_STYLE)
         console.print("    [3] export-otel  — OTel-style JSONL export", style=MENU_STYLE)
         console.print("    [4] compare      — diff two session summaries", style=MENU_STYLE)
+        console.print("    [5] verify       — validate an exported hash chain", style=MENU_STYLE)
         _print_nav_footer(console, show_back=True)
 
         raw = _read_line("  sessions> ", input_fn)
@@ -176,6 +179,10 @@ def _sessions_submenu(
             session_b = _read_line("  session_b> ", input_fn)
             if session_a and session_b and session_a.strip() and session_b.strip():
                 commands.cmd_compare(session_a.strip(), session_b.strip(), console=console)
+        elif command == "verify":
+            path = _read_line("  JSONL path> ", input_fn)
+            if path and path.strip():
+                commands.cmd_verify_chain(path.strip(), console=console)
         else:
             console.print(f"  Unknown choice: '{choice}'", style="dim #FF9AA2")
         console.print()
