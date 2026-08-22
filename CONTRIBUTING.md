@@ -26,9 +26,9 @@ Welcome. AURA Harness is a **runtime coat** around agent loops — audit, policy
 | Type | What you change | Typical label | Before coding | Verify locally |
 | :--- | :--- | :--- | :--- | :--- |
 | **Bug fix** | Paths named in issue | `bug` | [Bug report](.github/ISSUE_TEMPLATE/01_bug_report.yml) | Repro + `pytest`; add regression test when possible |
-| **Core framework** | `aura/core/`, `aura/agents/`, `aura/api.py` | `core framework` | [Core issue](.github/ISSUE_TEMPLATE/03_core_framework.yml) | `pytest tests/test_core.py` + related; update docs if API changes |
-| **CLI** | `aura/cli/` | `cli` | [CLI issue](.github/ISSUE_TEMPLATE/04_cli.yml) | Manual CLI check + `pytest` |
-| **Integration** | `aura/sequencer/`, `aura/hosts/`, `aura/membrane/`, `aura/observers/`, exporters | `sequencer`, `hosts`, `membrane`, `observers`, `audit & export` | [Integration issue](.github/ISSUE_TEMPLATE/06_integration.yml) | `pytest tests/test_v02.py` / `test_v03.py`; update integration docs |
+| **Core framework** | `aura/core/`, `aura/agents/`, `aura/api.py` | `core framework` | [Core issue](.github/ISSUE_TEMPLATE/03_core_framework.yml) | `pytest tests/test_core.py tests/test_core_gaps.py` + related |
+| **CLI** | `aura/cli/` | `cli` | [CLI issue](.github/ISSUE_TEMPLATE/04_cli.yml) | `pytest tests/test_cli.py` + manual CLI check |
+| **Integration** | `aura/sequencer/`, `aura/hosts/`, `aura/membrane/`, `aura/observers/`, exporters | `sequencer`, `hosts`, `membrane`, `observers`, `audit & export` | [Integration issue](.github/ISSUE_TEMPLATE/06_integration.yml) | `pytest tests/test_v02.py tests/test_v03.py tests/test_core_gaps.py`; update integration docs |
 | **Documentation** | `docs/`, `README.md` | `documentation` | [Documentation issue](.github/ISSUE_TEMPLATE/02_documentation.yml) | Links valid; tone matches repo |
 | **Enhancement** | New behavior in scope of issue | `enhancement` | [Enhancement issue](.github/ISSUE_TEMPLATE/05_enhancement.yml) | Tests + CHANGELOG + ripple docs |
 | **Examples** | `examples/` | `examples` | Issue or enhancement | Script runs; update `examples/README.md` |
@@ -44,6 +44,8 @@ Labels: [`.github/labels.json`](.github/labels.json) — synced on merge to `mai
 ### 1. Find or open an issue
 
 Check [existing issues](https://github.com/ARPAHLS/aura/issues) first.
+
+When writing or pasting issue bodies: link other work with `https://github.com/ARPAHLS/aura/issues/<N>` or descriptive titles. Do **not** use internal planning file numbers or target release versions (v0.x) — sequencing uses phases (see ROADMAP), semver is maintainer-only via CHANGELOG.
 
 | Intent | Template |
 | :--- | :--- |
@@ -128,6 +130,7 @@ Follow the [Code of Conduct](CODE_OF_CONDUCT.md). We welcome autonomous logical 
   ```
 
 - Shared fixtures: **`tests/conftest.py`** (`aura_home`, `run_aura` for CLI subprocess tests).
+- Full suite is **64+ tests** across `test_core.py`, `test_core_gaps.py`, `test_v02.py`, `test_v03.py`, `test_cli.py`, `test_examples_smoke.py` — see [TESTING.md](docs/TESTING.md).
 - CI runs on PRs via [`.github/workflows/ci.yml`](.github/workflows/ci.yml) (job **`lint-test`**: pytest with coverage report, black, flake8). See [TESTING.md](docs/TESTING.md).
 - Wait for green checks before requesting review.
 
@@ -152,7 +155,7 @@ Pure internal refactors with no user-visible effect may omit CHANGELOG; ask on t
 | Constraint rule types | `docs/concepts.md`, `aura/core/constraints.py` tests, CHANGELOG |
 | Sequencer step model | `spec/sequencer.schema.json`, `docs/sequencer.md`, `tests/test_v02.py`, CHANGELOG |
 | Skillware host / egress | `docs/skillware-integration.md`, examples, CHANGELOG |
-| CLI commands or flags | `docs/getting-started.md`, `README.md` quick start line, CHANGELOG |
+| CLI commands or flags | `docs/getting-started.md`, `README.md` quick start line, `docs/outputs.md` (export/compare shapes), CHANGELOG |
 | New example | `examples/README.md`, optional link from `docs/getting-started.md` |
 | Architecture terminology | `docs/architecture.md`, `README.md` diagrams (keep in sync) |
 | Release / PyPI behavior | `docs/PUBLISHING.md`, `.github/workflows/publish-pypi.yml`, CHANGELOG |
