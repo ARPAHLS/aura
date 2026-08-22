@@ -23,8 +23,11 @@
 
 | Doc | Content |
 |---|---|
-| [skillware-integration.md](skillware-integration.md) | Skillware host, egress, optional extra |
+| [integrations/README.md](integrations/README.md) | Pick your stack — models, tools, frameworks |
+| [skillware-integration.md](skillware-integration.md) | Skillware integration (→ `integrations/skillware/` when shipped) |
 | [sequencer.md](sequencer.md) | Prescriptive pipelines, gates, conformance |
+
+Copy [`.env.example`](../.env.example) to `.env` for local Ollama (`llama3.2:1b`) or cloud API keys. Never commit `.env`.
 
 ---
 

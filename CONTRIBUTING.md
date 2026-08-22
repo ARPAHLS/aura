@@ -116,7 +116,7 @@ Follow the [Code of Conduct](CODE_OF_CONDUCT.md). We welcome autonomous logical 
 
 - Change only what the issue requires.
 - **Do not bump** `pyproject.toml` version or `CITATION.cff` unless a maintainer or release issue explicitly asks.
-- **Do not commit** `AURA_PLAN.md` (local, gitignored) or secrets (`.env`, keys, tokens).
+- **Do not commit** `AURA_PLAN.md` (local, gitignored) or secrets (`.env`, keys, tokens). Use [`.env.example`](.env.example) for documented placeholders.
 
 ### Tests and CI
 
@@ -154,9 +154,10 @@ Pure internal refactors with no user-visible effect may omit CHANGELOG; ask on t
 | Agent profile / registry fields | `docs/trust-paths.md`, `aura/agents/profile.py` persistence, tests, CHANGELOG |
 | Constraint rule types | `docs/concepts.md`, `aura/core/constraints.py` tests, CHANGELOG |
 | Sequencer step model | `spec/sequencer.schema.json`, `docs/sequencer.md`, `tests/test_v02.py`, CHANGELOG |
-| Skillware host / egress | `docs/skillware-integration.md`, examples, CHANGELOG |
+| Skillware host / egress | `integrations/skillware/` (when shipped), `docs/skillware-integration.md` redirect, CHANGELOG |
+| Integration example (Ollama, API, framework) | `integrations/<stack>/`, `docs/integrations/README.md`, `.env.example`, CHANGELOG |
 | CLI commands or flags | `docs/getting-started.md`, `README.md` quick start line, `docs/outputs.md` (export/compare shapes), CHANGELOG |
-| New example | `examples/README.md`, optional link from `docs/getting-started.md` |
+| New core example | `examples/README.md`, optional link from `docs/getting-started.md` |
 | Architecture terminology | `docs/architecture.md`, `README.md` diagrams (keep in sync) |
 | Release / PyPI behavior | `docs/PUBLISHING.md`, `.github/workflows/publish-pypi.yml`, CHANGELOG |
 | PR CI workflow | `.github/workflows/ci.yml`, `docs/TESTING.md`, `CONTRIBUTING.md`; keep publish test job in sync |
