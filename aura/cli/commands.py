@@ -9,7 +9,7 @@ from pathlib import Path
 from aura import __version__, agent, create_agent
 from aura.agents.registry import AgentNotFoundError, AgentRegistry, DuplicateAgentError
 from aura.core.compare import compare_sessions
-from aura.core.spine import AuditSpine
+from aura.core.spine import AuditSpine, first_broken_event_id, verify_hash_chain
 from aura.exporters.otel import export_session_otel
 from aura.runtime.python import run_script
 
@@ -215,6 +215,32 @@ def cmd_compare(session_a: str, session_b: str, *, console: Console | None = Non
     else:
         console.print(payload, style="dim")
     return 0
+
+
+def cmd_verify_chain(path: str, *, console: Console | None = None) -> int:
+    log_path = Path(path)
+    if not log_path.is_file():
+        message = f"not found: {log_path}"
+        if console is None:
+            print(message, file=sys.stderr)
+        else:
+            console.print(message, style="bold #FF9AA2")
+        return 1
+
+    spine = AuditSpine.from_jsonl(log_path)
+    valid = verify_hash_chain(spine) is True
+    result: dict[str, object] = {"hash_chain_valid": valid}
+    if not valid:
+        event_id = first_broken_event_id(spine)
+        if event_id is not None:
+            result["event_id"] = event_id
+
+    payload = json.dumps(result)
+    if console is None:
+        print(payload)
+    else:
+        console.print(payload, style="dim")
+    return 0 if valid else 1
 
 
 def cmd_home(*, console: Console | None = None) -> int:

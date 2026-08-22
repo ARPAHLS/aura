@@ -112,6 +112,11 @@ def build_parser() -> argparse.ArgumentParser:
     compare_p.add_argument("session_a", help="First session id")
     compare_p.add_argument("session_b", help="Second session id")
 
+    verify_p = sub.add_parser("verify", help="Verify exported session data")
+    verify_sub = verify_p.add_subparsers(dest="verify_command")
+    chain_p = verify_sub.add_parser("chain", help="Validate a JSONL audit hash chain")
+    chain_p.add_argument("path", help="Path to an exported session JSONL file")
+
     return parser
 
 
@@ -144,6 +149,11 @@ def dispatch(args: argparse.Namespace) -> int:
         return commands.cmd_export_otel(args.session_id)
     if args.command == "compare":
         return commands.cmd_compare(args.session_a, args.session_b)
+    if args.command == "verify":
+        if args.verify_command == "chain":
+            return commands.cmd_verify_chain(args.path)
+        print("usage: aura verify chain <path>", file=sys.stderr)
+        return 1
     if args.command is None:
         if args.help:
             cmd_help()

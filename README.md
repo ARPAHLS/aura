@@ -112,7 +112,7 @@ with ag.session() as run:
 print(run.exports)
 ```
 
-CLI: `aura agent create`, `aura run`, `aura export`, `aura compare`, `aura export-otel`.
+CLI: `aura agent create`, `aura run`, `aura export`, `aura compare`, `aura export-otel`, `aura verify chain`.
 
 → [getting-started.md](docs/getting-started.md) · [examples/](examples/)
 
