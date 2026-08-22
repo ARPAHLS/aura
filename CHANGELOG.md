@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Core test coverage (GH #4)** — config layers, legacy + ULID coexistence, tampered JSONL → audit report `HASH_CHAIN_BROKEN`, constraint allow/deny/token matrix, session mode + project storage paths, compare `agent_ref` / `hash_chain_valid` diffs.
+- **`AuditSpine.from_jsonl()`** — reload spine from disk for verify/tamper checks.
+- **Compare sessions** — `agent_ref.same` and `hash_chain_valid` fields in diff output.
+
 - **`aura agent set`** — update `agent_ref`, purpose, skills, variables, ids, and rules on existing profiles.
 - **`aura config show`** — merged global/project config and resolved registry/sessions paths.
 - **`aura paths`** — view paths; **`set-project`** and **`set-storage`** persist settings to YAML.

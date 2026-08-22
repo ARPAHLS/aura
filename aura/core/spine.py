@@ -126,6 +126,44 @@ class AuditSpine:
                     events.append(json.loads(line))
         return events
 
+    @classmethod
+    def from_jsonl(
+        cls,
+        path: Path,
+        *,
+        session_id: str | None = None,
+        aura_id: str | None = None,
+    ) -> "AuditSpine":
+        """Rebuild an in-memory spine from a JSONL log (for verify / tamper checks)."""
+        rows = cls.read_jsonl(path)
+        sid = session_id or (rows[0].get("session_id") if rows else "unknown")
+        aid = aura_id or (rows[0].get("aura_id") if rows else "unknown")
+        spine = cls(str(sid), str(aid), log_path=None)
+        if rows:
+            spine.trace_id = rows[0].get("trace_id") or spine.trace_id
+        for row in rows:
+            event = AuraEvent(
+                kind=row["kind"],
+                session_id=str(row.get("session_id", sid)),
+                aura_id=str(row.get("aura_id", aid)),
+                payload=dict(row.get("payload") or {}),
+                event_id=row["event_id"],
+                parent_id=row.get("parent_id"),
+                trace_id=row.get("trace_id"),
+                span_id=row.get("span_id"),
+                step_id=row.get("step_id"),
+                task_id=row.get("task_id"),
+                agent_ids=dict(row.get("agent_ids") or {}),
+                timestamp=row.get("timestamp") or "",
+                telemetry=dict(row.get("telemetry") or {}),
+            )
+            event.prev_hash = row.get("prev_hash")
+            event.content_hash = row.get("content_hash")
+            spine._events.append(event)
+            spine._last_event_id = event.event_id
+            spine._last_content_hash = event.content_hash
+        return spine
+
 
 def verify_hash_chain(spine: AuditSpine) -> bool | None:
     """Return True if chain valid, False if broken, None if no hashes recorded."""
