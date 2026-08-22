@@ -21,7 +21,8 @@ permissions:
   contents: read
 
 jobs:
-  # Steps must match .github/workflows/ci.yml lint-test job (see docs/TESTING.md).
+  # Commands must match .github/workflows/ci.yml (see docs/TESTING.md).
+  # PR CI matrices 3.10–3.13; this job stays on 3.12 as a single-version release gate.
   test:
     runs-on: ubuntu-latest
     steps:

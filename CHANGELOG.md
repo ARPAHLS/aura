@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Python 3.13** package classifier — matches the CI matrix and `requires-python = ">=3.10"` ([GH #10](https://github.com/ARPAHLS/aura/issues/10)).
 - **Core test coverage (GH #4)** — config layers, legacy + ULID coexistence, tampered JSONL → audit report `HASH_CHAIN_BROKEN`, constraint allow/deny/token matrix, session mode + project storage paths, compare `agent_ref` / `hash_chain_valid` diffs.
 - **`AuditSpine.from_jsonl()`** — reload spine from disk for verify/tamper checks.
 - **Compare sessions** — `agent_ref.same` and `hash_chain_valid` fields in diff output.
@@ -21,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **PR CI** — `lint-test` now covers Python 3.10–3.13 on Ubuntu (`fail-fast`); publish remains a 3.12 release gate ([GH #10](https://github.com/ARPAHLS/aura/issues/10)).
 - **`AgentRegistry.update_profile`** — registry ref/alias maps stay consistent when `agent_ref` changes.
 - **Global config** — optional persisted `project_dir` in `~/.aura/config.yaml`.
 

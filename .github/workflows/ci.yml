@@ -1,6 +1,7 @@
 # PR and main-branch CI — lint and test only (no secrets, no PyPI OIDC).
 # Keep install/lint/test steps in sync with publish-pypi.yml test job until issue #7
-# (reusable workflow) lands.
+# (reusable workflow) lands. PR CI also matrices Python versions; publish stays
+# single-version as a release gate (see docs/TESTING.md).
 
 name: CI
 
@@ -19,12 +20,17 @@ concurrency:
 
 jobs:
   lint-test:
+    name: Python ${{ matrix.python-version }}
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true
+      matrix:
+        python-version: ["3.10", "3.11", "3.12", "3.13"]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.12"
+          python-version: ${{ matrix.python-version }}
       - name: Install dev dependencies
         run: |
           python -m pip install --upgrade pip
@@ -35,3 +41,13 @@ jobs:
         run: flake8 aura tests
       - name: pytest
         run: pytest --cov=aura --cov-report=term-missing
+
+  # Stable check name for branch protection (matrix cells are "Python 3.xx").
+  ci-ok:
+    name: lint-test
+    needs: lint-test
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Confirm Python matrix succeeded
+        run: test "${{ needs.lint-test.result }}" = "success"

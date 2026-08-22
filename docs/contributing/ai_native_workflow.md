@@ -45,7 +45,7 @@ Written for **autonomous and semi-autonomous agents** working on AURA Harness. H
 - **Session export:** `.jsonl`, `.summary.json` (with `audit_report`), `.otel.jsonl`
 - **CLI:** `aura agent create/set`, `config show`, `paths`, `run`, `logs`, `export`, `export-otel`, `compare`
 - **SDK helpers:** `AuditSpine.from_jsonl()` for disk verify; `compare_sessions()` includes `agent_ref` and `hash_chain_valid` diffs
-- **CI:** `lint-test` on every PR ([`ci.yml`](../../.github/workflows/ci.yml))
+- **CI:** Python 3.10–3.13 matrix on every PR; gate job `lint-test` ([`ci.yml`](../../.github/workflows/ci.yml))
 
 ---
 
