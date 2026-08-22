@@ -80,6 +80,7 @@ aura agent list
 aura run my-bot path/to/script.py
 aura logs aura_sess_xxxxxxxxxxxx
 aura export aura_sess_xxxxxxxxxxxx
+aura verify chain ~/.aura/sessions/aura_sess_xxxxxxxxxxxx.jsonl
 ```
 
 ## Agent profile (optional YAML)

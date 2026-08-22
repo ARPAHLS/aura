@@ -6,6 +6,7 @@ import json
 from pathlib import Path
 
 from aura import agent
+from aura.core.spine import AuditSpine
 
 
 def test_cli_version(run_aura):
@@ -89,6 +90,26 @@ def test_cli_logs_export_compare_otel(run_aura, aura_home: Path):
     diff = json.loads(compare.stdout)
     assert diff["session_a"] == session_id
     assert diff["event_count"]["b"] < diff["event_count"]["a"]
+
+
+def test_cli_verify_chain(run_aura, tmp_path: Path):
+    path = tmp_path / "session.jsonl"
+    spine = AuditSpine("session", "aura-id", path)
+    spine.append("turn.start", {"input": "hello"})
+    spine.append("turn.end", {"output": "world"})
+
+    valid = run_aura("verify", "chain", str(path))
+    assert valid.returncode == 0
+    assert json.loads(valid.stdout) == {"hash_chain_valid": True}
+
+    rows = AuditSpine.read_jsonl(path)
+    rows[1]["content_hash"] = "0" * 64
+    path.write_text("\n".join(json.dumps(row) for row in rows) + "\n", encoding="utf-8")
+    broken = run_aura("verify", "chain", str(path))
+    assert broken.returncode == 1
+    payload = json.loads(broken.stdout)
+    assert payload["hash_chain_valid"] is False
+    assert payload["event_id"] == rows[1]["event_id"]
 
 
 def test_cli_run_requires_script(run_aura):

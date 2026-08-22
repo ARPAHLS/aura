@@ -12,7 +12,7 @@ What a session produces on close (v0.3).
 | **Summary** | `{session_id}.summary.json` | Metadata, conformance, audit report |
 | **OTel JSONL** | `{session_id}.otel.jsonl` | Span-style records mapped from events |
 
-CLI: `aura export`, `aura export-otel`, `aura compare`.
+CLI: `aura export`, `aura export-otel`, `aura compare`, `aura verify chain <path>`.
 
 ---
 
@@ -41,6 +41,8 @@ Binary pass/fail plus violations list — declared rules and sequencer step orde
 ## Hash chain
 
 Each event includes `prev_hash` and `content_hash` (SHA-256). Tampering or corruption breaks verification in the audit report.
+
+Use `aura verify chain <path>` to validate an exported JSONL audit trail directly. It prints a JSON object with `hash_chain_valid`; when the chain is broken, the object also identifies the first affected `event_id` and the command exits with status 1.
 
 ---
 
