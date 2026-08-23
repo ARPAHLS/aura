@@ -22,7 +22,7 @@ black aura tests
 flake8 aura tests
 ```
 
-CI expectation: **pytest**, **black**, and **flake8** all pass on `aura/` and `tests/` for every supported Python version.
+CI expectation: **pytest**, **black**, and **flake8** all pass on `aura/` and `tests/` for every supported Python version. The dependency audit is advisory: `pip-audit` reports findings without blocking the CI gate.
 
 ## Continuous integration
 
@@ -41,16 +41,25 @@ Each cell runs the same steps:
 
 ```bash
 pip install -e ".[dev]"
+pip install pip-audit
+pip-audit                 # warn-only; does not block the CI gate
 black --check aura tests
 flake8 aura tests
 pytest --cov=aura --cov-report=term-missing
 ```
 
+The **Dependency audit (warn-only)** step runs `pip-audit` with
+`continue-on-error: true`. A vulnerability finding or audit error is therefore
+reported in the workflow logs but does not fail the matrix or block a PR from
+merging. Treat the output as a prompt to investigate and update dependencies;
+use the private reporting path in [SECURITY.md](../SECURITY.md) for a suspected
+vulnerability in AURA itself.
+
 The workflow also emits a gate job named **`lint-test`** that succeeds only when every matrix cell passed. That is the check to require in branch protection.
 
 **Fork PRs:** the workflow uses `permissions: contents: read` only — no repository secrets, no PyPI OIDC, no deploy environment.
 
-**Publish workflow:** [`.github/workflows/publish-pypi.yml`](../.github/workflows/publish-pypi.yml) runs the same install/lint/test commands on a single Python 3.12 before release upload. Full 3.10–3.13 coverage is the PR CI matrix; keep the *commands* in sync until a reusable workflow lands (separate CI follow-up issue).
+**Publish workflow:** [`.github/workflows/publish-pypi.yml`](../.github/workflows/publish-pypi.yml) runs the same install/lint/test commands on a single Python 3.12 before release upload. The advisory `pip-audit` step belongs to PR CI and is not a release-blocking check. Full 3.10–3.13 coverage is the PR CI matrix; keep the *commands* in sync until a reusable workflow lands (separate CI follow-up issue).
 
 **Maintainers:** after the first green `lint-test` run on `main`, enable **branch protection** → required status check **`lint-test`**.
 
@@ -92,3 +101,4 @@ The workflow also emits a gate job named **`lint-test`** that succeeds only when
 3. `flake8 aura tests`
 4. CHANGELOG entry under `[Unreleased]` or release section
 5. Docs updated if behavior or CLI changed
+
