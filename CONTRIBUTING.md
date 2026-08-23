@@ -132,7 +132,7 @@ Follow the [Code of Conduct](CODE_OF_CONDUCT.md). We welcome autonomous logical 
 
 - Shared fixtures: **`tests/conftest.py`** (`aura_home`, `run_aura` for CLI subprocess tests).
 - Full suite is **64+ tests** across `test_core.py`, `test_core_gaps.py`, `test_v02.py`, `test_v03.py`, `test_cli.py`, `test_examples_smoke.py` — see [TESTING.md](docs/TESTING.md).
-- CI runs on PRs via [`.github/workflows/ci.yml`](.github/workflows/ci.yml) (Python **3.10–3.13** matrix; gate job **`lint-test`**: pytest with coverage report, black, flake8). See [TESTING.md](docs/TESTING.md).
+- CI runs on PRs via [`.github/workflows/ci.yml`](.github/workflows/ci.yml) (Python **3.10–3.13** matrix; gate job **`lint-test`**: pytest with coverage report, black, flake8). Each matrix cell also runs `pip-audit` as a warn-only dependency check; its findings or audit errors do not fail the gate or block a PR. See [TESTING.md](docs/TESTING.md) for the exact commands.
 - Wait for green checks before requesting review.
 
 ### CHANGELOG
@@ -254,3 +254,4 @@ Contributor PRs must **not** bump version unless asked. Maintainers cut releases
 | `README.md` install pin examples | Optional |
 
 Thank you for helping make agent runs auditable, policy-bound, and portable.
+
