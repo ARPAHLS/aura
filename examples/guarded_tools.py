@@ -2,6 +2,7 @@
 
 from aura import ApprovalRequired, agent, configure
 
+# Setup
 configure()
 
 
@@ -15,7 +16,9 @@ def main() -> None:
         ],
     )
 
+    # Session
     with ag.session(mode="script") as run:
+        # Emit
         run.emit("turn.start", {"input": "research tire companies"})
         run.emit("tool.call", {"tool": "search.web", "query": "tire manufacturers EU"})
         run.emit("tool.call", {"tool": "gmail.draft", "tokens": 500})
@@ -36,6 +39,7 @@ def main() -> None:
 
         run.emit("turn.end", {"output": "drafts ready", "tokens": 700})
 
+    # Close / expected export
     print(f"session: {run.session_id}")
     print(f"exports: {run.exports}")
 

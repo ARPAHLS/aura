@@ -114,7 +114,7 @@ aura config show        # merged config + resolved paths
 aura paths              # view paths; set-project / set-storage persist YAML
 aura agent create my-bot --purpose "compliance"
 aura agent set my-bot --ref acme/my-bot --skill research --variable model=llama3.2
-aura run my-bot examples/04-sequencer-pipeline/main.py
+aura run my-bot examples/sequencer_pipeline.py
 aura logs aura_sess_xxxxxxxxxxxx
 aura export aura_sess_xxxxxxxxxxxx
 ```

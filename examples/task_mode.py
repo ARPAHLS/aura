@@ -2,6 +2,7 @@
 
 from aura import agent, configure
 
+# Setup
 configure()
 
 
@@ -12,12 +13,15 @@ def main() -> None:
         default_mode="task",
     )
 
+    # Session
     with ag.session(mode="task") as run:
+        # Emit
         run.emit("task.start", {"goal": ag.profile.purpose})
         run.emit("step.complete", {"step": "research", "findings": 12})
         run.emit("step.complete", {"step": "draft_emails", "count": 5})
         run.complete_goal({"status": "emails_drafted", "awaiting_approval": True})
 
+    # Close / expected export
     print(f"session: {run.session_id}")
     print(f"exports: {run.exports}")
 

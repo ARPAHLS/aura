@@ -1,4 +1,4 @@
-"""Example 04 — Sequencer pipeline with mock skills (Skillware-compatible host)."""
+"""Sequencer pipeline — ordered steps with mock skills and approval gates."""
 
 from __future__ import annotations
 
@@ -30,6 +30,7 @@ PIPELINE = {
 
 
 def main() -> None:
+    # Setup
     configure()
     ag = agent(
         "compliance-pipeline",
@@ -38,6 +39,7 @@ def main() -> None:
         sequencer=PIPELINE,
     )
 
+    # Session
     with ag.session(mode="task") as run:
         host = SkillwareHost(run._session)
         host.register(
@@ -53,6 +55,7 @@ def main() -> None:
             )
         )
 
+        # Emit
         while True:
             try:
                 result = run.run_sequencer(host=host)
@@ -61,6 +64,7 @@ def main() -> None:
                 print(f"Approval required: {exc.request_id}")
                 run.approve(exc.request_id)
 
+    # Close / expected export
     print("Completed steps:", result["completed"])
     print("Session:", run.session_id)
     print("Exports:", run.exports)

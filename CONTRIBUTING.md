@@ -158,7 +158,7 @@ Pure internal refactors with no user-visible effect may omit CHANGELOG; ask on t
 | Skillware host / egress | `integrations/skillware/` (when shipped), `docs/skillware-integration.md` redirect, CHANGELOG |
 | Integration example (Ollama, API, framework) | `integrations/<stack>/`, `docs/integrations/README.md`, `.env.example`, CHANGELOG |
 | CLI commands or flags | `docs/getting-started.md`, `README.md` quick start line, `docs/outputs.md` (export/compare shapes), CHANGELOG |
-| New core example | `examples/README.md`, optional link from `docs/getting-started.md` |
+| New core example | Flat script in `examples/`, `examples/README.md`, optional link from `docs/getting-started.md` |
 | Architecture terminology | `docs/architecture.md`, `README.md` diagrams (keep in sync) |
 | Release / PyPI behavior | `docs/PUBLISHING.md`, `.github/workflows/publish-pypi.yml`, CHANGELOG |
 | PR CI workflow | `.github/workflows/ci.yml`, `docs/TESTING.md`, `CONTRIBUTING.md`; keep publish test job in sync |

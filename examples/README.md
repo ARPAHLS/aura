@@ -2,25 +2,40 @@
 
 Runnable demos for AURA Harness.
 
-| Example | Shows |
+Runnable core AURA patterns. From the repo root:
+
+```bash
+pip install -e .
+python examples/minimal_loop.py
+python examples/guarded_tools.py
+python examples/task_mode.py
+python examples/sequencer_pipeline.py
+```
+
+Set `AURA_HOME` to isolate storage during tests or demos.
+
+| Script | What it demonstrates | Why use it | Choose it when | Edge cases / failure modes | Customization knobs |
+|---|---|---|---|---|---|
+| [minimal_loop.py](minimal_loop.py) | Auto agent registration, session events, JSONL and summary export | Wrap a small loop with AURA audit output | You only need a script-mode session and export path | Misconfigured `AURA_HOME`; unwritable export directory | Agent name, emitted event names, `AURA_HOME` |
+| [guarded_tools.py](guarded_tools.py) | Rules, approval gates, allowlist, token limit | Show membrane behavior around guarded tool events | You need policy and approval examples without a sequencer | Approval denied or missing; rule violation; blocked disallowed tool | Rules, tool names, token limits, approval handling, mock vs live tool events |
+| [task_mode.py](task_mode.py) | Task mode, profile purpose, goal completion | Model work that closes only after an explicit goal result | You need task lifecycle and conformance summary output | Goal never completed; missing purpose; invalid task state | Purpose, task steps, completion payload, `AURA_HOME` |
+| [sequencer_pipeline.py](sequencer_pipeline.py) | Sequencer steps with mock Skillware-compatible skills and human confirm gate | Exercise an ordered pipeline with approval and host execution | You need prescribed step order rather than ad hoc events | Approval denied; missing skill; unknown step ref; rule violation | `PIPELINE` / sequencer YAML path, mock vs live host, skill names, gates, `AURA_HOME` |
+
+| Integration demo | Shows |
 |---|---|
-| [01-minimal-loop](01-minimal-loop/) | Auto agent ID, emit events, JSONL export |
-| [02-guarded-tools](02-guarded-tools/) | Rules, approval gates, token limit |
-| [03-task-mode](03-task-mode/) | Task mode, goal completion |
-| [04-sequencer-pipeline](04-sequencer-pipeline/) | Sequencer + Skillware host (mock skills) |
 | [05-skillware-skill-types](05-skillware-skill-types/) | Three Skillware categories (security, optimization, monitoring) |
 | [06-skillware-sequencer-chain](06-skillware-sequencer-chain/) | Sequencer chain with conditional `when` steps |
 | [07-observer-presets](07-observer-presets/) | Monitor + Break observer presets on ToolHost |
 | [08-emit-only-loop](08-emit-only-loop/) | Loose coat — emit-only, no tool host |
 
 ```bash
-pip install -e ..
-cd examples/01-minimal-loop && python main.py
-cd ../07-observer-presets && python main.py
+python examples/07-observer-presets/main.py
 ```
 
 Live registry skills (examples 05–06): `$env:SKILLWARE_LIVE="1"` (PowerShell).
 
-Set `AURA_HOME` to isolate storage during tests.
-
 → Capstone checklist: [docs/guides/reference-tool-host-capstone.md](../docs/guides/reference-tool-host-capstone.md)
+
+## Script excerpts
+
+Each script uses a top module docstring, then section comments for setup, session, emit, and close / expected export. Core examples stay as flat scripts here; stack-specific demos belong under `docs/integrations/`.

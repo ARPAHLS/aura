@@ -15,7 +15,7 @@
 | [comparison.md](comparison.md) | vs orchestrators, eval harnesses, tracing |
 | [architecture.md](architecture.md) | v0.2 modules |
 | [ROADMAP.md](ROADMAP.md) | Shipped vs deferred |
-| [examples/](../examples/README.md) | Eight runnable demos (01–08) |
+| [examples/](../examples/README.md) | Four runnable core demos plus Skillware / ToolHost demos |
 | [guides/reference-tool-host-capstone.md](guides/reference-tool-host-capstone.md) | ToolHost integration checklist (AURA-first) |
 
 ---

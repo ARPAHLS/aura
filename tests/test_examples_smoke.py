@@ -11,7 +11,7 @@ from tests.conftest import run_example
 
 @pytest.mark.parametrize(
     "main_py",
-    sorted((Path(__file__).resolve().parents[1] / "examples").glob("*/main.py")),
+    sorted((Path(__file__).resolve().parents[1] / "examples").glob("*.py")),
 )
 def test_example_runs(main_py: Path, aura_home):
     result = run_example(main_py, aura_home)

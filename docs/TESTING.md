@@ -101,7 +101,7 @@ Integration tests **fail** (not skip) if Ollama or Skillware is missing — that
 | CLI | Version, agent CRUD, run, logs, export, export-otel, compare (`test_cli.py`) |
 | Config / runtime | YAML merge, `run_script`, middleware, session modes (`test_core_gaps.py`) |
 | Compare / OTel | Summary diff incl. `agent_ref` + `hash_chain_valid`, OTel JSONL export (`test_v03.py`, `test_core_gaps.py`) |
-| Examples | Smoke run all `examples/*/main.py` (`test_examples_smoke.py`) — includes 05–06 (mock by default) |
+| Examples | Smoke run all `examples/*.py` (`test_examples_smoke.py`) |
 | Skillware | Live registry skills via `test_skillware_integration.py` (CI **skillware-live** job) |
 | Integration | `tests/integration/` — Ollama + Skillware + example 06 (local only) |
 
@@ -112,4 +112,3 @@ Integration tests **fail** (not skip) if Ollama or Skillware is missing — that
 3. `flake8 aura tests`
 4. CHANGELOG entry under `[Unreleased]` or release section
 5. Docs updated if behavior or CLI changed
-
