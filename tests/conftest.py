@@ -5,7 +5,6 @@ from __future__ import annotations
 import os
 import subprocess
 import sys
-from collections.abc import Sequence
 from pathlib import Path
 
 import pytest
@@ -68,9 +67,3 @@ def run_example(main_py: Path, aura_home: Path) -> subprocess.CompletedProcess[s
         cwd=str(main_py.parent),
         timeout=30,
     )
-
-
-@pytest.fixture
-def example_scripts() -> Sequence[Path]:
-    root = Path(__file__).resolve().parents[1] / "examples"
-    return sorted(root.glob("*/main.py"))
