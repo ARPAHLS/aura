@@ -74,8 +74,20 @@ def test_cli_logs_export_compare_otel(run_aura, aura_home: Path):
     assert summary["agent_ref"] == "test/cli"
     assert summary["audit_report"]["verdict"] == "pass"
 
+    report = run_aura("report", "show", session_id)
+    assert report.returncode == 0
+    assert "Verdict: PASS" in report.stdout
+    assert "Hash chain valid: True" in report.stdout
+
+    report_json = run_aura("report", "show", session_id, "--json")
+    assert report_json.returncode == 0
+    assert json.loads(report_json.stdout) == summary["audit_report"]
+
     missing = run_aura("export", "missing-session")
     assert missing.returncode == 1
+
+    missing_report = run_aura("report", "show", "missing-session")
+    assert missing_report.returncode == 1
 
     with ag.session() as run2:
         run2.emit("turn.start", {})

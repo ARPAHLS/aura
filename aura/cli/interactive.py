@@ -133,20 +133,23 @@ def _sessions_submenu(
         "logs": "logs",
         "2": "export",
         "export": "export",
-        "3": "export-otel",
+        "3": "report",
+        "report": "report",
+        "4": "export-otel",
         "otel": "export-otel",
-        "4": "compare",
+        "5": "compare",
         "compare": "compare",
-        "5": "verify",
+        "6": "verify",
         "verify": "verify",
     }
     while True:
         console.print(Text("Sessions", style=f"bold {TABLE_STYLE}"))
         console.print("    [1] logs         — print session JSONL", style=MENU_STYLE)
         console.print("    [2] export       — session summary JSON", style=MENU_STYLE)
-        console.print("    [3] export-otel  — OTel-style JSONL export", style=MENU_STYLE)
-        console.print("    [4] compare      — diff two session summaries", style=MENU_STYLE)
-        console.print("    [5] verify       — validate an exported hash chain", style=MENU_STYLE)
+        console.print("    [3] report       — show audit report", style=MENU_STYLE)
+        console.print("    [4] export-otel  — OTel-style JSONL export", style=MENU_STYLE)
+        console.print("    [5] compare      — diff two session summaries", style=MENU_STYLE)
+        console.print("    [6] verify       — validate an exported hash chain", style=MENU_STYLE)
         _print_nav_footer(console, show_back=True)
 
         raw = _read_line("  sessions> ", input_fn)
@@ -171,6 +174,10 @@ def _sessions_submenu(
             session_id = _read_line("  session_id> ", input_fn)
             if session_id and session_id.strip():
                 commands.cmd_export_otel(session_id.strip(), console=console)
+        elif command == "report":
+            session_id = _read_line("  session_id> ", input_fn)
+            if session_id and session_id.strip():
+                commands.cmd_report_show(session_id.strip(), console=console)
         elif command == "compare":
             session_a = _read_line("  session_a> ", input_fn)
             if session_a is None:

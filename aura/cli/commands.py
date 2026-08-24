@@ -178,6 +178,74 @@ def cmd_export(session_id: str, *, console: Console | None = None) -> int:
     return 0
 
 
+def cmd_report_show(
+    session_id: str,
+    *,
+    json_output: bool = False,
+    console: Console | None = None,
+) -> int:
+    from aura.config import get_config
+
+    path = get_config().sessions_dir() / f"{session_id}.summary.json"
+    if not path.is_file():
+        message = f"not found: {path}"
+        if console is None:
+            print(message, file=sys.stderr)
+        else:
+            console.print(message, style="bold #FF9AA2")
+        return 1
+
+    summary = json.loads(path.read_text(encoding="utf-8"))
+    report = summary.get("audit_report")
+    if not isinstance(report, dict):
+        message = f"audit report missing: {path}"
+        if console is None:
+            print(message, file=sys.stderr)
+        else:
+            console.print(message, style="bold #FF9AA2")
+        return 1
+
+    if json_output:
+        payload = json.dumps(report, indent=2)
+        if console is None:
+            print(payload)
+        else:
+            console.print(payload, style="dim")
+        return 0
+
+    verdict = str(report.get("verdict", "unknown")).upper()
+    print(f"Verdict: {verdict}")
+    print(f"Hash chain valid: {report.get('hash_chain_valid')}")
+    print("Scorecard:")
+    scorecard = report.get("scorecard") or {}
+    for section, values in scorecard.items():
+        if isinstance(values, dict):
+            details = ", ".join(f"{key}={value}" for key, value in values.items())
+            print(f"  {section}: {details}")
+        else:
+            print(f"  {section}: {values}")
+
+    findings = report.get("findings") or []
+    print("Findings:")
+    if findings:
+        for finding in findings:
+            severity = str(finding.get("severity", "info")).upper()
+            code = finding.get("code", "UNKNOWN")
+            message = finding.get("message", "")
+            print(f"  [{severity}] {code}: {message}")
+    else:
+        print("  none")
+
+    recommendations = report.get("recommendations") or []
+    print("Recommendations:")
+    if recommendations:
+        for recommendation in recommendations:
+            print(f"  - {recommendation}")
+    else:
+        print("  none")
+    return 0
+
+
 def cmd_export_otel(session_id: str, *, console: Console | None = None) -> int:
     from aura.config import get_config
 

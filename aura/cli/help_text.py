@@ -25,6 +25,8 @@ HELP_GROUPS: List[Tuple[str, List[Tuple[str, str]], str]] = [
             ("aura run <agent> <script.py>", "run script under audited session"),
             ("aura logs <session_id>", "print session JSONL to stdout"),
             ("aura export <session_id>", "print session summary JSON"),
+            ("aura report show <session_id>", "show a human-readable audit report"),
+            ("aura report show <id> --json", "print the audit report for CI"),
             ("aura export-otel <session_id>", "write OTel-style JSONL beside session"),
             ("aura compare <a> <b>", "diff two session summaries"),
             ("aura verify chain <path>", "validate an exported JSONL hash chain"),
@@ -56,7 +58,7 @@ HELP_GROUPS: List[Tuple[str, List[Tuple[str, str]], str]] = [
 
 _HELP_MENU: List[Tuple[str, str, str, Union[int, str]]] = [
     ("1", "agents", "create, list, show, set", 0),
-    ("2", "sessions", "run, logs, export, compare, verify", 1),
+    ("2", "sessions", "run, logs, report, export, compare, verify", 1),
     ("3", "paths", "AURA_HOME and project storage", 2),
     ("4", "general", "menu, help, version", 3),
     ("5", "install", "pip install aura-harness", "install"),
@@ -72,6 +74,7 @@ CLI_USAGE_EXAMPLES: Tuple[str, ...] = (
     "aura paths set-project .",
     "aura run cli-runner path/to/script.py",
     "aura export aura_sess_01H...",
+    "aura report show aura_sess_01H...",
     "aura compare sess_a sess_b",
     "aura export-otel aura_sess_01H...",
     "aura verify chain path/to/session.jsonl",
@@ -79,7 +82,7 @@ CLI_USAGE_EXAMPLES: Tuple[str, ...] = (
 
 MAIN_MENU: List[Tuple[str, str, str]] = [
     ("1", "agents", "list, show, create, or edit profiles"),
-    ("2", "sessions", "logs, export, compare, verify, or export-otel"),
+    ("2", "sessions", "logs, report, export, compare, verify, or export-otel"),
     ("3", "run", "run a Python script under an agent session"),
     ("4", "paths", "view/edit AURA_HOME, project, and config"),
     ("5", "help", "grouped CLI reference and doc links"),

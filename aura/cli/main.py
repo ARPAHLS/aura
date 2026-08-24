@@ -105,6 +105,12 @@ def build_parser() -> argparse.ArgumentParser:
     export_p = sub.add_parser("export", help="Print session summary JSON")
     export_p.add_argument("session_id", help="Session id")
 
+    report_p = sub.add_parser("report", help="Inspect session audit reports")
+    report_sub = report_p.add_subparsers(dest="report_command")
+    report_show_p = report_sub.add_parser("show", help="Show a session audit report")
+    report_show_p.add_argument("session_id", help="Session id")
+    report_show_p.add_argument("--json", action="store_true", help="Print report JSON")
+
     otel_p = sub.add_parser("export-otel", help="Export session as OTel-style JSONL")
     otel_p.add_argument("session_id", help="Session id")
 
@@ -145,6 +151,11 @@ def dispatch(args: argparse.Namespace) -> int:
         return commands.cmd_logs(args.session_id)
     if args.command == "export":
         return commands.cmd_export(args.session_id)
+    if args.command == "report":
+        if args.report_command == "show":
+            return commands.cmd_report_show(args.session_id, json_output=args.json)
+        print("usage: aura report show <session_id> [--json]", file=sys.stderr)
+        return 1
     if args.command == "export-otel":
         return commands.cmd_export_otel(args.session_id)
     if args.command == "compare":
