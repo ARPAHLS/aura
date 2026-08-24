@@ -10,9 +10,9 @@ What a session produces on close (v0.3).
 |---|---|---|
 | **Audit trail** | `{session_id}.jsonl` | Append-only AuraEvents with causal ids + hash chain |
 | **Summary** | `{session_id}.summary.json` | Metadata, conformance, audit report |
-| **OTel JSONL** | `{session_id}.otel.jsonl` | Span-style records mapped from events |
+| **OTel JSONL** | `{session_id}.otel.jsonl` | Span-style records mapped from events; written on close by default and refreshed by `aura export-otel` |
 
-CLI: `aura export`, `aura export-otel`, `aura compare`, `aura verify chain <path>`.
+CLI: `aura report show <session_id>`, `aura report show <session_id> --json`, `aura export`, `aura export-otel`, `aura compare`, `aura verify chain <path>`.
 
 ---
 
@@ -29,6 +29,8 @@ CLI: `aura export`, `aura export-otel`, `aura compare`, `aura verify chain <path
 ```
 
 Rule-based today — findings cite `event_id`s; recommendations suggest next steps (policy, sequencer, approvals).
+
+Use `aura report show` for a human-readable audit report from the session summary JSON, or add `--json` for CI and other machine consumers. See [using-aura.md](using-aura.md) for the complete session-close workflow.
 
 ---
 

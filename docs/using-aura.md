@@ -43,7 +43,7 @@ When a session closes with export enabled (the default), AURA writes three files
 | `{session_id}.summary.json` | Identity, conformance, and the `AuditReport` receipt |
 | `{session_id}.otel.jsonl` | Optional span-shaped export for telemetry tools |
 
-The summary's `audit_report` contains the verdict (`pass`, `warn`, or `fail`), a scorecard, findings, recommendations, and `hash_chain_valid`. A passing conformance check can still produce a `warn` verdict when the report finds advisory issues; inspect the findings before treating a run as complete.
+The summary's `audit_report` contains the verdict (`pass`, `warn`, or `fail`), a scorecard, findings, recommendations, and `hash_chain_valid`. A passing conformance check can still produce a `warn` verdict when the report finds advisory issues; inspect the findings before treating a run as complete. When a gated call is approved, its `principal` is recorded in the audit trail and appears in the summary and OTel export as `aura.principal`.
 
 ```json
 {
@@ -98,7 +98,7 @@ with ag.session(mode="task") as run:
 | `agent(name)` | Get/create agent profile |
 | `agent.session()` | Open session, auto-export on close |
 | `run.emit(kind, payload)` | Append audited event |
-| `run.approve(request_id)` | Satisfy confirm/gate |
+| `run.approve(request_id, principal="operator@corp")` | Satisfy confirm/gate and record the approver |
 | `run.run_sequencer(host=...)` | Run declared step pipeline |
 | `current_session()` | Active handle inside context |
 
