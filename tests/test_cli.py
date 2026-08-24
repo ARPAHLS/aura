@@ -83,6 +83,13 @@ def test_cli_logs_export_compare_otel(run_aura, aura_home: Path):
     assert report_json.returncode == 0
     assert json.loads(report_json.stdout) == summary["audit_report"]
 
+    summary_path = aura_home / "sessions" / f"{session_id}.summary.json"
+    summary["audit_report"] = None
+    summary_path.write_text(json.dumps(summary), encoding="utf-8")
+    missing_audit_report = run_aura("report", "show", session_id)
+    assert missing_audit_report.returncode == 1
+    assert "audit report missing" in missing_audit_report.stderr
+
     missing = run_aura("export", "missing-session")
     assert missing.returncode == 1
 
