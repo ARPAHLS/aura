@@ -39,7 +39,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - **Docs sync (post–#12)** — INDEX, ROADMAP, integration guides, follow-ups backlog, OTel/observer sections aligned with PR #43 closure ([#41](https://github.com/ARPAHLS/aura/issues/41), [#22](https://github.com/ARPAHLS/aura/issues/22)).
-- **Examples layout** — examples use a flat top-level script layout.
+- **Examples layout** — examples use a flat top-level script layout ([#21](https://github.com/ARPAHLS/aura/issues/21)).
 - **Example 06** — compress step skips when scan `is_safe` is false (sequencer `when`).
 - **PR CI** — `lint-test` now covers Python 3.10–3.13 on Ubuntu (`fail-fast`); publish remains a 3.12 release gate ([GH #10](https://github.com/ARPAHLS/aura/issues/10)).
 - **`AgentRegistry.update_profile`** — registry ref/alias maps stay consistent when `agent_ref` changes.
