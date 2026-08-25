@@ -26,7 +26,7 @@ Use the project **`.venv`** for installs (`pip install -e ".[integrations]"`), n
 | [06-skillware-sequencer-chain](../examples/06-skillware-sequencer-chain/) | Sequencer chain with conditional `when` steps |
 | [07-observer-presets](../examples/07-observer-presets/) | Monitor + Break observer presets |
 | [08-emit-only-loop](../examples/08-emit-only-loop/) | Emit-only coat — no tool host |
-| [04-sequencer-pipeline](../examples/04-sequencer-pipeline/) | Sequencer with mocks |
+| [sequencer_pipeline.py](../examples/sequencer_pipeline.py) | Sequencer with mocks |
 
 ## Related docs
 

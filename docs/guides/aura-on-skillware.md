@@ -258,7 +258,7 @@ python examples/06-skillware-sequencer-chain/main.py
 | `aura/observers/presets/` | Monitor + Break packaged presets |
 | `integrations/skillware/` | Ollama + reference scripts |
 | `integrations/openai/`, `anthropic/`, `google/` | Cloud body loops |
-| `examples/04-*` | Sequencer with mocks |
+| `examples/sequencer_pipeline.py` | Sequencer with mocks |
 | `examples/05-*` … `08-*` | ToolHost tour: skills, chain, observers, emit-only |
 | `docs/skillware-integration.md` | API-focused reference |
 | `docs/guides/reference-tool-host-capstone.md` | AURA-first 360° checklist |
