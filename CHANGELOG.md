@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - **`aura report show`** — print a human-readable audit report, or use `--json` for CI output ([#25](https://github.com/ARPAHLS/aura/issues/25)).
+- **Session close and export guide** — `using-aura.md` now covers audit reports, export commands, and receipt review ([#37](https://github.com/ARPAHLS/aura/issues/37)).
 - **Break observer preset** — `observer.alert` on repeated tool intents ([#34](https://github.com/ARPAHLS/aura/issues/34)).
 - **Sequencer `when`** — conditional step skip with `sequencer.step.skipped` on the spine.
 - **Ingress bind enrichment** — `host.bind`, `bound_skill_ids`, `session_snapshot_hash` on `skill.registered` ([#33](https://github.com/ARPAHLS/aura/issues/33)).

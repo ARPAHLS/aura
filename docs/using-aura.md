@@ -1,16 +1,15 @@
 # Using AURA Harness
 
-How to attach AURA to your agent loop — casual steering, enterprise compliance, or ARPA-native batch runs.
+How to attach AURA to your agent loop — from lightweight audit logging to prescriptive pipelines.
 
 ---
 
-## Three personas
+## Choose a posture
 
-| Persona | Goal | Typical setup |
+| Posture | Goal | Typical setup |
 |---|---|---|
-| **Casual** | Wrap any custom loop; export for analysis | `agent().session()`, `emit()`, rules optional |
-| **Enterprise** | Skillware skills + prescriptive flows + CI conformance | Sequencer spec, `SkillwareHost`, gates, session export in CI |
-| **ARPA native** | Many agents, compare runs programmatically | Registry + batch sessions + JSONL export API |
+| **Audit** | Wrap any custom loop and review what happened | `agent().session()`, `emit()`, rules optional |
+| **Prescriptive** | Require declared steps, gates, and conformance | Sequencer spec, a tool host, gates, session export in CI |
 
 AURA is the **harness (coat)**, not the runtime. Your **body** owns the loop; AURA wraps it with **membrane** boundaries and an **audit trail**.
 
@@ -33,6 +32,42 @@ Ingress → [ Body / host cavity ] → Egress → Audit sink
 | **Audit sink** | Append-only JSONL + session export on close |
 
 Ingress and egress are **conceptual boundaries** implemented in `aura/membrane/`. Observers never block the host.
+
+## Session close and export
+
+When a session closes with export enabled (the default), AURA writes three files under the configured sessions directory:
+
+| File | Use |
+|---|---|
+| `{session_id}.jsonl` | Append-only event trail, including the hash chain |
+| `{session_id}.summary.json` | Identity, conformance, and the `AuditReport` receipt |
+| `{session_id}.otel.jsonl` | Span-shaped export for telemetry tools; written on close by default, refreshed by `aura export-otel` |
+
+The summary's `audit_report` contains the verdict (`pass`, `warn`, or `fail`), a scorecard, findings, recommendations, and `hash_chain_valid`. A passing conformance check can still produce a `warn` verdict when the report finds advisory issues; inspect the findings before treating a run as complete. When a gated call is approved, its `principal` is recorded in the audit trail and appears in the summary and OTel export as `aura.principal`.
+
+```json
+{
+  "audit_report": {
+    "verdict": "pass",
+    "scorecard": {"policy": {}, "tools": {}, "sequencer": {}, "events": 12},
+    "findings": [],
+    "recommendations": [],
+    "hash_chain_valid": true
+  }
+}
+```
+
+Use the CLI to review the receipt or feed structured output to CI:
+
+```bash
+aura report show aura_sess_xxxxxxxxxxxx
+aura report show aura_sess_xxxxxxxxxxxx --json
+aura export aura_sess_xxxxxxxxxxxx
+aura export-otel aura_sess_xxxxxxxxxxxx
+aura verify chain ~/.aura/sessions/aura_sess_xxxxxxxxxxxx.jsonl
+```
+
+See [outputs.md](outputs.md) for the complete artifact schema and [comparison.md](comparison.md) for comparing two summary files. If the JSONL hash chain is broken, `aura verify chain` reports the first affected event and exits with status 1.
 
 ---
 
@@ -63,7 +98,7 @@ with ag.session(mode="task") as run:
 | `agent(name)` | Get/create agent profile |
 | `agent.session()` | Open session, auto-export on close |
 | `run.emit(kind, payload)` | Append audited event |
-| `run.approve(request_id)` | Satisfy confirm/gate |
+| `run.approve(request_id, principal="operator@corp")` | Satisfy confirm/gate and record the approver |
 | `run.run_sequencer(host=...)` | Run declared step pipeline |
 | `current_session()` | Active handle inside context |
 
@@ -117,6 +152,9 @@ aura agent set my-bot --ref acme/my-bot --skill research --variable model=llama3
 aura run my-bot examples/04-sequencer-pipeline/main.py
 aura logs aura_sess_xxxxxxxxxxxx
 aura export aura_sess_xxxxxxxxxxxx
+aura report show aura_sess_xxxxxxxxxxxx
+aura report show aura_sess_xxxxxxxxxxxx --json
+aura verify chain ~/.aura/sessions/aura_sess_xxxxxxxxxxxx.jsonl
 ```
 
 Profiles live as JSON under `{AURA_HOME}/agents/`. Global defaults: `~/.aura/config.yaml`. Project overrides: `{project}/aura.project.yaml`. Use env vars for API keys; store non-secret refs in profile `variables`.
