@@ -2,6 +2,8 @@
 
 How to attach AURA to your agent loop — from lightweight audit logging to prescriptive pipelines.
 
+→ New here? [onboarding.md](onboarding.md) walks install through session receipt.
+
 ---
 
 ## Choose a posture

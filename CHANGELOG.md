@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Onboarding guide** — [docs/onboarding.md](docs/onboarding.md) step-by-step flow: posture, identity, body wiring, receipt review ([#13](https://github.com/ARPAHLS/aura/issues/13)).
 - **`aura report show`** — print a human-readable audit report, or use `--json` for CI output ([#25](https://github.com/ARPAHLS/aura/issues/25)).
 - **Session close and export guide** — `using-aura.md` now covers audit reports, export commands, and receipt review ([#37](https://github.com/ARPAHLS/aura/issues/37)).
 - **Break observer preset** — `observer.alert` on repeated tool intents ([#34](https://github.com/ARPAHLS/aura/issues/34)).

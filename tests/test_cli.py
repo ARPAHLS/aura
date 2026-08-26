@@ -144,6 +144,14 @@ def test_cli_help_grouped(run_aura):
     assert "aura agent list" in result.stdout
     assert "aura verify chain path/to/session.jsonl" in result.stdout
     assert "interactive" in result.stdout.lower()
+    assert "onboarding.md" in result.stdout
+
+
+def test_cli_help_groups_link_onboarding():
+    from aura.cli.help_text import HELP_GROUPS, _DOCS_ONBOARDING
+
+    doc_links = {group[2] for group in HELP_GROUPS}
+    assert _DOCS_ONBOARDING in doc_links
 
 
 def test_cli_interactive_splash_and_exit(run_aura):

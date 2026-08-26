@@ -74,4 +74,4 @@ How the body executes (Python script, Skillware host, future: LangGraph). AURA w
 
 Default: `~/.aura/` (override with `AURA_HOME`). Project-local: set `storage: project` in `aura.project.yaml` → `.aura/` in project root.
 
-→ [using-aura.md](using-aura.md) · [glossary.md](glossary.md)
+→ [onboarding.md](onboarding.md) — storage, identity, and first run · [glossary.md](glossary.md)

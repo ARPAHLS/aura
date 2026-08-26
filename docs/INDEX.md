@@ -6,6 +6,7 @@
 
 | Doc | Content |
 |---|---|
+| [onboarding.md](onboarding.md) | **Start here** — install → posture → agent → body → receipt |
 | [getting-started.md](getting-started.md) | Install, example, CLI |
 | [using-aura.md](using-aura.md) | Membrane, personas, SDK |
 | [contributing/ai_native_workflow.md](contributing/ai_native_workflow.md) | Agents and operators |

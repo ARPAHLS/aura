@@ -12,6 +12,7 @@ from aura.cli.help_text import (
     CLI_USAGE_EXAMPLES,
     HELP_GROUPS,
     _DOCS_CLI,
+    _DOCS_ONBOARDING,
     _HELP_MENU,
     _NAV_BACK,
     _NAV_EXIT,
@@ -88,6 +89,7 @@ def _print_help_static_topic(console: Console, topic: str) -> None:
         console.print('  pip install -e ".[dev]"  # local development', style="dim")
     elif topic == "docs":
         console.print(Text("Docs", style=f"bold {TABLE_STYLE}"))
+        console.print(f"  {_DOCS_ONBOARDING}", style=f"dim {SPLASH_STYLE}")
         console.print(f"  {_DOCS_CLI}", style=f"dim {SPLASH_STYLE}")
     elif topic == "interactive":
         console.print(Text("Interactive mode", style=f"bold {TABLE_STYLE}"))
@@ -108,6 +110,7 @@ def cmd_help(*, console: Console | None = None, brief: bool = True) -> None:
         console.print("  pip install aura-harness", style="dim")
         console.print()
         console.print(Text("Docs", style=f"bold {TABLE_STYLE}"))
+        console.print(f"  {_DOCS_ONBOARDING}", style=f"dim {SPLASH_STYLE}")
         console.print(f"  {_DOCS_CLI}", style=f"dim {SPLASH_STYLE}")
         console.print()
         console.print(Text("Interactive mode", style=f"bold {TABLE_STYLE}"))

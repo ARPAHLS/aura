@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from typing import List, Tuple, Union
 
+_DOCS_ONBOARDING = "https://github.com/ARPAHLS/aura/blob/main/docs/onboarding.md"
 _DOCS_CLI = "https://github.com/ARPAHLS/aura/blob/main/docs/using-aura.md"
 _DOCS_GETTING_STARTED = "https://github.com/ARPAHLS/aura/blob/main/docs/getting-started.md"
 _DOCS_TESTING = "https://github.com/ARPAHLS/aura/blob/main/docs/TESTING.md"
@@ -17,7 +18,7 @@ HELP_GROUPS: List[Tuple[str, List[Tuple[str, str]], str]] = [
             ("aura agent show <id>", "JSON profile by name, agent_ref, or aura_id"),
             ("aura agent set <id> …", "update ref, purpose, skills, variables, rules"),
         ],
-        _DOCS_CLI,
+        _DOCS_ONBOARDING,
     ),
     (
         "Sessions",
@@ -43,7 +44,7 @@ HELP_GROUPS: List[Tuple[str, List[Tuple[str, str]], str]] = [
             ("aura --home <dir>", "override AURA_HOME for this invocation"),
             ("aura --project <dir>", "one-shot project-scoped .aura/ storage"),
         ],
-        _DOCS_GETTING_STARTED,
+        _DOCS_ONBOARDING,
     ),
     (
         "General",
@@ -52,7 +53,7 @@ HELP_GROUPS: List[Tuple[str, List[Tuple[str, str]], str]] = [
             ("aura --help", "grouped command reference"),
             ("aura version", "installed package version"),
         ],
-        _DOCS_CLI,
+        _DOCS_ONBOARDING,
     ),
 ]
 

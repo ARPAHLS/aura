@@ -36,6 +36,8 @@ Live registry skills (examples 05–06): `$env:SKILLWARE_LIVE="1"` (PowerShell).
 
 → Capstone checklist: [docs/guides/reference-tool-host-capstone.md](../docs/guides/reference-tool-host-capstone.md)
 
+**Learning order:** [onboarding.md](../docs/onboarding.md#examples-learning-path) — run examples 1→8 in sequence.
+
 ## Script excerpts
 
 Each script uses a top module docstring, then section comments for setup, session, emit, and close / expected export. Core examples stay as flat scripts here; stack-specific demos belong under `docs/integrations/`.

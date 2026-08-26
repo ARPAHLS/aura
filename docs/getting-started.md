@@ -1,5 +1,7 @@
 # Getting started
 
+New to AURA? Follow [onboarding.md](onboarding.md) for the full setup flow (posture → agent → body → receipt).
+
 ## Install
 
 ```bash
@@ -116,11 +118,12 @@ ids:
 
 ## Examples
 
-See [examples/](../examples/README.md) — including [sequencer_pipeline.py](../examples/sequencer_pipeline.py), [07-observer-presets](../examples/07-observer-presets/), and the ToolHost capstone checklist in [reference-tool-host-capstone.md](guides/reference-tool-host-capstone.md).
+See [examples/](../examples/README.md) — including [sequencer_pipeline.py](../examples/sequencer_pipeline.py), [07-observer-presets](../examples/07-observer-presets/), and the ToolHost capstone in [reference-tool-host-capstone.md](guides/reference-tool-host-capstone.md). Order: [onboarding.md](onboarding.md#examples-learning-path).
 
 ## Next
 
-- [using-aura.md](using-aura.md) — membrane, personas, observers
+- [onboarding.md](onboarding.md) — step-by-step first run
+- [using-aura.md](using-aura.md) — membrane, postures, observers
 - [skillware-integration.md](skillware-integration.md) — Skillware host
 - [concepts.md](concepts.md) — agent, session, sequencer
 - [comparison.md](comparison.md) — vs orchestrators and eval harnesses
