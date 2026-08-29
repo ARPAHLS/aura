@@ -11,10 +11,11 @@ from typing import Any, Iterator
 from aura.agents.profile import AgentProfile
 from aura.agents.registry import AgentRegistry
 from aura.config import configure as _configure, get_config
-from aura.core.conformance import ConformanceEngine
+from aura.core.conformance import ConformanceEngine, ConformanceReport
 from aura.core.constraints import ApprovalRequired
+from aura.core.errors import ExportError, SessionClosedError, SessionNotOpenError
 from aura.core.session import Session, SessionMode
-from aura.exporters.jsonl import export_session
+from aura.exporters.jsonl import build_session_summary, export_session
 
 
 @dataclass
@@ -23,6 +24,9 @@ class SessionRun:
 
     _session: Session
     exports: dict[str, str] = field(default_factory=dict)
+    summary: dict[str, Any] | None = None
+    audit_report: dict[str, Any] | None = None
+    conformance: ConformanceReport | None = None
 
     @property
     def session_id(self) -> str:
@@ -31,6 +35,10 @@ class SessionRun:
     @property
     def aura_id(self) -> str:
         return self._session.profile.aura_id
+
+    @property
+    def trace_id(self) -> str | None:
+        return self._session.trace_id
 
     def emit(self, kind: str, payload: dict[str, Any] | None = None) -> dict[str, Any]:
         return self._session.emit(kind, payload)
@@ -61,6 +69,26 @@ def current_session() -> SessionRun | None:
     return _current_run.get()
 
 
+def _finalize_session_run(run: SessionRun, session: Session, *, do_export: bool) -> None:
+    """Build in-memory receipt; optionally commit export artifacts."""
+    if not session.spine:
+        return
+
+    report = ConformanceEngine().summarize(
+        session.spine,
+        session.declared_rules,
+        session.open_snapshot_hash,
+        sequencer_spec=session.sequencer_spec or session.profile.sequencer,
+    )
+    run.conformance = report
+    run.summary = build_session_summary(session, conformance=report)
+    audit = run.summary.get("audit_report")
+    run.audit_report = audit if isinstance(audit, dict) else None
+
+    if do_export:
+        run.exports = export_session(session, get_config().sessions_dir(), conformance=report)
+
+
 @dataclass
 class AgentHandle:
     profile: AgentProfile
@@ -86,14 +114,7 @@ class AgentHandle:
             _current_run.reset(token)
             session.close()
             do_export = export if export is not None else cfg.values.get("export_on_close", True)
-            if do_export and session.spine:
-                report = ConformanceEngine().summarize(
-                    session.spine,
-                    session.rules,
-                    session.snapshot_hash,
-                    sequencer_spec=session.sequencer_spec or session.profile.sequencer,
-                )
-                run.exports = export_session(session, cfg.sessions_dir(), conformance=report)
+            _finalize_session_run(run, session, do_export=do_export)
 
 
 def _build_session(
@@ -164,5 +185,8 @@ __all__ = [
     "AgentHandle",
     "SessionRun",
     "ApprovalRequired",
+    "SessionClosedError",
+    "SessionNotOpenError",
+    "ExportError",
     "current_session",
 ]

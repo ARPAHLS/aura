@@ -1,5 +1,5 @@
 """Session exporters."""
 
-from aura.exporters.jsonl import export_session
+from aura.exporters.jsonl import build_session_summary, export_session
 
-__all__ = ["export_session"]
+__all__ = ["build_session_summary", "export_session"]

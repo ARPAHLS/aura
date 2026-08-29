@@ -2,15 +2,21 @@
 
 from __future__ import annotations
 
+import copy
+import json
+import uuid
 from dataclasses import dataclass, field
 from enum import Enum
 from hashlib import sha256
 from pathlib import Path
 from typing import Any
-import json
-import uuid
 
 from aura.agents.profile import AgentProfile
+from aura.core.errors import (
+    SessionAlreadyOpenError,
+    SessionClosedError,
+    SessionNotOpenError,
+)
 from aura.core.constraints import (
     ApprovalRequired,
     ConstraintContext,
@@ -26,6 +32,11 @@ class SessionMode(str, Enum):
     SCRIPT = "script"
     TASK = "task"
     CONTINUOUS = "continuous"
+
+
+_IMMUTABLE_AFTER_OPEN = frozenset(
+    {"session_id", "spine", "profile", "mode", "_declared_rules", "_open_snapshot_hash"}
+)
 
 
 @dataclass
@@ -48,11 +59,42 @@ class Session:
     _closed: bool = False
     _log_path: Path | None = None
     _goal_reached: bool = False
+    _declared_rules: list[dict[str, Any]] = field(default_factory=list)
+    _open_snapshot_hash: str | None = None
+
+    def __setattr__(self, name: str, value: Any) -> None:
+        if (
+            name
+            not in {
+                "_open",
+                "_closed",
+                "_goal_reached",
+                "state",
+                "_approved",
+                "_observers",
+                "rules",
+                "snapshot_hash",
+            }
+            and getattr(self, "_open", False)
+            and name in _IMMUTABLE_AFTER_OPEN
+        ):
+            raise AttributeError(f"{name} is immutable after session open")
+        object.__setattr__(self, name, value)
+
+    def _ensure_active(self) -> None:
+        if self._closed:
+            raise SessionClosedError(self.session_id)
+        if not self._open or not self.spine:
+            raise SessionNotOpenError(self.session_id)
 
     def open(self, sessions_dir: Path) -> None:
+        if self._closed:
+            raise SessionClosedError(self.session_id)
         if self._open:
-            return
+            raise SessionAlreadyOpenError(self.session_id)
         self.snapshot_hash = _snapshot_hash(self.profile, self.rules)
+        self._open_snapshot_hash = self.snapshot_hash
+        self._declared_rules = copy.deepcopy(self.rules)
         self._log_path = sessions_dir / f"{self.session_id}.jsonl"
         self.spine = AuditSpine(
             session_id=self.session_id,
@@ -107,7 +149,9 @@ class Session:
 
     def close(self, reason: str = "normal") -> dict[str, Any]:
         if self._closed:
-            return self.state.get("_summary", {})
+            raise SessionClosedError(self.session_id)
+        if not self._open:
+            raise SessionNotOpenError(self.session_id)
         if self.spine:
             self.emit("session.close", {"reason": reason, "goal_reached": self._goal_reached})
         self._closed = True
@@ -115,6 +159,9 @@ class Session:
         return {
             "session_id": self.session_id,
             "log_path": str(self._log_path) if self._log_path else None,
+            "trace_id": self.trace_id,
+            "snapshot_hash": self.snapshot_hash,
+            "open_snapshot_hash": self.open_snapshot_hash,
         }
 
     def emit(
@@ -124,8 +171,7 @@ class Session:
         *,
         step_id: str | None = None,
     ) -> dict[str, Any]:
-        if not self.spine:
-            raise RuntimeError("Session not open")
+        self._ensure_active()
         ctx = ConstraintContext(
             event_kind=kind,
             payload=dict(payload or {}),
@@ -186,6 +232,7 @@ class Session:
         """Gate helper — log approval requirement and raise."""
         if request_id in self._approved:
             return
+        self._ensure_active()
         if self.spine:
             self.spine.append(
                 "constraint.approval_required",
@@ -200,6 +247,7 @@ class Session:
         raise ApprovalRequired(request_id, message, rule)
 
     def approve(self, request_id: str, *, principal: str | None = None) -> None:
+        self._ensure_active()
         self._approved.add(request_id)
         if self.spine:
             payload: dict[str, Any] = {"request_id": request_id}
@@ -234,6 +282,20 @@ class Session:
     @property
     def is_open(self) -> bool:
         return self._open and not self._closed
+
+    @property
+    def trace_id(self) -> str | None:
+        return self.spine.trace_id if self.spine else None
+
+    @property
+    def declared_rules(self) -> list[dict[str, Any]]:
+        if self._declared_rules:
+            return self._declared_rules
+        return self.rules
+
+    @property
+    def open_snapshot_hash(self) -> str | None:
+        return self._open_snapshot_hash or self.snapshot_hash
 
 
 def _snapshot_hash(profile: AgentProfile, rules: list[dict[str, Any]]) -> str:

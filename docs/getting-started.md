@@ -45,6 +45,7 @@ with ag.session() as run:
     run.emit("turn.end", {"output": "world", "tokens": 50})
 
 print(run.exports)  # JSONL + summary paths
+print(run.audit_report)  # in-memory receipt (always built; use export=False to skip disk)
 ```
 
 ## Sequencer example

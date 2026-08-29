@@ -49,7 +49,11 @@ The live, append-only record of a session. Official name for what the code calls
 
 ## Session export
 
-What you get when a session closes: JSONL audit file + conformance **summary** JSON. Ship to logs, observability, or storage.
+What you get when a session closes: JSONL audit file + conformance **summary** JSON (+ OTel JSONL by default). Ship to logs, observability, or storage.
+
+With `export=False`, no files are written, but `run.summary` and `run.audit_report` are still built in memory when the context exits. Summary and OTel files commit atomically on disk export; a failed export leaves neither artifact updated.
+
+After close, the session is sealed — further `emit` or `approve` calls raise `SessionClosedError`.
 
 ## Constitution
 
@@ -63,7 +67,7 @@ Built-in types: `max_tokens_per_step`, `confirm_before`, `allow_tools`, `deny_to
 
 ## Conformance
 
-On session close, AURA compares **declared rules** and **sequencer step order** vs **observed events** and writes a summary.
+On session close, AURA compares **declared rules at open** (and sequencer step order) vs **observed events** and writes a summary. The open-time `open_snapshot_hash` in the summary matches conformance when base rules are unchanged; runtime skill binds may update `snapshot_hash` for live constraint checks.
 
 ## Sequencer
 

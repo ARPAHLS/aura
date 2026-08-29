@@ -3,6 +3,9 @@
 from aura.api import (
     AgentHandle,
     ApprovalRequired,
+    ExportError,
+    SessionClosedError,
+    SessionNotOpenError,
     SessionRun,
     agent,
     configure,
@@ -23,4 +26,7 @@ __all__ = [
     "AgentHandle",
     "SessionRun",
     "ApprovalRequired",
+    "SessionClosedError",
+    "SessionNotOpenError",
+    "ExportError",
 ]

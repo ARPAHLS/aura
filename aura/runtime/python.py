@@ -35,7 +35,7 @@ def run_script(
         finally:
             sys.argv = old_argv
         run.emit("runtime.detach", {"script": str(path)})
-    return {"session_id": run.session_id, "exports": run.exports}
+    return {"session_id": run.session_id, "exports": run.exports, "audit_report": run.audit_report}
 
 
 def aura_wrapped(

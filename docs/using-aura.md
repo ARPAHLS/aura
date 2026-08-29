@@ -71,6 +71,8 @@ aura verify chain ~/.aura/sessions/aura_sess_xxxxxxxxxxxx.jsonl
 
 See [outputs.md](outputs.md) for the complete artifact schema and [comparison.md](comparison.md) for comparing two summary files. If the JSONL hash chain is broken, `aura verify chain` reports the first affected event and exits with status 1.
 
+With `export=False`, no files are written, but `run.summary` and `run.audit_report` are still populated when the context exits — use them for tests and programmatic gates. After close, further `emit` or `approve` calls raise `SessionClosedError`.
+
 ---
 
 ## Python SDK (primary)
@@ -99,6 +101,7 @@ with ag.session(mode="task") as run:
 | `configure()` | Merge global + project config |
 | `agent(name)` | Get/create agent profile |
 | `agent.session()` | Open session, auto-export on close |
+| `run.summary` / `run.audit_report` | In-memory receipt (always built; disk write optional via `export=`) |
 | `run.emit(kind, payload)` | Append audited event |
 | `run.approve(request_id, principal="operator@corp")` | Satisfy confirm/gate and record the approver |
 | `run.run_sequencer(host=...)` | Run declared step pipeline |

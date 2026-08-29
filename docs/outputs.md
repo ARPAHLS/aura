@@ -16,6 +16,10 @@ Identity fields on export: [trust-paths.md](trust-paths.md). Session-close workf
 
 CLI: `aura report show <session_id>`, `aura report show <session_id> --json`, `aura export`, `aura export-otel`, `aura compare`, `aura verify chain <path>`.
 
+**Export commit:** Summary and OTel files are written to staging paths and renamed atomically on success. If export fails, neither artifact is committed (the live JSONL trail may still exist from the session). With `export=False`, the SDK still builds `run.summary` and `run.audit_report` in memory.
+
+**Closed session:** After close, `emit`, `approve`, and a second `close()` raise `SessionClosedError`. `session_id` and `trace_id` are fixed at open. `open_snapshot_hash` captures rules + sequencer at open for conformance; `snapshot_hash` in the summary may update when skills bind at runtime.
+
 ---
 
 ## Audit report (summary JSON)
