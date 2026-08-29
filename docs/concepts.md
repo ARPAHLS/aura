@@ -4,11 +4,18 @@ Plain-language model for AURA Harness.
 
 ## Agent
 
-A logical entity you run under AURA. Gets a permanent **`AURA-000n`** ID for audit. You can also give it a **name** (`agent1test`).
+A logical entity you run under AURA.
 
-Your own IDs (OpenAI assistant id, company id, etc.) live in the agent **`ids`** trailer — AURA does not replace them.
+| Field | Role |
+|---|---|
+| **`agent_ref`** | Stable slug for humans and CI, e.g. `acme/compliance-bot` |
+| **`aura_id`** | Internal ULID (default) or your supplied id |
+| **`name`** | Optional alias for lookup |
+| **`ids`** | Trailer for tenant, Skillware, and your external ids |
 
-v0.2 fields: **`skills`**, **`sequencer`** spec, **`observers`** list.
+Legacy profiles with `AURA-000n` ids still load. See [trust-paths.md](trust-paths.md).
+
+Profile fields also include **`skills`**, **`sequencer`** spec, **`observers`**, and **`rules`**.
 
 ## Session
 

@@ -9,8 +9,9 @@ Shipped work stays in [CHANGELOG.md](../CHANGELOG.md). This file lists what is *
 | Version | Highlights |
 |---|---|
 | **v0.1** | Registry, sessions, constraints, JSONL export, SDK |
-| **v0.2** | Membrane, sequencer, Skillware host, observer presets (monitor, break) |
+| **v0.2** | Membrane, sequencer, Skillware host, observers |
 | **v0.3** | ULID + `agent_ref`, audit report, hash chain, OTel export (+ promoted attrs), compare CLI, ToolHost reference coat |
+| **v0.3.4** | Onboarding guide, `report show`, flat core examples, Monitor/Break presets, capstone + examples 05–08 |
 
 ---
 

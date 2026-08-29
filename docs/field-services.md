@@ -1,25 +1,27 @@
 # Field Services
 
+> **Optional reference** — not required for onboarding. See [INDEX.md](INDEX.md). For shipped observer behavior use [using-aura.md](using-aura.md) and [reference-tool-host-capstone.md](guides/reference-tool-host-capstone.md).
+
 The **twelve complementary services** that run **in parallel** with the agent loop — the coat, not bolt-ons.
 
-From [narrative.md](narrative.md). Implemented as **operation plugins** in `aura/ops/`, registered in [spec/capability.registry.json](../spec/capability.registry.json).
+Design language from [narrative.md](narrative.md). Operation ids live in [spec/capability.registry.json](../spec/capability.registry.json); packaged presets ship under `aura/observers/presets/`.
 
 ---
 
-| Service | What it does |
-|---|---|
-| **Monitor** | Loop state, tool calls, outputs, drift — continuously |
-| **Audit** | Record what, when, why, under which permissions — **always on (Job B)** |
-| **Track** | Task progress, resource use, retries, lineage across steps |
-| **Limit** | Budgets, rate caps, scope, AURA Level permissions |
-| **Safeguard** | Enforce guardrails from manifest, soul contract, memory layer, skill constitution, or elsewhere |
-| **Wake** | Restart stalled loops, re-queue work, resume |
-| **Break** | Stop infinite retries, circular reasoning, runaway tools |
-| **Conserve** | Reduce token waste — redundant calls, repeated failures |
-| **Recover** | Catch errors, retry logic, fallback paths |
-| **Remember** | Memory discipline — keep, compress, discard, persist |
-| **Learn** | Capture mistakes and outcomes for next iteration |
-| **Attach** | Modular extensions — skills, schedulers, observers |
+| Service | What it does | Status |
+|---|---|---|
+| **Monitor** | Loop state, tool calls, outputs, drift — continuously | **Shipped** — `preset: monitor` |
+| **Audit** | Record what, when, why, under which permissions — always on | **Shipped** — audit spine + export |
+| **Break** | Stop infinite retries, circular reasoning, runaway tools | **Shipped** — `preset: break` |
+| **Track** | Task progress, resource use, retries, lineage across steps | Planned |
+| **Limit** | Budgets, rate caps, scope, spectrum permissions | Planned |
+| **Safeguard** | Enforce guardrails from manifest and constitution | Partial — constraint engine + manifest merge |
+| **Wake** | Restart stalled loops, re-queue work, resume | Planned |
+| **Conserve** | Reduce token waste — redundant calls, repeated failures | Planned |
+| **Recover** | Catch errors, retry logic, fallback paths | Partial — sequencer retries |
+| **Remember** | Memory discipline — keep, compress, discard, persist | Planned (memory adapter) |
+| **Learn** | Capture mistakes and outcomes for next iteration | Planned |
+| **Attach** | Modular extensions — skills, schedulers, observers | **Shipped** — observers + Skillware host |
 
 ---
 
@@ -35,14 +37,14 @@ All three emit to the same **audit spine**.
 
 ---
 
-## Spectrum Toggle
+## Spectrum toggle (roadmap)
 
-Manifest `spectrum.services` selects which field services activate for a session. `audit` is non-optional in production profiles.
+Manifest `spectrum.services` will select which field services activate for a session. `audit` is non-optional in production profiles. Enforcement UX: [#27](https://github.com/ARPAHLS/aura/issues/27).
 
 ---
 
-## Attachments (Extensions)
+## Attachments (extensions)
 
 Beyond core twelve — observability modules, resource governors, temporal schedulers, event bridges, recovery playbooks. Registered as **op plugins** or **type plugins** — same extensibility model.
 
-See [architecture.md](architecture.md) · [outputs.md](outputs.md) · [spec/capability.registry.json](../spec/capability.registry.json)
+See [architecture.md](architecture.md) · [outputs.md](outputs.md) · [ROADMAP.md](ROADMAP.md)

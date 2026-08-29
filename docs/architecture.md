@@ -38,8 +38,12 @@ flowchart LR
 | `aura/observers/` | Parallel subscribers |
 | `aura/exporters/` | JSONL summary, OTel JSONL |
 
-## Extension surface (roadmap)
+## Extension surface
 
-Type plugins, packaged observer presets (monitor, break — see [reference-tool-host-capstone.md](guides/reference-tool-host-capstone.md)), HTTP fleet API — see [ROADMAP.md](ROADMAP.md).
+**Shipped:** ToolHost protocol, Monitor + Break observer presets, OTel export with promoted span attributes, sequencer `when` guards — see [reference-tool-host-capstone.md](guides/reference-tool-host-capstone.md).
+
+**Roadmap:** Limit preset, signed audit packs, HTTP fleet API, brain/memory/MCP type plugins — [ROADMAP.md](ROADMAP.md).
+
+Input-layer model (brain, memory, tools as adapters): [stack-position.md](stack-position.md).
 
 **Principle:** new capabilities emit or subscribe to the spine — core loop unchanged.

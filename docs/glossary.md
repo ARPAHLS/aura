@@ -1,5 +1,7 @@
 # Glossary
 
+> **Optional reference** — terminology including ARPA-internal names. Product path: [concepts.md](concepts.md) and [INDEX.md](INDEX.md).
+
 | Term | Meaning |
 |---|---|
 | **αύρα / AVRA / AURA** | Runtime coat / harness / field around the loop |

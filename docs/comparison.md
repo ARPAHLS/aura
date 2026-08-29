@@ -155,7 +155,7 @@ OpenTelemetry and structured logging provide **telemetry primitives** — spans,
 ### Key differences
 
 * **Agent semantics**: AURA events carry **agent identity**, session mode, constitution violations, and conformance — not generic spans alone.
-* **Policy**: Logging does not enforce confirm-before-action or token budgets; AURA constraints do (v0.1 on explicit events; membrane intercept roadmap).
+* **Policy**: Logging does not enforce confirm-before-action or token budgets; AURA constraints do on wired egress paths (broader intercept planned).
 * **Complementary**: OTel exporter shipped (v0.3); audit trail maps to spans ([outputs.md](outputs.md), [ROADMAP](ROADMAP.md)).
 
 ---

@@ -122,6 +122,7 @@ CLI: `aura agent create`, `aura run`, `aura export`, `aura report show`, `aura c
 
 | Topic | Links |
 | :--- | :--- |
+| **Index** | [docs/INDEX.md](docs/INDEX.md) — full doc map (Start / Build / Decide) |
 | **Start** | [onboarding.md](docs/onboarding.md) · [getting-started.md](docs/getting-started.md) · [concepts.md](docs/concepts.md) · [using-aura.md](docs/using-aura.md) |
 | **Integration** | [reference-tool-host-capstone.md](docs/guides/reference-tool-host-capstone.md) · [guides/aura-on-skillware.md](docs/guides/aura-on-skillware.md) · [skillware-integration.md](docs/skillware-integration.md) · [sequencer.md](docs/sequencer.md) |
 | **Identity & audit** | [trust-paths.md](docs/trust-paths.md) · [outputs.md](docs/outputs.md) |

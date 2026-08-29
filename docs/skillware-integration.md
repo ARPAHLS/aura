@@ -237,7 +237,7 @@ Use session export `.summary.json` `conformance.passed` in CI to fail builds whe
 
 ## Related
 
-- [using-aura.md](using-aura.md) — membrane and personas
+- [using-aura.md](using-aura.md) — membrane and postures
 - [sequencer.md](sequencer.md) — step model and gates
 - [integrations/skillware/](../integrations/skillware/) — reference scripts and README
 - [Skillware repo](https://github.com/arpahls/skillware) — skill registry, manifests, CLI

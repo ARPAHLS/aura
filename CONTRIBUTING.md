@@ -159,7 +159,8 @@ Pure internal refactors with no user-visible effect may omit CHANGELOG; ask on t
 | Integration example (Ollama, API, framework) | `integrations/<stack>/`, `docs/integrations/README.md`, `.env.example`, CHANGELOG |
 | CLI commands or flags | `docs/getting-started.md`, `README.md` quick start line, `docs/outputs.md` (export/compare shapes), CHANGELOG |
 | New core example | Flat script in `examples/`, `examples/README.md`, optional link from `docs/getting-started.md` |
-| Architecture terminology | `docs/architecture.md`, `README.md` diagrams (keep in sync) |
+| Architecture terminology | `docs/architecture.md`, `docs/INDEX.md`, `README.md` diagrams (keep in sync) |
+| Public docs tree / INDEX tiers | `docs/INDEX.md`, cross-links from `getting-started.md`, `onboarding.md`, `ROADMAP.md` |
 | Release / PyPI behavior | `docs/PUBLISHING.md`, `.github/workflows/publish-pypi.yml`, CHANGELOG |
 | PR CI workflow | `.github/workflows/ci.yml`, `.github/workflows/reusable-test.yml`, `docs/TESTING.md`, `CONTRIBUTING.md` |
 | Issue template fields | `.github/labels.json` if new label needed; run label sync |

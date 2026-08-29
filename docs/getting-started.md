@@ -47,7 +47,7 @@ with ag.session() as run:
 print(run.exports)  # JSONL + summary paths
 ```
 
-## Sequencer example (v0.2)
+## Sequencer example
 
 ```python
 from aura import agent, configure
@@ -74,7 +74,7 @@ print(run.exports)
 
 Logs land in `~/.aura/sessions/` unless you configure project storage.
 
-## CLI
+## CLI (export & verify)
 
 ```bash
 aura agent create my-bot --purpose "research assistant"
@@ -127,5 +127,5 @@ See [examples/](../examples/README.md) — including [sequencer_pipeline.py](../
 - [skillware-integration.md](skillware-integration.md) — Skillware host
 - [concepts.md](concepts.md) — agent, session, sequencer
 - [comparison.md](comparison.md) — vs orchestrators and eval harnesses
-- [ROADMAP.md](ROADMAP.md) — what comes after v0.2
+- [ROADMAP.md](ROADMAP.md) — shipped vs deferred
 - [architecture.md](architecture.md) — modules and data flow

@@ -1,8 +1,8 @@
 # AURA Architecture
 
-How **AURA Harness** models a run — a harness-centric view of the broader ARPA stack.
+> **Optional** — harness-centric view of the broader ARPA stack. Default path: [architecture.md](architecture.md) and [onboarding.md](onboarding.md).
 
-The full stack diagram covers Identity → Soul → Body → Aura → Rooms / Legacy. **This repo uses a harness-centric view:** parallel inputs, one body, one coat, one audit trail out.
+How **AURA Harness** models a run.
 
 ---
 
@@ -25,17 +25,17 @@ flowchart LR
 
 ## Layers
 
-| Layer | What it is | v0.1 |
+| Layer | What it is | Shipped today |
 | :--- | :--- | :--- |
-| **Identity** | `AURA-000n`, optional name, `ids.external` trailer | Shipped — agent registry |
-| **Brain** | Any model or reasoning substrate | Adapter (roadmap) |
+| **Identity** | `agent_ref`, ULID `aura_id`, `ids` trailer | Agent registry + session trailer |
+| **Brain** | Any model or reasoning substrate | Integration scripts under `integrations/` |
 | **Memory** | Any retention backend | Adapter (roadmap) |
-| **Tools** | Skills, MCP, HTTP APIs, Skillware | Adapter (roadmap) |
-| **Constitution** | Rules, guardrails, constraints on the agent profile | Shipped — constraint engine |
-| **Body / Runtime** | The active loop — Python script first | Shipped — runtime helper |
-| **Aura** | Harness — hook, enforce, record | Shipped — session + SDK |
-| **Audit Trail** | Append-only causal log (`AuraEvent` stream) | Shipped — audit spine / JSONL |
-| **Session Export** | Deliverable on close — `.jsonl` + `.summary.json` | Shipped |
+| **Tools** | Skills, MCP, HTTP APIs, Skillware | ToolHost + SkillwareHost reference coat |
+| **Constitution** | Rules, guardrails, constraints on the agent profile | Constraint engine + manifest merge at bind |
+| **Body / Runtime** | The active loop — Python script first | Your host; AURA wraps via SDK or ToolHost |
+| **Aura** | Harness — hook, enforce, record | Session + membrane + observers |
+| **Audit Trail** | Append-only causal log (`AuraEvent` stream) | Audit spine / JSONL + hash chain |
+| **Session Export** | Deliverable on close — JSONL + summary + audit report + OTel | Shipped — see [outputs.md](outputs.md) |
 
 ---
 

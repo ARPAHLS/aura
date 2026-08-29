@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- **Documentation sweep ([#14](https://github.com/ARPAHLS/aura/issues/14))** — `docs/INDEX.md` three-tier entry (Start / Build / Decide + Optional vision); demoted narrative, three-rings, aura-levels, field-services; refreshed architecture, concepts, stack-position, field-services shipped vs planned; fixed stale v0.2 voice in getting-started and concepts.
+
 ## [0.3.4] - 2026-08-26
 
 ### Added

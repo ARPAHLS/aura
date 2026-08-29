@@ -1,6 +1,8 @@
 # Three Rings
 
-Cross-cutting model — see also [architecture.md](architecture.md).
+> **Optional / vision** — cross-cutting ARPA model. For shipped modules see [architecture.md](architecture.md).
+
+Cross-cutting model — see also [field-services.md](field-services.md).
 
 ---
 

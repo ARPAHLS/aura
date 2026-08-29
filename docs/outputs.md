@@ -2,6 +2,8 @@
 
 What a session produces on close (v0.3).
 
+Identity fields on export: [trust-paths.md](trust-paths.md). Session-close workflow: [using-aura.md](using-aura.md).
+
 ---
 
 ## Per session

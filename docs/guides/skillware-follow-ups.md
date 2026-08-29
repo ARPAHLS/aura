@@ -25,7 +25,7 @@ Track these **after** closing the reference ToolHost epic ([#12](https://github.
 | **Flat examples restructure** ([#21](https://github.com/ARPAHLS/aura/issues/21)) | Align paths referenced in docs after examples layout change (remainder of [#41](https://github.com/ARPAHLS/aura/issues/41)) |
 | **Multi-provider comparison page** | One doc comparing Ollama vs GPT vs Claude vs Gemini with the same skill chain (extends capstone) |
 | **Skill catalog appendix** | Table of bundled Skillware skills: offline vs API, suggested AURA guardrails |
-| **Docs sweep** ([#13](https://github.com/ARPAHLS/aura/issues/13), [#14](https://github.com/ARPAHLS/aura/issues/14), [#19](https://github.com/ARPAHLS/aura/issues/19), [#20](https://github.com/ARPAHLS/aura/issues/20)) | Cross-link INDEX, ROADMAP, integration READMEs |
+| **Docs sweep** ([#14](https://github.com/ARPAHLS/aura/issues/14), [#19](https://github.com/ARPAHLS/aura/issues/19), [#20](https://github.com/ARPAHLS/aura/issues/20)) | Cross-link INDEX, ROADMAP, integration READMEs — onboarding ([#13](https://github.com/ARPAHLS/aura/issues/13)) shipped |
 
 ---
 

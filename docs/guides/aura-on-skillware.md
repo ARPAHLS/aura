@@ -273,6 +273,6 @@ See [skillware-follow-ups.md](skillware-follow-ups.md) for post–#12 backlog: f
 
 ## Related
 
-- [using-aura.md](../using-aura.md) — membrane and personas  
+- [using-aura.md](../using-aura.md) — membrane and postures  
 - [stack-position.md](../stack-position.md) — where AURA fits in the agent stack  
 - [Skillware repository](https://github.com/arpahls/skillware)

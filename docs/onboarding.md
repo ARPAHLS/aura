@@ -1,6 +1,6 @@
 # Onboarding — use AURA correctly
 
-Step-by-step path from install to a reviewable session receipt. For membrane detail see [using-aura.md](using-aura.md); for terms see [concepts.md](concepts.md).
+Step-by-step path from install to a reviewable session receipt. Full doc map: [INDEX.md](INDEX.md). For membrane detail see [using-aura.md](using-aura.md); for terms see [concepts.md](concepts.md).
 
 ---
 

@@ -1,57 +1,69 @@
 # AURA Harness — Documentation
 
+Single entry point for public docs. **Shipped behavior** lives in Tier 1–2; Tier 3 is positioning; **Optional** is vision and internal vocabulary — not required for onboarding.
+
 ---
 
-## Start here
+## Tier 1 — Start
 
 | Doc | Content |
 |---|---|
 | [onboarding.md](onboarding.md) | **Start here** — install → posture → agent → body → receipt |
-| [getting-started.md](getting-started.md) | Install, example, CLI |
-| [using-aura.md](using-aura.md) | Membrane, personas, SDK |
-| [contributing/ai_native_workflow.md](contributing/ai_native_workflow.md) | Agents and operators |
-| [TESTING.md](TESTING.md) | pytest, black, flake8, PR checklist |
-| [../CONTRIBUTING.md](../CONTRIBUTING.md) | Full contributor guide (humans and agents) |
+| [getting-started.md](getting-started.md) | Install, minimal example, CLI |
+| [using-aura.md](using-aura.md) | Membrane, postures, session export, SDK |
 | [concepts.md](concepts.md) | Agent, session, identity, audit |
+| [examples/README.md](../examples/README.md) | Runnable core scripts + integration demos |
+| [integrations/README.md](integrations/README.md) | Pick your stack — Ollama, cloud APIs, Skillware |
+| [guides/reference-tool-host-capstone.md](guides/reference-tool-host-capstone.md) | ToolHost checklist (mock → live → Ollama) |
+
+---
+
+## Tier 2 — Build
+
+| Doc | Content |
+|---|---|
+| [architecture.md](architecture.md) | Modules, data flow, extension surface |
+| [stack-position.md](stack-position.md) | Optional — harness-centric input layers vs full ARPA stack |
+| [sequencer.md](sequencer.md) | Prescriptive pipelines, gates, `when`, conformance |
+| [skillware-integration.md](skillware-integration.md) | Skillware reference adapter (optional host) |
+| [guides/aura-on-skillware.md](guides/aura-on-skillware.md) | Deep dive — Skillware as one ToolHost impl |
+| [trust-paths.md](trust-paths.md) | `agent_ref`, ULID, ids trailer — no central ID service |
+| [outputs.md](outputs.md) | JSONL, summary, audit report, hash chain, OTel |
+| [TESTING.md](TESTING.md) | pytest, black, flake8, PR checklist |
+| [../CONTRIBUTING.md](../CONTRIBUTING.md) | Contributor guide (humans and agents) |
+| [contributing/ai_native_workflow.md](contributing/ai_native_workflow.md) | Agent contribution workflow |
+
+Copy [`.env.example`](../.env.example) to `.env` for local Ollama or cloud API keys. Never commit `.env`.
+
+---
+
+## Tier 3 — Decide
+
+| Doc | Content |
+|---|---|
 | [comparison.md](comparison.md) | vs orchestrators, eval harnesses, tracing |
-| [architecture.md](architecture.md) | v0.2 modules |
-| [ROADMAP.md](ROADMAP.md) | Shipped vs deferred |
-| [examples/](../examples/README.md) | Four runnable core demos plus Skillware / ToolHost demos |
-| [guides/reference-tool-host-capstone.md](guides/reference-tool-host-capstone.md) | ToolHost integration checklist (AURA-first) |
+| [ROADMAP.md](ROADMAP.md) | Shipped vs deferred (sole deferrals file for public docs) |
+| [README.md](../README.md) | Project entry, quick start, badges |
 
 ---
 
-## Integration
+## Optional — vision & reference
+
+Not on the default onboarding path. Kept for ARPA stack context and long-form design language.
 
 | Doc | Content |
 |---|---|
-| [integrations/README.md](integrations/README.md) | Pick your stack — models, tools, frameworks |
-| [skillware-integration.md](skillware-integration.md) | Skillware reference adapter — see `integrations/skillware/` |
-| [sequencer.md](sequencer.md) | Prescriptive pipelines, gates, conformance |
-
-Copy [`.env.example`](../.env.example) to `.env` for local Ollama (`llama3.2:1b`) or cloud API keys. Never commit `.env`.
-
----
-
-## Reference
-
-| Doc | Content |
-|---|---|
-| [README.md](../README.md) | Project entry, stack diagram |
-| [narrative.md](narrative.md) | Long-form vision (coat, SCI) |
-| [stack-position.md](stack-position.md) | Optional ARPA stack context |
-| [trust-paths.md](trust-paths.md) | Lite ID — no identity service |
-| [outputs.md](outputs.md) | AuraEvent, exporters |
-| [aura-levels.md](aura-levels.md) | Autonomy tiers (roadmap enforcement) |
-| [field-services.md](field-services.md) | Observer presets (roadmap) |
+| [narrative.md](narrative.md) | Long-form vision (coat, SoulSig, cybernetics) |
 | [three-rings.md](three-rings.md) | Envelope · Field · Adapter model |
-| [glossary.md](glossary.md) | Terms |
+| [aura-levels.md](aura-levels.md) | Autonomy tiers (enforcement roadmap) |
+| [field-services.md](field-services.md) | Twelve parallel services — shipped vs planned |
+| [glossary.md](glossary.md) | Terminology reference |
 
 ---
 
 ## Specifications
 
-Schemas for manifest, events, plugins — **stable contracts** for adapters.
+Stable contracts for adapters and tooling.
 
 | File | Purpose |
 |---|---|

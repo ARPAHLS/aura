@@ -1,5 +1,7 @@
 # AURA Harness
 
+> **Optional / vision** — long-form ARPA narrative. For product usage start at [onboarding.md](onboarding.md) and [INDEX.md](INDEX.md).
+
 **The runtime coat around your agent loops.**
 
 *By ARPA Hellenic Logical Systems — [arpacorp.net](https://arpacorp.net)*

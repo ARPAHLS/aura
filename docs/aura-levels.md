@@ -1,5 +1,7 @@
 # AURA Levels
 
+> **Optional / roadmap** — autonomy tiers; enforcement UX tracked in [#27](https://github.com/ARPAHLS/aura/issues/27). Today use postures in [using-aura.md](using-aura.md) and sequencer gates.
+
 **Permissioned autonomy** — not binary on/off.
 
 From [narrative.md](narrative.md). Enforced by Spectrum + conformance engine + hook pipeline.
