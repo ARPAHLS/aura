@@ -65,6 +65,7 @@ aura agent create research-bot \
 | **`purpose`** | Declared intent — appears in profile and spine |
 | **`rules`** | Constitution — `confirm_before`, `allow_tools`, `deny_tools`, token limits |
 | **`ids`** | Your external IDs (company, vendor assistant id) — AURA does not replace them |
+| **`ids.operator`** (optional) | Human/service principal when using an identity adapter — see [integrations/identity](../integrations/identity/README.md) |
 
 Update later: `aura agent set research-bot --ref acme/research-bot --variable model=gpt-4o-mini`.
 

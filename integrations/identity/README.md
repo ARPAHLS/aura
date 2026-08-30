@@ -35,7 +35,7 @@ export AURA_AUTH0_TOKEN="<access_token>"
 pip install "aura-harness[identity]"
 ```
 
-Signature verification uses JWKS (`pyjwt` + `cryptography`).
+Signature verification uses JWKS (`pyjwt` + `cryptography`). **Do not use `verify_signature: false` in production** — that mode is for local tests only.
 
 ## SDK
 
@@ -61,16 +61,58 @@ ids:
     method: manual
 ```
 
-## Spine
+## Bring your own adapter
+
+Implement the protocol and pass it to `session()` — no central AURA identity service required:
+
+```python
+from aura.identity.models import OperatorIdentity
+from aura.identity.protocol import IdentityContext
+
+
+class CorpSsoAdapter:
+    method = "corp_sso"
+
+    def resolve(self, context: IdentityContext) -> OperatorIdentity | None:
+        token = context.env.get("CORP_SSO_TOKEN")
+        if not token:
+            return None
+        # validate with your IdP here
+        return OperatorIdentity(
+            verified=True,
+            method=self.method,
+            subject="user-123",
+            session_ref=context.session_id,
+        )
+
+
+with ag.session(identity_adapter=CorpSsoAdapter()) as run:
+    run.emit("turn.start", {})
+```
+
+For opaque third-party ids without verification, nest under `ids.external` on the agent profile — no adapter needed.
+
+Profile `types` entry (built-in adapter names):
+
+```yaml
+types:
+  - role: identity
+    type_id: arpa.identity.oidc
+    config:
+      adapter: oidc
+      issuer: https://login.example.com/
+      audience: aura-api
+```
+
+## Spine and export
 
 Successful bind emits `identity.bound`. Operator appears under `agent_ids.ids.operator` on **every event** for SIEM parity.
 
-## Export redaction
-
-By default, `email` / `name` / `phone` are stripped from summary and OTel export. Full PII:
+By default, `email` / `name` / `phone` are stripped from **summary and OTel** export (JSONL spine keeps full fields for forensic review):
 
 ```yaml
-identity_export_pii: true
+identity_export_pii: true   # opt in to include PII on export surfaces
+identity_required: true     # fail session open when no operator resolves
 ```
 
 CLI: `aura identity show`

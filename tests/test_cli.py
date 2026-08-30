@@ -215,6 +215,15 @@ def test_cli_config_show_and_paths(run_aura, aura_home: Path, project_dir: Path)
     assert "storage=global saved" in set_storage.stdout
 
 
+def test_cli_identity_show(run_aura):
+    result = run_aura("identity", "show")
+    assert result.returncode == 0
+    data = json.loads(result.stdout)
+    assert "identity" in data
+    assert "identity_required" in data
+    assert "env_hints" in data
+
+
 def test_aura_console_script_entry_point():
     import importlib.metadata
 

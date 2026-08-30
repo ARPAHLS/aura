@@ -83,7 +83,7 @@ AURA is **not** a guide for building the agent. It is infrastructure for **confi
 ### Key differences
 
 * **Positioning**: DSH is a **runtime you adopt** — "everything is a plugin" *inside* DSH. AURA is a **wrapper around whatever runtime you already have**.
-* **Identity / accountability chain**: DSH focuses on session integrity; AURA adds `agent_ref` (ULID), audit report, and hash-chained spine events without requiring a central identity service (optional enrichment adapters on roadmap).
+* **Identity / accountability chain**: DSH focuses on session integrity; AURA adds `agent_ref` (ULID), audit report, and hash-chained spine events without requiring a central identity service. Optional **verified operator** adapters (OIDC, Auth0, manual, mock) enrich `ids.operator` when configured ([#55](https://github.com/ARPAHLS/aura/issues/55)).
 * **Long term**: DSH competes on composable agent OS; AURA competes on **agnostic governance layer** — including the option to wrap DSH itself inside the cavity.
 
 ---
@@ -189,25 +189,26 @@ Orchestrators optimize for **task completion**. Eval harnesses optimize for **qu
 
 ---
 
-## Where AURA is today (v0.3.4)
+## Where AURA is today (v0.3.4+)
 
 Honest scope — reference ToolHost coat, membrane presets, and CLI/docs depth shipped since v0.3.3; full zero-intrusion wiring on every transport still growing:
 
-| Shipped (through v0.3.4) | Roadmap |
+| Shipped (through v0.3.4+) | Roadmap |
 | :--- | :--- |
 | Agent registry, sessions, SDK `emit()` | LangGraph / MCP auto-probe |
 | Constraint engine on events | Full I/O normalizer for arbitrary transports |
 | Audit trail (JSONL) + session export + **audit report** | Signed audit packs |
 | **Hash chain** on spine events + compare + **`aura verify chain`** | Network/shell intercept without host cooperation |
-| **`agent_ref` (ULID)** + policy version on export | Verified operator identity |
+| **`agent_ref` (ULID)** + policy version on export | DID / verifiable-credential operator adapter |
+| **Verified operator identity** — optional adapters, `identity.bound`, export redaction ([#55](https://github.com/ARPAHLS/aura/issues/55)) | Gatekeeper pre-session verify ([#43](https://github.com/ARPAHLS/aura/issues/43)) |
 | **Ingress** + bind enrichment on `skill.registered` | Branching / parallel sequencer steps |
 | **Egress** `guarded_tool_call` + **ToolHost** protocol (Skillware reference coat) | Broader egress adapters |
 | **Sequencer** — linear steps, gates, retries, **`when`** skip | |
 | **Observers** — Monitor + Break presets | Webhooks, enterprise sinks |
 | **Skill manifest merge** at bind | Capability broker |
-| **OTel exporter** + promoted span attributes | HTTP fleet API |
-| **CLI** — `report show`, `agent set`, config/paths, onboarding guide | |
-| **Examples 01–08** (flat layout) + integrations index | Framework host wraps |
+| **OTel exporter** + promoted span attributes (incl. operator) | HTTP fleet API |
+| **CLI** — `report show`, `agent set`, config/paths, `identity show`, onboarding guide | |
+| **Examples 01–09** (flat + integration demos) + integrations index | Framework host wraps |
 
 The **doctrine** is membrane-first: configure gates, rules, and export invariants at the boundary; keep the cavity a black box. v0.3 adds the **receipt** layer (audit report + integrity chain); v0.2 delivered the first egress path via Skillware/mock hosts per [skillware-integration.md](skillware-integration.md) and [sequencer.md](sequencer.md).
 

@@ -14,9 +14,19 @@
     "step_id": { "type": "string" },
     "task_id": { "type": "string" },
     "timestamp": { "type": "string", "format": "date-time" },
-    "kind": { "type": "string" },
+    "kind": {
+      "type": "string",
+      "description": "Event type, e.g. session.open, session.close, identity.bound, membrane.ingress, tool.call, constraint.approved"
+    },
     "constitution_hash": { "type": "string" },
-    "payload": { "type": "object" },
+    "payload": {
+      "type": "object",
+      "description": "Event-specific body. identity.bound carries operator verification metadata under operator."
+    },
+    "agent_ids": {
+      "type": "object",
+      "description": "Identity trailer copied on each event (agent_ref, aura_id, policy_version, ids.operator when bound)."
+    },
     "telemetry": {
       "type": "object",
       "properties": {

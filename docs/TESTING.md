@@ -99,16 +99,18 @@ Integration tests **fail** (not skip) if Ollama or Skillware is missing — that
 | `test_v03.py` | Identity, audit report, hash chain, compare |
 | `test_cli.py` | `aura` CLI commands and exit codes |
 | `test_core_gaps.py` | Config, exporters, runtime, middleware, archive, tamper, compare edge cases (GH #4) |
+| `test_identity.py` | Operator identity adapters, redaction, OTel operator attrs, `identity.bound` (GH #55) |
+| `test_session_invariants.py` | Session lifecycle, atomic export, closed-session errors (GH #15) |
 | `test_examples_smoke.py` | Runnable example scripts |
 
 ## What we test
 
 | Area | Tests |
 |---|---|
-| Identity | ULID ids, `agent_ref`, custom `aura_id`, resolve lookup, legacy `AURA-000n`, archive |
+| Identity | ULID ids, `agent_ref`, custom `aura_id`, resolve lookup, legacy `AURA-000n`, archive; optional operator adapters + export redaction (`test_identity.py`) |
 | Audit | Hash chain (valid + tamper), audit report, approver principal, session export |
 | Core | Registry, spine, constraints, conformance, sequencer (`test_core.py`, `test_v02.py`) |
-| CLI | Version, agent CRUD, run, logs, export, export-otel, compare (`test_cli.py`) |
+| CLI | Version, agent CRUD, run, logs, export, export-otel, compare, identity show (`test_cli.py`) |
 | Config / runtime | YAML merge, `run_script`, middleware, session modes (`test_core_gaps.py`) |
 | Compare / OTel | Summary diff incl. `agent_ref` + `hash_chain_valid`, OTel JSONL export (`test_v03.py`, `test_core_gaps.py`) |
 | Examples | Smoke run all `examples/*.py` (`test_examples_smoke.py`) |

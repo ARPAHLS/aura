@@ -12,6 +12,7 @@ Shipped work stays in [CHANGELOG.md](../CHANGELOG.md). This file lists what is *
 | **v0.2** | Membrane, sequencer, Skillware host, observers |
 | **v0.3** | ULID + `agent_ref`, audit report, hash chain, OTel export (+ promoted attrs), compare CLI, ToolHost reference coat |
 | **v0.3.4** | Onboarding guide, `report show`, flat core examples, Monitor/Break presets, capstone + examples 05–08 |
+| **Unreleased** | Verified operator identity adapters ([#55](https://github.com/ARPAHLS/aura/issues/55)), session lifecycle invariants ([#15](https://github.com/ARPAHLS/aura/issues/15)) |
 
 ---
 
@@ -24,9 +25,10 @@ Shipped work stays in [CHANGELOG.md](../CHANGELOG.md). This file lists what is *
 | Middleware ops | PII mask, compress — schema exists |
 | Signed audit packs | WORM / external sink hooks |
 | HTTP fleet API | Remote session management |
+| DID / VC operator adapter | Decentralized identity enrichment (follow-up to #55) |
 | Auto-discovery | LangGraph / MCP probe where stable |
 
-**Shipped in v0.2–v0.3 (reference ToolHost epic):** `ToolHost` protocol, manifest merge at bind, Monitor + Break observer presets, ingress bind enrichment, OTel promoted attributes, sequencer `when`, capstone guide, examples 01–08. Details in [CHANGELOG.md](../CHANGELOG.md) and [reference-tool-host-capstone.md](guides/reference-tool-host-capstone.md).
+**Shipped in v0.2–v0.3 (reference ToolHost epic):** `ToolHost` protocol, manifest merge at bind, Monitor + Break observer presets, ingress bind enrichment, OTel promoted attributes, sequencer `when`, capstone guide, examples 01–09. Details in [CHANGELOG.md](../CHANGELOG.md) and [reference-tool-host-capstone.md](guides/reference-tool-host-capstone.md).
 
 ---
 

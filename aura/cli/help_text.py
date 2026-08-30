@@ -8,6 +8,7 @@ _DOCS_ONBOARDING = "https://github.com/ARPAHLS/aura/blob/main/docs/onboarding.md
 _DOCS_CLI = "https://github.com/ARPAHLS/aura/blob/main/docs/using-aura.md"
 _DOCS_GETTING_STARTED = "https://github.com/ARPAHLS/aura/blob/main/docs/getting-started.md"
 _DOCS_TESTING = "https://github.com/ARPAHLS/aura/blob/main/docs/TESTING.md"
+_DOCS_IDENTITY = "https://github.com/ARPAHLS/aura/blob/main/integrations/identity/README.md"
 
 HELP_GROUPS: List[Tuple[str, List[Tuple[str, str]], str]] = [
     (
@@ -41,6 +42,7 @@ HELP_GROUPS: List[Tuple[str, List[Tuple[str, str]], str]] = [
             ("aura paths set-project <dir>", "persist default project directory"),
             ("aura paths set-storage global|project", "persist storage mode"),
             ("aura config show", "merged global + project YAML and paths"),
+            ("aura identity show", "operator identity adapter config (optional)"),
             ("aura --home <dir>", "override AURA_HOME for this invocation"),
             ("aura --project <dir>", "one-shot project-scoped .aura/ storage"),
         ],
@@ -72,6 +74,7 @@ CLI_USAGE_EXAMPLES: Tuple[str, ...] = (
     "aura agent set demo-bot --ref acme/demo --purpose compliance",
     "aura agent list",
     "aura config show",
+    "aura identity show",
     "aura paths set-project .",
     "aura run cli-runner path/to/script.py",
     "aura export aura_sess_01H...",

@@ -13,7 +13,7 @@ Single entry point for public docs. **Shipped behavior** lives in Tier 1–2; Ti
 | [using-aura.md](using-aura.md) | Membrane, postures, session export, SDK |
 | [concepts.md](concepts.md) | Agent, session, identity, audit |
 | [examples/README.md](../examples/README.md) | Runnable core scripts + integration demos |
-| [integrations/README.md](integrations/README.md) | Pick your stack — Ollama, cloud APIs, Skillware |
+| [integrations/README.md](integrations/README.md) | Pick your stack — Ollama, cloud APIs, Skillware, operator identity |
 | [guides/reference-tool-host-capstone.md](guides/reference-tool-host-capstone.md) | ToolHost checklist (mock → live → Ollama) |
 
 ---
@@ -28,6 +28,7 @@ Single entry point for public docs. **Shipped behavior** lives in Tier 1–2; Ti
 | [skillware-integration.md](skillware-integration.md) | Skillware reference adapter (optional host) |
 | [guides/aura-on-skillware.md](guides/aura-on-skillware.md) | Deep dive — Skillware as one ToolHost impl |
 | [trust-paths.md](trust-paths.md) | `agent_ref`, ULID, ids trailer — no central ID service |
+| [../integrations/identity/README.md](../integrations/identity/README.md) | Optional verified operator adapters (OIDC, Auth0, BYO) |
 | [outputs.md](outputs.md) | JSONL, summary, audit report, hash chain, OTel |
 | [TESTING.md](TESTING.md) | pytest, black, flake8, PR checklist |
 | [../CONTRIBUTING.md](../CONTRIBUTING.md) | Contributor guide (humans and agents) |

@@ -16,6 +16,12 @@ Optional Skillware integration:
 pip install -e ".[dev,skillware]"
 ```
 
+Optional OIDC/Auth0 operator identity (enterprise):
+
+```bash
+pip install -e ".[dev,identity]"
+```
+
 Requires Python 3.10+.
 
 ## CLI
@@ -25,6 +31,7 @@ After install, run `aura` with no arguments for the interactive menu (ASCII spla
 ```bash
 aura version
 aura config show
+aura identity show
 aura agent list
 aura agent set my-bot --ref tenant/slug --purpose "experiments"
 aura --help
@@ -85,6 +92,7 @@ aura logs aura_sess_xxxxxxxxxxxx
 aura export aura_sess_xxxxxxxxxxxx
 aura report show aura_sess_xxxxxxxxxxxx
 aura report show aura_sess_xxxxxxxxxxxx --json
+aura identity show
 aura verify chain ~/.aura/sessions/aura_sess_xxxxxxxxxxxx.jsonl
 ```
 

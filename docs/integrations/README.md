@@ -8,6 +8,7 @@ Attach AURA to your stack — models, tool runtimes, frameworks, sandboxes.
 |---|---|---|
 | **Overview** | this page | Start here to find your stack |
 | **Skillware** | [`integrations/skillware/`](../../integrations/skillware/) | Reference ToolHost adapter; `[skillware]` extra |
+| **Operator identity** | [`integrations/identity/`](../../integrations/identity/) | Optional OIDC/Auth0/manual/mock adapters; `[identity]` extra |
 | **Ollama (local)** | [`integrations/skillware/ollama_skill_loop.py`](../../integrations/skillware/ollama_skill_loop.py) | Dev default: `llama3.2:1b` via `.env` |
 | **OpenAI (ChatGPT)** | [`integrations/openai/`](../../integrations/openai/) | Body loop + Skillware egress; `[openai]` extra |
 | **Anthropic (Claude)** | [`integrations/anthropic/`](../../integrations/anthropic/) | Body loop + Skillware egress; `[anthropic]` extra |
@@ -26,6 +27,7 @@ Use the project **`.venv`** for installs (`pip install -e ".[integrations]"`), n
 | [06-skillware-sequencer-chain](../examples/06-skillware-sequencer-chain/) | Sequencer chain with conditional `when` steps |
 | [07-observer-presets](../examples/07-observer-presets/) | Monitor + Break observer presets |
 | [08-emit-only-loop](../examples/08-emit-only-loop/) | Emit-only coat — no tool host |
+| [09-operator-identity](../examples/09-operator-identity/) | Optional verified operator trailer (mock adapter) |
 | [sequencer_pipeline.py](../examples/sequencer_pipeline.py) | Sequencer with mocks |
 
 ## Related docs

@@ -11,9 +11,9 @@ A logical entity you run under AURA.
 | **`agent_ref`** | Stable slug for humans and CI, e.g. `acme/compliance-bot` |
 | **`aura_id`** | Internal ULID (default) or your supplied id |
 | **`name`** | Optional alias for lookup |
-| **`ids`** | Trailer for tenant, Skillware, and your external ids |
+| **`ids`** | Trailer for tenant, Skillware, external ids, and optional **`operator`** (manual or verified adapter) |
 
-Legacy profiles with `AURA-000n` ids still load. See [trust-paths.md](trust-paths.md).
+Legacy profiles with `AURA-000n` ids still load. See [trust-paths.md](trust-paths.md) and [integrations/identity/README.md](../integrations/identity/README.md) for optional verified operator adapters.
 
 Profile fields also include **`skills`**, **`sequencer`** spec, **`observers`**, and **`rules`**.
 
