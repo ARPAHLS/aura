@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **Ollama integration ([#20](https://github.com/ARPAHLS/aura/issues/20))** — `integrations/ollama/llama_loop.py` stdlib HTTP body loop; README; mocked HTTP test; docs index distinguishes Ollama-only vs Ollama+Skillware paths.
+
 ### Changed
 
 - **Verified operator identity ([#55](https://github.com/ARPAHLS/aura/issues/55))** — optional identity adapters (manual, mock, OIDC, Auth0); `identity.bound` spine event; `ids.operator` on all event trailers; export redaction; `aura identity show`; profile `types` with `role: identity`.
