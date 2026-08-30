@@ -53,4 +53,4 @@ Uses offline `security/prompt_injection_firewall` — no extra Skillware API key
 
 - [aura-on-skillware.md](../../docs/guides/aura-on-skillware.md)
 - [OpenAI](../openai/README.md) · [Anthropic](../anthropic/README.md)
-- [Ollama local loop](../skillware/ollama_skill_loop.py)
+- [Ollama local loop](../ollama/README.md)

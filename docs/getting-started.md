@@ -129,10 +129,13 @@ ids:
 
 See [examples/](../examples/README.md) — including [sequencer_pipeline.py](../examples/sequencer_pipeline.py), [07-observer-presets](../examples/07-observer-presets/), and the ToolHost capstone in [reference-tool-host-capstone.md](guides/reference-tool-host-capstone.md). Order: [onboarding.md](onboarding.md#examples-learning-path).
 
+Stack-specific loops live in [integrations/](../integrations/README.md) — start there for Ollama, OpenAI, Anthropic, Gemini, Skillware, and framework wrappers.
+
 ## Next
 
 - [onboarding.md](onboarding.md) — step-by-step first run
 - [using-aura.md](using-aura.md) — membrane, postures, observers
+- [../integrations/README.md](../integrations/README.md) — stack-specific loops
 - [skillware-integration.md](skillware-integration.md) — Skillware host
 - [concepts.md](concepts.md) — agent, session, sequencer
 - [comparison.md](comparison.md) — vs orchestrators and eval harnesses

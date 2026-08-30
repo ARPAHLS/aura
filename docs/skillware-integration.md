@@ -140,7 +140,7 @@ host.execute(skill.skill_id, skill.skill_id, {"source_text": untrusted, "sensiti
 
 **Offline starter skills** (no API keys): `optimization/prompt_rewriter`, `security/prompt_injection_firewall`, `monitoring/token_limiter`.
 
-Integration scripts: [`integrations/skillware/`](../integrations/skillware/) — `reference_tool_host.py` (mock or `SKILLWARE_LIVE=1`), `ollama_skill_loop.py` (Ollama + firewall).
+Integration scripts: [`integrations/skillware/`](../integrations/skillware/) — `mock_tools.py`, `live_tools.py`, and `reference_tool_host.py`; Ollama lives under [`integrations/ollama/`](../integrations/ollama/).
 
 ---
 

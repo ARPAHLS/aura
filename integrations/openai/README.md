@@ -75,4 +75,4 @@ The script:
 - [Skillware integration guide](../../docs/guides/aura-on-skillware.md)
 - [Anthropic integration](../anthropic/README.md)
 - [Gemini integration](../google/README.md)
-- [Ollama (local), no API key](../skillware/ollama_skill_loop.py)
+- [Ollama (local), no API key](../ollama/README.md)

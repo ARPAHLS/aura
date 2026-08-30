@@ -52,7 +52,7 @@ Open `.aura/sessions/<id>.jsonl` and confirm:
 | **Live registry** | `$env:SKILLWARE_LIVE=1` + same | Same API, real bundled skills |
 | **Observers** | `python examples/07-observer-presets/main.py` | Analytics only |
 | **Emit-only** | `python examples/08-emit-only-loop/main.py` | Loose — no tool host |
-| **Body + tools** | `python integrations/skillware/ollama_skill_loop.py` | LLM body + egress tools |
+| **Body + tools** | `python integrations/skillware/ollama_skill_loop.py` | LLM body + Skillware egress |
 
 Swap Skillware for your runtime — keep `ToolHost.execute()` through egress.
 

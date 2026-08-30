@@ -6,7 +6,7 @@ Attach AURA to your stack — models, tool runtimes, frameworks, sandboxes.
 
 | Integration | Path | Notes |
 |---|---|---|
-| **Overview** | this page | Start here to find your stack |
+| **Overview** | [`integrations/README.md`](../../integrations/README.md) | Pick your stack and run command |
 | **Skillware** | [`integrations/skillware/`](../../integrations/skillware/) | Reference ToolHost adapter; `[skillware]` extra |
 | **Operator identity** | [`integrations/identity/`](../../integrations/identity/) | Optional OIDC/Auth0/manual/mock adapters; `[identity]` extra |
 | **Ollama (local)** | [`integrations/ollama/`](../../integrations/ollama/) | Dev default: `llama3.2:1b` via `.env`; stdlib HTTP |
@@ -14,7 +14,7 @@ Attach AURA to your stack — models, tool runtimes, frameworks, sandboxes.
 | **OpenAI (ChatGPT)** | [`integrations/openai/`](../../integrations/openai/) | Body loop + Skillware egress; `[openai]` extra |
 | **Anthropic (Claude)** | [`integrations/anthropic/`](../../integrations/anthropic/) | Body loop + Skillware egress; `[anthropic]` extra |
 | **Google Gemini** | [`integrations/google/`](../../integrations/google/) | Body loop + Skillware egress; `[google]` extra |
-| **LangGraph / CrewAI** | planned | Framework wrap examples |
+| **LangGraph** | [`integrations/langgraph/`](../../integrations/langgraph/) | Planned framework wrapper |
 
 Copy [`.env.example`](../../.env.example) to `.env` for local Ollama or cloud API keys. Do not commit `.env`.
 
@@ -24,12 +24,12 @@ Use the project **`.venv`** for installs (`pip install -e ".[integrations]"`), n
 
 | Example | Shows |
 |---|---|
-| [05-skillware-skill-types](../examples/05-skillware-skill-types/) | Three skill categories under AURA |
-| [06-skillware-sequencer-chain](../examples/06-skillware-sequencer-chain/) | Sequencer chain with conditional `when` steps |
-| [07-observer-presets](../examples/07-observer-presets/) | Monitor + Break observer presets |
-| [08-emit-only-loop](../examples/08-emit-only-loop/) | Emit-only coat — no tool host |
-| [09-operator-identity](../examples/09-operator-identity/) | Optional verified operator trailer (mock adapter) |
-| [sequencer_pipeline.py](../examples/sequencer_pipeline.py) | Sequencer with mocks |
+| [05-skillware-skill-types](../../examples/05-skillware-skill-types/) | Three skill categories under AURA |
+| [06-skillware-sequencer-chain](../../examples/06-skillware-sequencer-chain/) | Sequencer chain with conditional `when` steps |
+| [07-observer-presets](../../examples/07-observer-presets/) | Monitor + Break observer presets |
+| [08-emit-only-loop](../../examples/08-emit-only-loop/) | Emit-only coat — no tool host |
+| [09-operator-identity](../../examples/09-operator-identity/) | Optional verified operator trailer (mock adapter) |
+| [sequencer_pipeline.py](../../examples/sequencer_pipeline.py) | Sequencer with mocks |
 
 ## Related docs
 

@@ -159,7 +159,8 @@ Recommended loop:
 
 | Provider | Path | Env vars |
 |---|---|---|
-| Ollama (local) | [integrations/skillware/ollama_skill_loop.py](../../integrations/skillware/ollama_skill_loop.py) | `OLLAMA_MODEL`, `OLLAMA_BASE_URL` |
+| Ollama (local body) | [integrations/ollama/](../../integrations/ollama/) | `OLLAMA_MODEL`, `OLLAMA_BASE_URL` |
+| Ollama + Skillware | [integrations/skillware/ollama_skill_loop.py](../../integrations/skillware/ollama_skill_loop.py) | same + `[skillware]` extra |
 | OpenAI | [integrations/openai/](../../integrations/openai/) | `OPENAI_API_KEY`, `OPENAI_MODEL` |
 | Anthropic | [integrations/anthropic/](../../integrations/anthropic/) | `ANTHROPIC_API_KEY`, `ANTHROPIC_MODEL` |
 | Google Gemini | [integrations/google/](../../integrations/google/) | `GOOGLE_API_KEY`, `GEMINI_MODEL` |

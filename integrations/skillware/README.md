@@ -26,8 +26,11 @@ skillware doctor security/prompt_injection_firewall
 
 | Script | Purpose |
 |---|---|
+| [`mock_tools.py`](mock_tools.py) | Mock ToolHost path |
+| [`live_tools.py`](live_tools.py) | Live Skillware registry path |
 | [`reference_tool_host.py`](reference_tool_host.py) | Mock (default) or live Skillware via `SKILLWARE_LIVE=1` |
-| [`ollama_skill_loop.py`](ollama_skill_loop.py) | Ollama `llama3.2:1b` + real `prompt_injection_firewall` through AURA |
+| [`ollama_skill_loop.py`](ollama_skill_loop.py) | Ollama body + Skillware firewall at egress |
+| [`../ollama/llama_loop.py`](../ollama/llama_loop.py) | Ollama body only (stdlib HTTP, no Skillware) |
 
 ## Examples (repo root)
 
@@ -46,7 +49,8 @@ Set `$env:SKILLWARE_LIVE = "1"` for live registry skills in examples 05 and 06.
 | OpenAI (ChatGPT) | [../openai/README.md](../openai/README.md) | `../openai/skillware_body_loop.py` |
 | Anthropic (Claude) | [../anthropic/README.md](../anthropic/README.md) | `../anthropic/skillware_body_loop.py` |
 | Google Gemini | [../google/README.md](../google/README.md) | `../google/skillware_body_loop.py` |
-| Ollama (local) | this folder | `ollama_skill_loop.py` |
+| Ollama (local body) | [../ollama/README.md](../ollama/README.md) | `../ollama/llama_loop.py` |
+| Ollama + Skillware | this folder | `ollama_skill_loop.py` |
 
 All follow the same pattern: **LLM body turn** + **Skillware skills at AURA egress** + **session export**.
 

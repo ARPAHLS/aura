@@ -10,7 +10,7 @@ From repo root:
   pip install ollama
   ollama pull llama3.2:1b
   copy .env.example .env
-  python integrations/skillware/ollama_skill_loop.py
+  python integrations/ollama/llama_loop.py
 
 Requires a running Ollama daemon at OLLAMA_BASE_URL (default http://127.0.0.1:11434).
 """
