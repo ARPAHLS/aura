@@ -64,6 +64,7 @@ Summary includes `agent_ref`, `aura_id`, `policy_version`, `snapshot_hash`, and 
 
 - `aura.agent_ref`, `aura.policy_version` — session identity
 - `aura.principal` — approver on gated calls
+- `aura.operator.subject`, `aura.operator.method`, `aura.operator.verified` — session operator when identity adapter bound
 - `aura.skill_id` — skill on tool and registration events
 
 → [trust-paths.md](trust-paths.md) · [aura-event.schema.json](../spec/aura-event.schema.json) · [reference-tool-host-capstone.md](guides/reference-tool-host-capstone.md)

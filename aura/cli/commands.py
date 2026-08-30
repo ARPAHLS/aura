@@ -258,6 +258,31 @@ def cmd_export_otel(session_id: str, *, console: Console | None = None) -> int:
     return 0
 
 
+def cmd_identity_show(*, console: Console | None = None) -> int:
+    from aura.config import get_config
+
+    cfg = get_config()
+    payload = {
+        "identity": cfg.values.get("identity") or {},
+        "identity_required": cfg.values.get("identity_required", False),
+        "identity_export_pii": cfg.values.get("identity_export_pii", False),
+        "identity_redact_fields": cfg.values.get("identity_redact_fields", []),
+        "env_hints": {
+            "AURA_OIDC_TOKEN": bool(__import__("os").environ.get("AURA_OIDC_TOKEN")),
+            "AURA_AUTH0_DOMAIN": bool(__import__("os").environ.get("AURA_AUTH0_DOMAIN")),
+            "AURA_MOCK_OPERATOR_SUBJECT": bool(
+                __import__("os").environ.get("AURA_MOCK_OPERATOR_SUBJECT")
+            ),
+        },
+    }
+    text = json.dumps(payload, indent=2)
+    if console is None:
+        print(text)
+    else:
+        console.print(text, style="dim")
+    return 0
+
+
 def cmd_compare(session_a: str, session_b: str, *, console: Console | None = None) -> int:
     from aura.config import get_config
 

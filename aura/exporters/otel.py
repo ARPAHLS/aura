@@ -44,7 +44,31 @@ def _promoted_attributes(event: dict[str, Any]) -> dict[str, Any]:
     if step_id:
         attrs["aura.step_id"] = str(step_id)
 
+    ids = agent_ids.get("ids") if isinstance(agent_ids.get("ids"), dict) else {}
+    operator = ids.get("operator") if isinstance(ids, dict) else None
+    if isinstance(operator, dict):
+        if operator.get("verified") is not None:
+            attrs["aura.operator.verified"] = str(operator["verified"]).lower()
+        if operator.get("method"):
+            attrs["aura.operator.method"] = str(operator["method"])
+        if operator.get("subject"):
+            attrs["aura.operator.subject"] = str(operator["subject"])
+        if operator.get("subject_hash"):
+            attrs["aura.operator.subject_hash"] = str(operator["subject_hash"])
+
     return attrs
+
+
+def redact_events_for_export(events: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    from aura.identity.redaction import redact_agent_ids
+
+    redacted: list[dict[str, Any]] = []
+    for event in events:
+        copy_event = dict(event)
+        if "agent_ids" in copy_event:
+            copy_event["agent_ids"] = redact_agent_ids(copy_event.get("agent_ids"))
+        redacted.append(copy_event)
+    return redacted
 
 
 def events_to_spans(events: list[dict[str, Any]]) -> list[dict[str, Any]]:
@@ -83,6 +107,6 @@ def export_otel_jsonl(events: list[dict[str, Any]], out_path: Path) -> Path:
 
 def export_session_otel(session_id: str, sessions_dir: Path) -> Path:
     log_path = sessions_dir / f"{session_id}.jsonl"
-    events = AuditSpine.read_jsonl(log_path)
+    events = redact_events_for_export(AuditSpine.read_jsonl(log_path))
     out_path = sessions_dir / f"{session_id}.otel.jsonl"
     return export_otel_jsonl(events, out_path)

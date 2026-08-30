@@ -69,6 +69,7 @@ openai = ["openai>=1.0"]
 anthropic = ["anthropic>=0.40"]
 google = ["google-generativeai>=0.8"]
 ollama = ["ollama>=0.4.0"]
+identity = ["pyjwt>=2.8", "cryptography>=41"]
 
 [project.scripts]
 aura = "aura.cli.main:main"

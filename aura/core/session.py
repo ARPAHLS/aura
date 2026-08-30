@@ -24,6 +24,8 @@ from aura.core.constraints import (
     ConstraintViolation,
 )
 from aura.core.spine import AuditSpine
+from aura.identity.bind import IdentityOptions, bind_operator_identity
+from aura.identity.models import OperatorIdentity
 from aura.membrane.ingress import ingress_event_payload
 from aura.observers.base import Observer, get_registry
 
@@ -61,6 +63,8 @@ class Session:
     _goal_reached: bool = False
     _declared_rules: list[dict[str, Any]] = field(default_factory=list)
     _open_snapshot_hash: str | None = None
+    _operator_identity: OperatorIdentity | None = None
+    _identity_ids_overlay: dict[str, Any] = field(default_factory=dict)
 
     def __setattr__(self, name: str, value: Any) -> None:
         if (
@@ -87,7 +91,12 @@ class Session:
         if not self._open or not self.spine:
             raise SessionNotOpenError(self.session_id)
 
-    def open(self, sessions_dir: Path) -> None:
+    def open(
+        self,
+        sessions_dir: Path,
+        *,
+        identity_options: IdentityOptions | None = None,
+    ) -> None:
         if self._closed:
             raise SessionClosedError(self.session_id)
         if self._open:
@@ -95,6 +104,9 @@ class Session:
         self.snapshot_hash = _snapshot_hash(self.profile, self.rules)
         self._open_snapshot_hash = self.snapshot_hash
         self._declared_rules = copy.deepcopy(self.rules)
+
+        bind_operator_identity(self, identity_options)
+
         self._log_path = sessions_dir / f"{self.session_id}.jsonl"
         self.spine = AuditSpine(
             session_id=self.session_id,
@@ -117,6 +129,26 @@ class Session:
                 "agent_ref": self.profile.agent_ref,
             },
         )
+        if self._operator_identity:
+            self.emit("identity.bound", self._operator_identity.bind_payload())
+
+    def agent_ids_trailer(self) -> dict[str, Any]:
+        """Profile trailer merged with session-scoped operator identity."""
+        base = self.profile.id_trailer()
+        if not self._identity_ids_overlay:
+            return base
+        ids = dict(base.get("ids") or {})
+        for key, value in self._identity_ids_overlay.items():
+            if isinstance(ids.get(key), dict) and isinstance(value, dict):
+                ids[key] = {**ids[key], **value}
+            else:
+                ids[key] = value
+        base["ids"] = ids
+        return base
+
+    @property
+    def operator_identity(self) -> OperatorIdentity | None:
+        return self._operator_identity
 
     def _attach_profile_observers(self) -> None:
         for entry in self.profile.observers:
@@ -194,21 +226,21 @@ class Session:
                     "rule": exc.rule,
                     "pending_event": {"kind": kind, "payload": payload or {}},
                 },
-                agent_ids=self.profile.id_trailer(),
+                agent_ids=self.agent_ids_trailer(),
             )
             raise
         except ConstraintViolation as exc:
             self.spine.append(
                 "constraint.violated",
                 {"message": str(exc), "rule": exc.rule, "event": exc.event},
-                agent_ids=self.profile.id_trailer(),
+                agent_ids=self.agent_ids_trailer(),
             )
             raise
 
         event = self.spine.append(
             kind,
             payload or {},
-            agent_ids=self.profile.id_trailer(),
+            agent_ids=self.agent_ids_trailer(),
             task_id=self.task_id,
             step_id=step_id,
         )
@@ -216,7 +248,7 @@ class Session:
             self.spine.append(
                 "constraint.passed",
                 {"results": constraint_results, "for_event": event.event_id},
-                agent_ids=self.profile.id_trailer(),
+                agent_ids=self.agent_ids_trailer(),
             )
         self._dispatch_observers(event.to_dict())
         return event.to_dict()
@@ -241,7 +273,7 @@ class Session:
                     "message": message,
                     "rule": rule,
                 },
-                agent_ids=self.profile.id_trailer(),
+                agent_ids=self.agent_ids_trailer(),
                 step_id=step_id,
             )
         raise ApprovalRequired(request_id, message, rule)
@@ -251,12 +283,15 @@ class Session:
         self._approved.add(request_id)
         if self.spine:
             payload: dict[str, Any] = {"request_id": request_id}
-            if principal:
-                payload["principal"] = principal
+            effective_principal = principal
+            if effective_principal is None and self._operator_identity:
+                effective_principal = self._operator_identity.subject
+            if effective_principal:
+                payload["principal"] = effective_principal
             self.spine.append(
                 "constraint.approved",
                 payload,
-                agent_ids=self.profile.id_trailer(),
+                agent_ids=self.agent_ids_trailer(),
             )
 
     def _dispatch_observers(self, event: dict[str, Any]) -> None:

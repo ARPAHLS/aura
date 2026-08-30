@@ -118,6 +118,10 @@ def build_parser() -> argparse.ArgumentParser:
     compare_p.add_argument("session_a", help="First session id")
     compare_p.add_argument("session_b", help="Second session id")
 
+    identity_p = sub.add_parser("identity", help="Operator identity adapters and config")
+    identity_sub = identity_p.add_subparsers(dest="identity_command")
+    identity_sub.add_parser("show", help="Show merged identity configuration")
+
     verify_p = sub.add_parser("verify", help="Verify exported session data")
     verify_sub = verify_p.add_subparsers(dest="verify_command")
     chain_p = verify_sub.add_parser("chain", help="Validate a JSONL audit hash chain")
@@ -160,6 +164,11 @@ def dispatch(args: argparse.Namespace) -> int:
         return commands.cmd_export_otel(args.session_id)
     if args.command == "compare":
         return commands.cmd_compare(args.session_a, args.session_b)
+    if args.command == "identity":
+        if args.identity_command == "show" or args.identity_command is None:
+            return commands.cmd_identity_show()
+        print("usage: aura identity show", file=sys.stderr)
+        return 1
     if args.command == "verify":
         if args.verify_command == "chain":
             return commands.cmd_verify_chain(args.path)

@@ -102,6 +102,7 @@ with ag.session(mode="task") as run:
 | `agent(name)` | Get/create agent profile |
 | `agent.session()` | Open session, auto-export on close |
 | `run.summary` / `run.audit_report` | In-memory receipt (always built; disk write optional via `export=`) |
+| `session(identity_adapter=...)` / `operator=` | Optional verified operator trailer ([#55](https://github.com/ARPAHLS/aura/issues/55)) |
 | `run.emit(kind, payload)` | Append audited event |
 | `run.approve(request_id, principal="operator@corp")` | Satisfy confirm/gate and record the approver |
 | `run.run_sequencer(host=...)` | Run declared step pipeline |

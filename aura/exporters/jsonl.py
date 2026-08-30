@@ -10,8 +10,9 @@ from typing import Any
 from aura.core.audit_report import AuditReport, AuditReportBuilder
 from aura.core.conformance import ConformanceEngine, ConformanceReport
 from aura.core.errors import ExportError
+from aura.identity.redaction import redact_summary
 from aura.core.session import Session
-from aura.exporters.otel import export_otel_jsonl
+from aura.exporters.otel import export_otel_jsonl, redact_events_for_export
 from aura.core.spine import AuditSpine
 
 
@@ -39,7 +40,7 @@ def build_session_summary(
             policy_version=session.profile.policy_version,
         )
 
-    return {
+    summary = {
         "session_id": session.session_id,
         "aura_id": session.profile.aura_id,
         "agent_ref": session.profile.agent_ref,
@@ -49,13 +50,17 @@ def build_session_summary(
         "snapshot_hash": session.snapshot_hash,
         "open_snapshot_hash": session.open_snapshot_hash,
         "trace_id": session.trace_id,
-        "agent_ids": session.profile.id_trailer(),
+        "agent_ids": session.agent_ids_trailer(),
+        "identity": (
+            session.operator_identity.to_operator_dict() if session.operator_identity else None
+        ),
         "purpose": session.profile.purpose,
         "conformance": conformance.to_dict() if conformance else None,
         "audit_report": audit_report.to_dict() if audit_report else None,
         "event_count": len(session.spine.stream()) if session.spine else 0,
         "log": str(session.log_path) if session.log_path else None,
     }
+    return redact_summary(summary)
 
 
 def _atomic_replace(staging_path: Path, final_path: Path) -> None:
@@ -70,7 +75,7 @@ def _write_staging_json(path: Path, payload: dict[str, Any]) -> None:
 def _write_staging_otel(session_id: str, sessions_dir: Path, staging_path: Path) -> None:
     log_path = sessions_dir / f"{session_id}.jsonl"
     events = AuditSpine.read_jsonl(log_path)
-    export_otel_jsonl(events, staging_path)
+    export_otel_jsonl(redact_events_for_export(events), staging_path)
 
 
 def export_session(

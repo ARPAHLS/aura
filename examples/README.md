@@ -27,6 +27,7 @@ Set `AURA_HOME` to isolate storage during tests or demos.
 | [06-skillware-sequencer-chain](06-skillware-sequencer-chain/) | Sequencer chain with conditional `when` steps |
 | [07-observer-presets](07-observer-presets/) | Monitor + Break observer presets on ToolHost |
 | [08-emit-only-loop](08-emit-only-loop/) | Loose coat — emit-only, no tool host |
+| [09-operator-identity](09-operator-identity/) | Optional verified operator trailer (mock adapter) |
 
 ```bash
 python examples/07-observer-presets/main.py

@@ -75,7 +75,7 @@ class MonitorObserver:
             spine.append(
                 "observer.note",
                 note,
-                agent_ids=self._session.profile.id_trailer(),
+                agent_ids=self._session.agent_ids_trailer(),
             )
         self._write_log_line(note)
 

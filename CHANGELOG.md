@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **Verified operator identity ([#55](https://github.com/ARPAHLS/aura/issues/55))** — optional identity adapters (manual, mock, OIDC, Auth0); `identity.bound` spine event; `ids.operator` on all event trailers; export redaction; `aura identity show`; profile `types` with `role: identity`.
+
 - **Session lifecycle invariants ([#15](https://github.com/ARPAHLS/aura/issues/15))** — strict closed-session errors (`SessionClosedError`, `SessionAlreadyOpenError`); `export=False` builds in-memory `summary` and `audit_report` on `SessionRun`; atomic summary + OTel commit on export; frozen `declared_rules` / `open_snapshot_hash` at open (runtime rule merges via skill bind still apply to constraints); `trace_id` on summary export.
 
 - **Documentation sweep ([#14](https://github.com/ARPAHLS/aura/issues/14))** — `docs/INDEX.md` three-tier entry (Start / Build / Decide + Optional vision); demoted narrative, three-rings, aura-levels, field-services; refreshed architecture, concepts, stack-position, field-services shipped vs planned; fixed stale v0.2 voice in getting-started and concepts.

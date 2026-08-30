@@ -17,6 +17,9 @@ DEFAULTS: dict[str, Any] = {
     "storage": "global",  # global | project
     "default_session_mode": "script",
     "export_on_close": True,
+    "identity_required": False,
+    "identity_export_pii": False,
+    "identity_redact_fields": ["email", "name", "phone"],
 }
 
 

@@ -16,6 +16,9 @@ from aura.core.constraints import ApprovalRequired
 from aura.core.errors import ExportError, SessionClosedError, SessionNotOpenError
 from aura.core.session import Session, SessionMode
 from aura.exporters.jsonl import build_session_summary, export_session
+from aura.identity.bind import IdentityOptions
+from aura.identity.errors import IdentityRequiredError, IdentityVerificationError
+from aura.identity.protocol import OperatorIdentityAdapter
 
 
 @dataclass
@@ -102,11 +105,19 @@ class AgentHandle:
         rules: list[dict[str, Any]] | None = None,
         export: bool | None = None,
         sequencer: dict[str, Any] | None = None,
+        identity_adapter: OperatorIdentityAdapter | None = None,
+        operator: dict[str, Any] | None = None,
+        identity: dict[str, Any] | None = None,
     ) -> Iterator[SessionRun]:
         cfg = get_config()
         session = _build_session(self, mode, rules, sequencer)
         run = SessionRun(_session=session)
-        session.open(cfg.sessions_dir())
+        identity_options = IdentityOptions(
+            adapter=identity_adapter,
+            operator=operator,
+            config=dict(identity or {}),
+        )
+        session.open(cfg.sessions_dir(), identity_options=identity_options)
         token = _current_run.set(run)
         try:
             yield run
@@ -189,4 +200,8 @@ __all__ = [
     "SessionNotOpenError",
     "ExportError",
     "current_session",
+    "IdentityOptions",
+    "OperatorIdentityAdapter",
+    "IdentityRequiredError",
+    "IdentityVerificationError",
 ]

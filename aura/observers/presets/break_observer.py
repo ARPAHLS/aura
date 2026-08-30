@@ -67,7 +67,7 @@ class BreakObserver:
             spine.append(
                 "observer.alert",
                 alert,
-                agent_ids=self._session.profile.id_trailer(),
+                agent_ids=self._session.agent_ids_trailer(),
             )
 
 

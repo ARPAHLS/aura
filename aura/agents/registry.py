@@ -77,6 +77,7 @@ class AgentRegistry:
         skills: list[str] | None = None,
         sequencer: dict[str, Any] | None = None,
         observers: list[dict[str, Any]] | None = None,
+        types: list[dict[str, Any]] | None = None,
         ids: dict[str, Any] | None = None,
         default_mode: str = "script",
     ) -> AgentProfile:
@@ -117,6 +118,7 @@ class AgentRegistry:
             skills=skills or [],
             sequencer=sequencer,
             observers=observers or [],
+            types=types or [],
             default_mode=default_mode,
         )
         self.save(profile)
