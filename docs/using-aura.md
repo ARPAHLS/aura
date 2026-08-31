@@ -10,8 +10,10 @@ How to attach AURA to your agent loop — from lightweight audit logging to pres
 
 | Posture | Goal | Typical setup |
 |---|---|---|
-| **Audit** | Wrap any custom loop and review what happened | `agent().session()`, `emit()`, rules optional |
-| **Prescriptive** | Require declared steps, gates, and conformance | Sequencer spec, a tool host, gates, session export in CI |
+| **Audit (loose coat)** | Wrap any custom loop and review what happened | `agent().session()`, `emit()`, rules optional |
+| **Prescriptive (tight coat)** | Require declared steps, gates, and conformance | Sequencer spec, a tool host, gates, session export in CI |
+
+See [comparison.md](comparison.md) for loose / tight / tailored framing and competitor positioning.
 
 AURA is the **harness (coat)**, not the runtime. Your **body** owns the loop; AURA wraps it with **membrane** boundaries and an **audit trail**.
 

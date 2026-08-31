@@ -43,7 +43,7 @@ Copy [`.env.example`](../.env.example) to `.env` for local Ollama or cloud API k
 
 | Doc | Content |
 |---|---|
-| [comparison.md](comparison.md) | vs orchestrators, eval harnesses, tracing |
+| [comparison.md](comparison.md) | vs orchestrators, eval harnesses, tracing — loose / tight / tailored coats |
 | [ROADMAP.md](ROADMAP.md) | Shipped vs deferred (sole deferrals file for public docs) |
 | [README.md](../README.md) | Project entry, quick start, badges |
 

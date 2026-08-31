@@ -16,7 +16,7 @@ This document clarifies how AURA compares to **DeepSeek Harness (DSH)**, **LangG
 
 | Approach | Build inside their stack? | Full causal audit | Policy before world effects | Works with existing script |
 | :--- | :--- | :--- | :--- | :--- |
-| **AURA Harness** | No — wrap what you have | Yes (JSONL + audit report + hash chain) | Yes (constitution, gates, egress on wired paths) | Yes (SDK + Skillware host; broader intercept roadmap) |
+| **AURA Harness** | No — wrap what you have | Yes (JSONL + audit report + hash chain) | Yes (constitution, gates, egress on wired ToolHost paths) | Yes (SDK + any ToolHost adapter; Skillware is one reference impl) |
 | **DeepSeek Harness** | Yes — plugins, profiles, session model | Yes (SessionEvent log) | Partial (sandbox, approval in base) | No — adopt DSH runtime |
 | **LangGraph** | Yes — graph nodes and state | Via LangSmith / custom | Via graph logic you write | No — model as graph |
 | **CrewAI** | Yes — crews, roles, tasks | Via external logging | Via agent/task design | No — CrewAI workflow |
@@ -46,6 +46,22 @@ External in → Ingress → [ Your logic — black box ] → Egress → World + 
 | **Long-term role** | Application framework | Infrastructure coat |
 
 You can run LangGraph, CrewAI, DSH, or a 10-year-old script **inside** the cavity and wrap it with AURA.
+
+---
+
+## Three coats: loose, tight, tailored
+
+AURA scales enforcement without changing the body — pick how much the membrane does:
+
+| Coat | Posture | What AURA does | Typical setup |
+| :--- | :--- | :--- | :--- |
+| **Loose** | Audit | Record boundaries; session receipt at close; no tool blocking | `emit()` only — [example 08](../examples/08-emit-only-loop/) |
+| **Tight** | Enforce | Constitution, gates, allow/deny at **egress** on wired ToolHost paths | Sequencer + `host.execute()` — [examples 05–06](../examples/README.md) |
+| **Tailored** | Escalate | Observers, SLO checks, playbooks on drift or repeated violations | Monitor/Break presets — [example 07](../examples/07-observer-presets/); Gatekeeper run auth ([#56](https://github.com/ARPAHLS/aura/issues/56)) on roadmap |
+
+Skillware is one **reference ToolHost** — not required. Any host that routes capabilities through `ToolHost.execute()` gets the same egress audit and policy spine.
+
+→ [using-aura.md](using-aura.md) · [reference-tool-host-capstone.md](guides/reference-tool-host-capstone.md)
 
 ---
 
@@ -107,7 +123,7 @@ AURA is **not** a guide for building the agent. It is infrastructure for **confi
 ### Key differences
 
 * **Problem domain**: CrewAI/AutoGen answer *who does what in what order*. AURA answers *what crossed the perimeter and was it allowed*.
-* **Tools**: Crew agents often use ad-hoc Python tools. AURA does not supply tools; it governs tool **intents** at egress (confirm-before-send, allow/deny lists in v0.1).
+* **Tools**: Crew agents often use ad-hoc Python tools. AURA does not supply tools; it governs tool **intents** at egress when wired through a ToolHost (confirm-before-send, allow/deny lists, token limits).
 * **Complementary**: Same pattern as Skillware — orchestrator inside, AURA outside.
 
 ---
@@ -118,7 +134,7 @@ AURA is **not** a guide for building the agent. It is infrastructure for **confi
 
 ### Key differences
 
-* **Observe vs. enforce**: Tracers record what happened; they rarely **block** an action before execution. AURA's constitution and constraint engine enforce **policy at the boundary** on wired egress paths (broader intercept on roadmap).
+* **Observe vs. enforce**: Tracers record what happened; they rarely **block** an action before execution. AURA's constitution and constraint engine enforce **policy at the boundary** on wired ToolHost egress paths; zero-intrusion intercept on arbitrary transports remains on [ROADMAP](ROADMAP.md).
 * **Scope**: Tracing tools center on model calls and chains. AURA's audit trail is **agent-run scoped** — tools, approvals, violations, session lifecycle — not only tokens.
 * **Complementary**: Export audit JSONL to OTel ([outputs.md](outputs.md)) or ingest into LangSmith later ([ROADMAP](ROADMAP.md)).
 
@@ -144,7 +160,7 @@ AURA is **not** a guide for building the agent. It is infrastructure for **confi
 ### Key differences
 
 * **Layer**: MCP connects models to tools. AURA wraps the **whole run** — ingress, cavity, egress, audit sink.
-* **Complementary**: MCP server inside the cavity; AURA can gate MCP tool calls at egress as adapter matures.
+* **Complementary**: MCP server inside the cavity; wrap MCP clients in a ToolHost adapter for the same egress gate and audit spine (LangGraph/MCP auto-probe on [ROADMAP](ROADMAP.md)).
 
 ---
 
@@ -155,7 +171,7 @@ OpenTelemetry and structured logging provide **telemetry primitives** — spans,
 ### Key differences
 
 * **Agent semantics**: AURA events carry **agent identity**, session mode, constitution violations, and conformance — not generic spans alone.
-* **Policy**: Logging does not enforce confirm-before-action or token budgets; AURA constraints do on wired egress paths (broader intercept planned).
+* **Policy**: Logging does not enforce confirm-before-action or token budgets; AURA constraints do on wired ToolHost egress paths (see [ROADMAP](ROADMAP.md) for transport coverage beyond reference hosts).
 * **Complementary**: OTel exporter shipped (v0.3); audit trail maps to spans ([outputs.md](outputs.md), [ROADMAP](ROADMAP.md)).
 
 ---
@@ -180,7 +196,7 @@ Orchestrators optimize for **task completion**. Eval harnesses optimize for **qu
 | **Primary goal** | **Runtime membrane — audit & policy** | Composable agent runtime | Stateful agent graphs | Multi-agent orchestration | LLM observability | Offline quality eval |
 | **Architecture** | **Sidecar / wrapper** | Plugin-based runtime | Graph framework | Agent workflow framework | SaaS / SDK tracing | Test harness |
 | **Build inside it** | **No** | Yes | Yes | Yes | Instrument only | N/A |
-| **Black-box agent OK** | **Yes (target)** | Partial | No | No | Partial | N/A |
+| **Black-box agent OK** | **Yes** | Partial | No | No | Partial | N/A |
 | **Live policy gate** | **Yes (constraints + gates + wired egress)** | Sandbox / approval | DIY in graph | DIY in tasks | No | No |
 | **Session receipt / proof** | **Yes (audit report + hash chain)** | SessionEvent log | Via external tools | Via external tools | Traces | Post-hoc |
 | **Causal audit trail** | **Yes (native JSONL)** | Yes (SessionEvent) | Via external tools | Via external tools | Traces | Post-hoc |
@@ -191,26 +207,28 @@ Orchestrators optimize for **task completion**. Eval harnesses optimize for **qu
 
 ## Where AURA is today (v0.3.4+)
 
-Honest scope — reference ToolHost coat, membrane presets, and CLI/docs depth shipped since v0.3.3; full zero-intrusion wiring on every transport still growing:
+Honest scope — reference ToolHost coat, membrane presets, and CLI/docs depth through v0.3.4; unreleased on `main` adds identity, session invariants, and integrations index. Full zero-intrusion wiring on every transport still growing:
 
-| Shipped (through v0.3.4+) | Roadmap |
+| Shipped (v0.3.4+ and unreleased on main) | Roadmap |
 | :--- | :--- |
 | Agent registry, sessions, SDK `emit()` | LangGraph / MCP auto-probe |
 | Constraint engine on events | Full I/O normalizer for arbitrary transports |
 | Audit trail (JSONL) + session export + **audit report** | Signed audit packs |
 | **Hash chain** on spine events + compare + **`aura verify chain`** | Network/shell intercept without host cooperation |
 | **`agent_ref` (ULID)** + policy version on export | DID / verifiable-credential operator adapter |
-| **Verified operator identity** — optional adapters, `identity.bound`, export redaction ([#55](https://github.com/ARPAHLS/aura/issues/55)) | Gatekeeper pre-session verify ([#43](https://github.com/ARPAHLS/aura/issues/43)) |
-| **Ingress** + bind enrichment on `skill.registered` | Branching / parallel sequencer steps |
-| **Egress** `guarded_tool_call` + **ToolHost** protocol (Skillware reference coat) | Broader egress adapters |
+| **Session lifecycle invariants** — closed-session errors, atomic export, frozen open snapshot ([#15](https://github.com/ARPAHLS/aura/issues/15)) | Branching / parallel sequencer steps |
+| **Verified operator identity** — optional adapters, `identity.bound`, export redaction ([#55](https://github.com/ARPAHLS/aura/issues/55)) | Gatekeeper pre-session verify ([#56](https://github.com/ARPAHLS/aura/issues/56)) |
+| **Ingress** + bind enrichment on `skill.registered` | |
+| **Egress** `guarded_tool_call` + **ToolHost** protocol (Skillware reference adapter) | Broader egress adapters |
 | **Sequencer** — linear steps, gates, retries, **`when`** skip | |
 | **Observers** — Monitor + Break presets | Webhooks, enterprise sinks |
 | **Skill manifest merge** at bind | Capability broker |
 | **OTel exporter** + promoted span attributes (incl. operator) | HTTP fleet API |
 | **CLI** — `report show`, `agent set`, config/paths, `identity show`, onboarding guide | |
-| **Examples 01–09** (flat + integration demos) + integrations index | Framework host wraps |
+| **Examples 01–09** (flat + integration demos) | Framework host wraps |
+| **Integrations index** + Ollama body loop ([#19](https://github.com/ARPAHLS/aura/issues/19), [#20](https://github.com/ARPAHLS/aura/issues/20)) | |
 
-The **doctrine** is membrane-first: configure gates, rules, and export invariants at the boundary; keep the cavity a black box. v0.3 adds the **receipt** layer (audit report + integrity chain); v0.2 delivered the first egress path via Skillware/mock hosts per [skillware-integration.md](skillware-integration.md) and [sequencer.md](sequencer.md).
+The **doctrine** is membrane-first: configure gates, rules, and export invariants at the boundary; keep the cavity a black box. v0.3 adds the **receipt** layer (audit report + integrity chain); v0.2 delivered the first egress path via ToolHost reference adapters per [skillware-integration.md](skillware-integration.md) and [sequencer.md](sequencer.md).
 
 ---
 

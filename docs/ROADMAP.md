@@ -12,7 +12,7 @@ Shipped work stays in [CHANGELOG.md](../CHANGELOG.md). This file lists what is *
 | **v0.2** | Membrane, sequencer, Skillware host, observers |
 | **v0.3** | ULID + `agent_ref`, audit report, hash chain, OTel export (+ promoted attrs), compare CLI, ToolHost reference coat |
 | **v0.3.4** | Onboarding guide, `report show`, flat core examples, Monitor/Break presets, capstone + examples 05–08 |
-| **Unreleased** | Identity ([#55](https://github.com/ARPAHLS/aura/issues/55)), session invariants ([#15](https://github.com/ARPAHLS/aura/issues/15)), integrations layout ([#19](https://github.com/ARPAHLS/aura/issues/19)), Ollama loop ([#20](https://github.com/ARPAHLS/aura/issues/20)) |
+| **Unreleased (on main)** | Identity ([#55](https://github.com/ARPAHLS/aura/issues/55)), session invariants ([#15](https://github.com/ARPAHLS/aura/issues/15)), integrations layout ([#19](https://github.com/ARPAHLS/aura/issues/19)), Ollama loop ([#20](https://github.com/ARPAHLS/aura/issues/20)), comparison refresh ([#39](https://github.com/ARPAHLS/aura/issues/39)) |
 
 ---
 

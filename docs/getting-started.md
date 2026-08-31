@@ -138,6 +138,6 @@ Stack-specific loops live in [integrations/](../integrations/README.md) — star
 - [../integrations/README.md](../integrations/README.md) — stack-specific loops
 - [skillware-integration.md](skillware-integration.md) — Skillware host
 - [concepts.md](concepts.md) — agent, session, sequencer
-- [comparison.md](comparison.md) — vs orchestrators and eval harnesses
+- [comparison.md](comparison.md) — vs orchestrators and eval harnesses; loose / tight / tailored coat metaphor
 - [ROADMAP.md](ROADMAP.md) — shipped vs deferred
 - [architecture.md](architecture.md) — modules and data flow
