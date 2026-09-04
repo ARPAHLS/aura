@@ -25,7 +25,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **Audit pipeline example ([#23](https://github.com/ARPAHLS/aura/issues/23))** — assert OTel export file exists after session close.
 
-- **Host stress simulation** — `scripts/aura_host_stress_sim.py` + `tests/test_host_stress_sim.py`: multi-scenario AURA+Skillware host runs (coats, observers, chains, sequencer, export).
+- **Host stress simulation** — `scripts/aura_host_stress_sim.py` + `tests/test_host_stress_sim.py`: sixteen scenarios (loose/tight/tailored coats, spectrum low/mid/high/full bind, Skillware paths, sequencer, observers, export).
+
+- **Coat flow report** — `scripts/aura_coat_flow_report.py`: structured session breakdown per spectrum level (agent, skills, timeline, audit receipt).
+
+- **Audit pipeline CI assert** — `tests/test_audit_pipeline_otel.py` verifies OTel export bytes from `examples/audit_pipeline.py`.
 
 ### Changed
 

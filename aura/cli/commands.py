@@ -539,6 +539,15 @@ def cmd_config_show(*, console: Console | None = None) -> int:
             "Spectrum bind is per agent profile — use `aura agent show <id>` "
             "for effective_spectrum and enforcement_rules."
         ),
+        "spectrum_levels": {
+            "low": {
+                "coat": "loose",
+                "enforcement": "audit only — explicit profile rules still apply",
+            },
+            "mid": {"coat": "tight", "enforcement": "explicit profile rules only (default)"},
+            "high": {"coat": "tight", "enforcement": "auto allow_tools from declared skills"},
+            "full": {"coat": "tailored", "enforcement": "high bind + tool.call requires step_id"},
+        },
     }
     text = json.dumps(payload, indent=2)
     if console is None:

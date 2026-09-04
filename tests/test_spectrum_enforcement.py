@@ -96,6 +96,22 @@ def test_merge_rules_with_spectrum():
     assert "deny_tools" in types
 
 
+def test_spectrum_mid_allows_off_scope_tool(aura_home):
+    ag = agent("mid-default", skills=["research"], spectrum={"level": "mid"})
+    with ag.session(export=False) as run:
+        run.emit("tool.call", {"tool": "off_scope_tool", "tokens": 1})
+    kinds = [e.kind for e in run._session.spine.stream()]
+    assert "constraint.violated" not in kinds
+
+
+def test_config_show_includes_spectrum_levels(run_aura):
+    result = run_aura("config", "show")
+    assert result.returncode == 0
+    payload = json.loads(result.stdout)
+    assert "spectrum_levels" in payload
+    assert payload["spectrum_levels"]["full"]["coat"] == "tailored"
+
+
 def test_cli_agent_set_spectrum(run_aura):
     create = run_aura("agent", "create", "spec-bot", "--ref", "acme/spec")
     assert create.returncode == 0
