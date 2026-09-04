@@ -15,17 +15,19 @@ How to attach AURA to your agent loop — from lightweight audit logging to pres
 
 See [comparison.md](comparison.md) for loose / tight / tailored framing and competitor positioning.
 
-### Spectrum (preview)
+### Spectrum
 
-Optional profile block selects autonomy posture — maps to coat metaphor; full enforcement wiring [#27](https://github.com/ARPAHLS/aura/issues/27):
+Optional profile block selects autonomy posture — maps to the loose / tight / tailored coat metaphor ([#27](https://github.com/ARPAHLS/aura/issues/27)):
 
 ```yaml
 spectrum:
-  level: mid
+  level: mid   # low = audit-only | mid = explicit rules | high = skill allowlist | full = + sequencer step_id
   services: [monitor, audit]
 ```
 
-`aura agent show` includes `spectrum` when set. Ingress events carry a summary when present.
+`aura agent show` includes `effective_spectrum` and injected `enforcement_rules`. `aura agent set --spectrum-level high` updates the bind.
+
+See [aura-levels.md](aura-levels.md) for the level table.
 
 AURA is the **harness (coat)**, not the runtime. Your **body** owns the loop; AURA wraps it with **membrane** boundaries and an **audit trail**.
 

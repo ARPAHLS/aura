@@ -37,7 +37,7 @@ class Spectrum:
         return COAT_BY_LEVEL.get(self.level.lower(), "tight")
 
     def planes(self) -> dict[str, bool]:
-        """Three planes: audit (always), enforce, escalate — docs + #27 preview."""
+        """Three planes: audit (always), enforce, escalate."""
         level = self.level.lower()
         return {
             "audit": True,

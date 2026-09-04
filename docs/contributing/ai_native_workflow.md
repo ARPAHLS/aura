@@ -24,7 +24,7 @@ Written for **autonomous and semi-autonomous agents** working on AURA Harness. H
 | Path | Purpose |
 | :--- | :--- |
 | `aura/agents/` | Registry, profiles, `agent_ref`, ULID ids |
-| `aura/core/` | Session, spine, constraints, conformance, audit report, compare, spectrum stub |
+| `aura/core/` | Session, spine, constraints, conformance, audit report, compare, spectrum enforcement |
 | `aura/membrane/` | Ingress context, egress guarded tool calls |
 | `aura/sequencer/` | Prescriptive step pipelines |
 | `aura/hosts/` | SkillwareHost (reference adapter), mock skills |

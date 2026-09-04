@@ -17,7 +17,7 @@ HELP_GROUPS: List[Tuple[str, List[Tuple[str, str]], str]] = [
             ("aura agent create <name>", "register agent profile (optional --ref)"),
             ("aura agent list", "list aura_id, agent_ref, and name"),
             ("aura agent show <id>", "JSON profile by name, agent_ref, or aura_id"),
-            ("aura agent set <id> …", "update ref, purpose, skills, variables, rules"),
+            ("aura agent set <id> …", "update ref, purpose, skills, variables, rules, spectrum"),
         ],
         _DOCS_ONBOARDING,
     ),

@@ -26,7 +26,7 @@ from aura.core.spine import AuditSpine, verify_hash_chain
 from aura.hosts import MockSkill, SkillwareHost
 
 
-def _run_session(label: str, query: str) -> tuple[str, Path, Path]:
+def _run_session(label: str, query: str) -> tuple[str, Path, Path, Path]:
     ag = agent(
         f"audit-pipeline-{label}",
         agent_ref=f"demo/audit-pipeline-{label}",
@@ -48,20 +48,22 @@ def _run_session(label: str, query: str) -> tuple[str, Path, Path]:
 
     jsonl = Path(run.exports["jsonl"])
     summary = Path(run.exports["summary"])
-    return run.session_id, jsonl, summary
+    otel = Path(run.exports["otel"])
+    return run.session_id, jsonl, summary, otel
 
 
 def main() -> None:
     configure()
 
-    session_a, jsonl_a, summary_a = _run_session("a", "compliance export slice")
-    session_b, _, summary_b = _run_session("b", "compliance export slice rerun")
+    session_a, jsonl_a, summary_a, otel_a = _run_session("a", "compliance export slice")
+    session_b, _, summary_b, _ = _run_session("b", "compliance export slice rerun")
 
     summary_payload = json.loads(summary_a.read_text(encoding="utf-8"))
     audit_report = summary_payload.get("audit_report") or {}
     compare = compare_sessions(summary_a, summary_b)
     chain_ok = verify_hash_chain(AuditSpine.from_jsonl(jsonl_a))
-    otel_path = summary_a.with_name(f"{session_a}.otel.jsonl")
+
+    assert otel_a.is_file(), f"OTel export missing: {otel_a}"
 
     print(
         json.dumps(
@@ -74,6 +76,8 @@ def main() -> None:
                 "verify_chain_cli": chain_ok,
                 "compare_same_verdict": compare.get("audit_verdict", {}).get("same"),
                 "jsonl": str(jsonl_a),
+                "otel": str(otel_a),
+                "otel_bytes": otel_a.stat().st_size,
             },
             indent=2,
         )
@@ -81,7 +85,7 @@ def main() -> None:
     print("session:", session_a)
     print(
         "exports:",
-        {"jsonl": str(jsonl_a), "summary": str(summary_a), "otel": str(otel_path)},
+        {"jsonl": str(jsonl_a), "summary": str(summary_a), "otel": str(otel_a)},
     )
     print("cli:")
     print(f"  aura report show {session_a}")

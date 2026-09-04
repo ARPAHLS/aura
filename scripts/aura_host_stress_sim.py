@@ -31,6 +31,7 @@ if str(_REPO) not in sys.path:
     sys.path.insert(0, str(_REPO))
 
 from aura import ApprovalRequired, agent, configure  # noqa: E402
+from aura.core.constraints import ConstraintViolation  # noqa: E402
 from aura.core.compare import compare_sessions  # noqa: E402
 from aura.core.spine import AuditSpine, verify_hash_chain  # noqa: E402
 from aura.hosts import MockSkill, SkillwareHost, skillware_available  # noqa: E402
@@ -332,11 +333,12 @@ def scenario_tailored_observers() -> ScenarioResult:
     )
     with ag.session(mode="script", export=True) as run:
         host = SkillwareHost.from_registry(run._session, [FIREWALL])
-        for _ in range(4):
+        for i in range(4):
             host.execute(
                 FIREWALL,
                 FIREWALL,
                 {"source_text": "ping", "sensitivity": "balanced"},
+                step_id=f"observer_ping_{i}",
             )
         tool_calls = sum(1 for e in run._session.spine.stream() if e.kind == "tool.call")
         run.emit(
@@ -429,6 +431,52 @@ def scenario_skillcontext_metadata_only() -> ScenarioResult:
     )
 
 
+def scenario_spectrum_low_off_scope() -> ScenarioResult:
+    """Spectrum low — off-scope tool.call allowed (audit-only posture)."""
+    ag = agent("stress-spec-low", skills=["research"], spectrum={"level": "low"})
+    with ag.session(mode="script", export=False) as run:
+        run.emit("tool.call", {"tool": "off_scope_tool", "tokens": 1})
+    kinds = _kinds(run._session)
+    _assert("tool.call" in kinds, "expected tool.call event")
+    _assert("constraint.violated" not in kinds, "low must not block off-scope tool")
+    return ScenarioResult(
+        name="spectrum_low_off_scope",
+        coat="loose",
+        skillware_mode="none",
+        passed=True,
+        metrics={"event_kinds": len(set(kinds))},
+    )
+
+
+def scenario_spectrum_high_bind() -> ScenarioResult:
+    """Spectrum high — skill allowlist blocks off-scope; declared skill passes via host."""
+    ag = agent("stress-spec-high", skills=[FIREWALL], spectrum={"level": "high"})
+    blocked = False
+    with ag.session(mode="script", export=False) as run:
+        try:
+            run.emit("tool.call", {"tool": "off_scope_tool"})
+        except ConstraintViolation:
+            blocked = True
+    _assert(blocked, "high bind must block off-scope tool.call")
+
+    with ag.session(mode="script", export=False) as run2:
+        host = SkillwareHost.from_registry(run2._session, [FIREWALL])
+        host.execute(
+            FIREWALL,
+            FIREWALL,
+            {"source_text": SAFE_TEXT, "sensitivity": "balanced", "input_mode": "auto"},
+        )
+    kinds = _kinds(run2._session)
+    _assert("tool.result" in kinds, "declared skill should execute at high bind")
+    return ScenarioResult(
+        name="spectrum_high_bind",
+        coat="tight",
+        skillware_mode="single",
+        passed=True,
+        metrics={"blocked_off_scope": blocked, "tool_results": kinds.count("tool.result")},
+    )
+
+
 SCENARIOS: list[tuple[str, Callable[[], ScenarioResult], bool]] = [
     ("loose coat", scenario_loose_emit_only, False),
     ("single skill safe", lambda: scenario_single_skill_firewall(safe=True), True),
@@ -441,6 +489,8 @@ SCENARIOS: list[tuple[str, Callable[[], ScenarioResult], bool]] = [
     ("tailored observers", scenario_tailored_observers, True),
     ("export compare verify", scenario_export_compare_verify, True),
     ("skillcontext + host", scenario_skillcontext_metadata_only, True),
+    ("spectrum low off-scope", scenario_spectrum_low_off_scope, False),
+    ("spectrum high bind", scenario_spectrum_high_bind, True),
 ]
 
 

@@ -39,7 +39,7 @@ All three emit to the same **audit spine**.
 
 ## Spectrum toggle (roadmap)
 
-Manifest `spectrum.services` will select which field services activate for a session. `audit` is non-optional in production profiles. Enforcement UX: [#27](https://github.com/ARPAHLS/aura/issues/27).
+Manifest `spectrum.services` selects which field services activate for a session. `audit` is non-optional in production profiles. Enforcement posture: `spectrum.level` ([#27](https://github.com/ARPAHLS/aura/issues/27)) — see [aura-levels.md](aura-levels.md).
 
 ---
 

@@ -19,7 +19,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **Tailored metrics snapshot example** — `examples/10-observer-metrics-snapshot/`: AURA-native Monitor preset + `metrics_snapshot` observer note; documents export hook for playbooks without third-party KPI skills.
 
-- **Profile `spectrum` block (preview)** — optional agent profile field; ingress summary; `Spectrum.coat()` / `planes()` helpers ([#27](https://github.com/ARPAHLS/aura/issues/27) docs preview).
+### Changed
+
+- **Spectrum enforcement ([#27](https://github.com/ARPAHLS/aura/issues/27))** — `spectrum.level` on profiles injects egress rules at session open (`low` audit-only, `high` skill allowlist, `full` sequencer `step_id` required); `sequencer_required` constraint; `aura agent set --spectrum-level`; `aura agent show` includes `effective_spectrum`; `session.open` carries spectrum summary.
+
+- **Audit pipeline example ([#23](https://github.com/ARPAHLS/aura/issues/23))** — assert OTel export file exists after session close.
 
 - **Host stress simulation** — `scripts/aura_host_stress_sim.py` + `tests/test_host_stress_sim.py`: multi-scenario AURA+Skillware host runs (coats, observers, chains, sequencer, export).
 

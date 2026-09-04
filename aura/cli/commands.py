@@ -97,11 +97,17 @@ def cmd_agent_show(name: str, *, console: Console | None = None) -> int:
         else:
             console.print(message, style="bold #FF9AA2")
         return 1
-    payload = json.dumps(profile.to_dict(), indent=2)
+    from aura.core.spectrum_enforcement import effective_spectrum, enforcement_rules
+
+    payload = profile.to_dict()
+    spec = effective_spectrum(profile)
+    payload["effective_spectrum"] = spec.summary()
+    payload["effective_spectrum"]["enforcement_rules"] = enforcement_rules(profile)
+    text = json.dumps(payload, indent=2)
     if console is None:
-        print(payload)
+        print(text)
     else:
-        console.print(payload, style="dim")
+        console.print(text, style="dim")
     return 0
 
 
@@ -358,6 +364,31 @@ def _parse_key_value_pairs(
     return result, None
 
 
+def _parse_spectrum_json(raw: str) -> dict:
+    data = json.loads(raw)
+    if not isinstance(data, dict):
+        raise ValueError("--spectrum-json must be a JSON object")
+    return data
+
+
+def _spectrum_from_cli(
+    *,
+    spectrum_level: str | None,
+    spectrum_services: list[str] | None,
+    spectrum_json: str | None,
+) -> dict | None:
+    if spectrum_json is not None:
+        return _parse_spectrum_json(spectrum_json)
+    if spectrum_level is None and not spectrum_services:
+        return None
+    block: dict = {}
+    if spectrum_level is not None:
+        block["level"] = spectrum_level.strip().lower()
+    if spectrum_services:
+        block["services"] = list(spectrum_services)
+    return block
+
+
 def cmd_agent_set(
     key: str,
     *,
@@ -370,6 +401,9 @@ def cmd_agent_set(
     ids: list[str] | None = None,
     rules_file: Path | None = None,
     rules_json: str | None = None,
+    spectrum_level: str | None = None,
+    spectrum_services: list[str] | None = None,
+    spectrum_json: str | None = None,
     console: Console | None = None,
 ) -> int:
     reg = AgentRegistry()
@@ -443,6 +477,22 @@ def cmd_agent_set(
     if rules is not None:
         updates["rules"] = rules
 
+    try:
+        spectrum_block = _spectrum_from_cli(
+            spectrum_level=spectrum_level,
+            spectrum_services=spectrum_services,
+            spectrum_json=spectrum_json,
+        )
+    except ValueError as exc:
+        message = str(exc)
+        if console is None:
+            print(message, file=sys.stderr)
+        else:
+            console.print(message, style="bold #FF9AA2")
+        return 2
+    if spectrum_block is not None:
+        updates["spectrum"] = spectrum_block
+
     if not updates:
         message = "no fields to update (pass --ref, --purpose, --skill, etc.)"
         if console is None:
@@ -485,6 +535,10 @@ def cmd_config_show(*, console: Console | None = None) -> int:
             {"layer": label, "path": str(path), "loaded": loaded}
             for label, path, loaded in config_sources(cfg)
         ],
+        "spectrum_note": (
+            "Spectrum bind is per agent profile — use `aura agent show <id>` "
+            "for effective_spectrum and enforcement_rules."
+        ),
     }
     text = json.dumps(payload, indent=2)
     if console is None:

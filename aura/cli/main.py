@@ -81,6 +81,18 @@ def build_parser() -> argparse.ArgumentParser:
     )
     set_p.add_argument("--rules-file", type=Path, help="JSON file with rules array")
     set_p.add_argument("--rules-json", help="Inline JSON array of rules")
+    set_p.add_argument(
+        "--spectrum-level",
+        choices=["low", "mid", "high", "full"],
+        help="Spectrum bind level (audit-only to full)",
+    )
+    set_p.add_argument(
+        "--spectrum-service",
+        action="append",
+        dest="spectrum_services",
+        help="Spectrum service id (repeatable; replaces services list)",
+    )
+    set_p.add_argument("--spectrum-json", help="Inline JSON object for spectrum block")
 
     config_p = sub.add_parser("config", help="Configuration")
     config_sub = config_p.add_subparsers(dest="config_command")
@@ -209,6 +221,9 @@ def _dispatch_agent(args: argparse.Namespace) -> int:
             ids=args.ids,
             rules_file=args.rules_file,
             rules_json=args.rules_json,
+            spectrum_level=args.spectrum_level,
+            spectrum_services=args.spectrum_services,
+            spectrum_json=args.spectrum_json,
         )
     print("usage: aura agent {create|list|show|set}", file=sys.stderr)
     return 1
