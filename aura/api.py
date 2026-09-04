@@ -140,6 +140,9 @@ def _build_session(
     except ValueError:
         session_mode = SessionMode.SCRIPT
     merged_rules = list(agent.profile.rules)
+    from aura.core.spectrum_enforcement import enforcement_rules
+
+    merged_rules.extend(enforcement_rules(agent.profile))
     if rules:
         merged_rules.extend(rules)
     from aura.sequencer.spec import merge_sequencer_spec

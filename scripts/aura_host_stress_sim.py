@@ -31,6 +31,7 @@ if str(_REPO) not in sys.path:
     sys.path.insert(0, str(_REPO))
 
 from aura import ApprovalRequired, agent, configure  # noqa: E402
+from aura.core.constraints import ConstraintViolation  # noqa: E402
 from aura.core.compare import compare_sessions  # noqa: E402
 from aura.core.spine import AuditSpine, verify_hash_chain  # noqa: E402
 from aura.hosts import MockSkill, SkillwareHost, skillware_available  # noqa: E402
@@ -332,11 +333,12 @@ def scenario_tailored_observers() -> ScenarioResult:
     )
     with ag.session(mode="script", export=True) as run:
         host = SkillwareHost.from_registry(run._session, [FIREWALL])
-        for _ in range(4):
+        for i in range(4):
             host.execute(
                 FIREWALL,
                 FIREWALL,
                 {"source_text": "ping", "sensitivity": "balanced"},
+                step_id=f"observer_ping_{i}",
             )
         tool_calls = sum(1 for e in run._session.spine.stream() if e.kind == "tool.call")
         run.emit(
@@ -429,6 +431,139 @@ def scenario_skillcontext_metadata_only() -> ScenarioResult:
     )
 
 
+def scenario_spectrum_low_off_scope() -> ScenarioResult:
+    """Spectrum low — off-scope tool.call allowed (audit-only posture)."""
+    ag = agent("stress-spec-low", skills=["research"], spectrum={"level": "low"})
+    with ag.session(mode="script", export=False) as run:
+        run.emit("tool.call", {"tool": "off_scope_tool", "tokens": 1})
+    kinds = _kinds(run._session)
+    _assert("tool.call" in kinds, "expected tool.call event")
+    _assert("constraint.violated" not in kinds, "low must not block off-scope tool")
+    return ScenarioResult(
+        name="spectrum_low_off_scope",
+        coat="loose",
+        skillware_mode="none",
+        passed=True,
+        metrics={"event_kinds": len(set(kinds))},
+    )
+
+
+def scenario_spectrum_high_bind() -> ScenarioResult:
+    """Spectrum high — skill allowlist blocks off-scope; declared skill passes via host."""
+    ag = agent("stress-spec-high", skills=[FIREWALL], spectrum={"level": "high"})
+    blocked = False
+    with ag.session(mode="script", export=False) as run:
+        try:
+            run.emit("tool.call", {"tool": "off_scope_tool"})
+        except ConstraintViolation:
+            blocked = True
+    _assert(blocked, "high bind must block off-scope tool.call")
+
+    with ag.session(mode="script", export=False) as run2:
+        host = SkillwareHost.from_registry(run2._session, [FIREWALL])
+        host.execute(
+            FIREWALL,
+            FIREWALL,
+            {"source_text": SAFE_TEXT, "sensitivity": "balanced", "input_mode": "auto"},
+        )
+    kinds = _kinds(run2._session)
+    _assert("tool.result" in kinds, "declared skill should execute at high bind")
+    return ScenarioResult(
+        name="spectrum_high_bind",
+        coat="tight",
+        skillware_mode="single",
+        passed=True,
+        metrics={"blocked_off_scope": blocked, "tool_results": kinds.count("tool.result")},
+    )
+
+
+def scenario_spectrum_mid_off_scope() -> ScenarioResult:
+    """Spectrum mid — off-scope tool.call allowed (explicit rules only)."""
+    ag = agent("stress-spec-mid", skills=[FIREWALL], spectrum={"level": "mid"})
+    with ag.session(mode="script", export=False) as run:
+        run.emit("tool.call", {"tool": "off_scope_tool", "tokens": 1})
+    kinds = _kinds(run._session)
+    _assert("tool.call" in kinds, "expected tool.call")
+    _assert("constraint.violated" not in kinds, "mid must not auto-block off-scope")
+    return ScenarioResult(
+        name="spectrum_mid_off_scope",
+        coat="tight",
+        skillware_mode="none",
+        passed=True,
+        metrics={"event_kinds": len(set(kinds))},
+    )
+
+
+def scenario_spectrum_full_host_block() -> ScenarioResult:
+    """Spectrum full — SkillwareHost execute without step_id blocked."""
+    ag = agent("stress-spec-full-block", skills=[FIREWALL], spectrum={"level": "full"})
+    blocked = False
+    with ag.session(mode="script", export=False) as run:
+        host = SkillwareHost.from_registry(run._session, [FIREWALL])
+        try:
+            host.execute(
+                FIREWALL,
+                FIREWALL,
+                {"source_text": SAFE_TEXT, "sensitivity": "balanced", "input_mode": "auto"},
+            )
+        except ConstraintViolation:
+            blocked = True
+    _assert(blocked, "full bind must block host execute without step_id")
+    kinds = _kinds(run._session)
+    return ScenarioResult(
+        name="spectrum_full_host_block",
+        coat="tailored",
+        skillware_mode="single",
+        passed=True,
+        metrics={
+            "blocked_without_step_id": blocked,
+            "constraint_violated": kinds.count("constraint.violated"),
+        },
+    )
+
+
+def scenario_spectrum_full_sequencer() -> ScenarioResult:
+    """Spectrum full — run_sequencer supplies step_id on each step."""
+    pipeline = {
+        "steps": [
+            {
+                "id": "scan_input",
+                "type": "skill",
+                "ref": FIREWALL,
+                "config": {
+                    "tool": FIREWALL,
+                    "args": {"source_text": SAFE_TEXT, "sensitivity": "balanced"},
+                },
+            },
+        ]
+    }
+    ag = agent(
+        "stress-spec-full-seq",
+        skills=[FIREWALL],
+        spectrum={"level": "full", "services": ["monitor", "audit"]},
+    )
+    with ag.session(mode="task", export=True) as run:
+        host = SkillwareHost.from_registry(run._session, [FIREWALL])
+        run.run_sequencer(spec=pipeline, host=host)
+        run.complete_goal()
+    kinds = _kinds(run._session)
+    _assert("sequencer.step.end" in kinds, "sequencer should complete")
+    _assert("tool.result" in kinds, "tool should execute under full bind")
+    tool_calls = [e for e in run._session.spine.stream() if e.kind == "tool.call"]
+    _assert(all((e.payload or {}).get("step_id") for e in tool_calls), "all tool.call need step_id")
+    return ScenarioResult(
+        name="spectrum_full_sequencer",
+        coat="tailored",
+        skillware_mode="aura_sequencer+full",
+        passed=True,
+        metrics={
+            "sequencer_ends": kinds.count("sequencer.step.end"),
+            "tool_calls_with_step": len(tool_calls),
+            "session_id": run.session_id,
+        },
+    )
+
+
 SCENARIOS: list[tuple[str, Callable[[], ScenarioResult], bool]] = [
     ("loose coat", scenario_loose_emit_only, False),
     ("single skill safe", lambda: scenario_single_skill_firewall(safe=True), True),
@@ -441,6 +576,11 @@ SCENARIOS: list[tuple[str, Callable[[], ScenarioResult], bool]] = [
     ("tailored observers", scenario_tailored_observers, True),
     ("export compare verify", scenario_export_compare_verify, True),
     ("skillcontext + host", scenario_skillcontext_metadata_only, True),
+    ("spectrum low off-scope", scenario_spectrum_low_off_scope, False),
+    ("spectrum mid off-scope", scenario_spectrum_mid_off_scope, False),
+    ("spectrum high bind", scenario_spectrum_high_bind, True),
+    ("spectrum full host block", scenario_spectrum_full_host_block, True),
+    ("spectrum full sequencer", scenario_spectrum_full_sequencer, True),
 ]
 
 

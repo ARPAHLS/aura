@@ -15,7 +15,7 @@ A logical entity you run under AURA.
 
 Legacy profiles with `AURA-000n` ids still load. See [trust-paths.md](trust-paths.md) and [integrations/identity/README.md](../integrations/identity/README.md) for optional verified operator adapters.
 
-Profile fields also include **`skills`**, **`sequencer`** spec, **`observers`**, and **`rules`**.
+Profile fields also include **`skills`**, **`sequencer`** spec, **`observers`**, **`rules`**, and optional **`spectrum`** (enforcement posture — see [aura-levels.md](aura-levels.md)).
 
 ## Session
 

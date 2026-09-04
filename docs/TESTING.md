@@ -78,7 +78,9 @@ The workflow also emits a gate job named **`lint-test`** that succeeds only when
 - **New behavior needs a test** — extend the closest file (`test_core.py`, `test_v02.py`, `test_v03.py`, `test_cli.py`, or `test_core_gaps.py`).
 - Shared fixtures live in **`tests/conftest.py`** — do not duplicate `aura_home` in test modules.
 - Optional Skillware registry tests: `tests/test_skillware_integration.py` (`@pytest.mark.skillware`) — run in CI via the **skillware-live** job when `[skillware]` is installed ([#36](https://github.com/ARPAHLS/aura/issues/36)).
-- **Host stress simulation:** `python scripts/aura_host_stress_sim.py` — eleven scenarios (loose/tight/tailored coats, single/multi/chain Skillware paths, sequencer, observers, export compare). CI: `tests/test_host_stress_sim.py` (`@pytest.mark.skillware`).
+- **Host stress simulation:** `python scripts/aura_host_stress_sim.py` — sixteen scenarios (loose/tight/tailored coats, spectrum low/mid/high/full bind, single/multi/chain Skillware paths, sequencer, observers, export compare). CI: `tests/test_host_stress_sim.py` (`@pytest.mark.skillware`).
+- **Coat flow report:** `python scripts/aura_coat_flow_report.py --json` — full session breakdown per spectrum level; CI: `tests/test_coat_flow_report.py`.
+- **Spectrum enforcement:** `tests/test_spectrum_enforcement.py` — level-driven allowlist, sequencer bind, CLI set/show.
 - **Real integration tests** live in **`tests/integration/`** (Skillware + Ollama, example 06 live). Default CI **excludes** them (`--ignore=tests/integration`). Run locally:
 
 ```bash

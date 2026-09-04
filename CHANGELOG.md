@@ -13,17 +13,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **Integrations layout ([#19](https://github.com/ARPAHLS/aura/issues/19))** — top-level `integrations/README.md` stack index; Skillware `mock_tools.py` / `live_tools.py` entrypoints; LangGraph stub; doc links from getting-started and provider READMEs.
 
-### Added
-
-- **Audit pipeline example ([#23](https://github.com/ARPAHLS/aura/issues/23))** — `examples/audit_pipeline.py`: two sessions, audit report receipt, programmatic compare, hash-chain verify, CLI follow-ups (mock ToolHost; no Skillware required).
+- **Audit pipeline example ([#23](https://github.com/ARPAHLS/aura/issues/23))** — `examples/audit_pipeline.py`: two sessions, audit report receipt, programmatic compare, hash-chain verify, OTel export assert, CLI follow-ups (mock ToolHost; no Skillware required).
 
 - **Tailored metrics snapshot example** — `examples/10-observer-metrics-snapshot/`: AURA-native Monitor preset + `metrics_snapshot` observer note; documents export hook for playbooks without third-party KPI skills.
 
-- **Profile `spectrum` block (preview)** — optional agent profile field; ingress summary; `Spectrum.coat()` / `planes()` helpers ([#27](https://github.com/ARPAHLS/aura/issues/27) docs preview).
+- **Host stress simulation** — `scripts/aura_host_stress_sim.py` + `tests/test_host_stress_sim.py`: sixteen scenarios (loose/tight/tailored coats, spectrum low/mid/high/full bind, Skillware paths, sequencer, observers, export).
 
-- **Host stress simulation** — `scripts/aura_host_stress_sim.py` + `tests/test_host_stress_sim.py`: multi-scenario AURA+Skillware host runs (coats, observers, chains, sequencer, export).
+- **Coat flow report** — `scripts/aura_coat_flow_report.py`: structured session breakdown per spectrum level (agent, skills, timeline, audit receipt).
+
+- **Audit pipeline CI assert** — `tests/test_audit_pipeline_otel.py` verifies OTel export bytes from `examples/audit_pipeline.py`.
 
 ### Changed
+
+- **Spectrum enforcement ([#27](https://github.com/ARPAHLS/aura/issues/27))** — `spectrum.level` on profiles injects egress rules at session open (`low` audit-only, `high` skill allowlist, `full` sequencer `step_id` required); `sequencer_required` constraint; `aura agent set --spectrum-level`; `aura agent show` includes `effective_spectrum`; `aura config show` includes `spectrum_levels` reference; `session.open` carries spectrum summary.
 
 - **Skillware compatibility** — optional extra `skillware>=0.5.4,<0.6` (auto patch within 0.5.x; conscious bump at 0.6); docs for `SkillContext`, named chains vs AURA sequencer, version policy in [skillware-integration.md](docs/skillware-integration.md).
 

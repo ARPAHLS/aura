@@ -1,10 +1,10 @@
 # AURA Levels
 
-> **Optional / roadmap** — autonomy tiers; runtime enforcement UX tracked in [#27](https://github.com/ARPAHLS/aura/issues/27). Today use postures in [using-aura.md](using-aura.md), sequencer gates, and profile `spectrum`.
+> **Shipped** — `spectrum.level` on agent profiles drives enforcement at egress ([#27](https://github.com/ARPAHLS/aura/issues/27)). See [using-aura.md](using-aura.md).
 
 **Permissioned autonomy** — not binary on/off.
 
-From [narrative.md](narrative.md). Enforced by Spectrum + conformance engine + hook pipeline (enforcement wiring expands in #27).
+From [narrative.md](narrative.md). Enforced by Spectrum + conformance engine + hook pipeline at session egress.
 
 ---
 
@@ -49,7 +49,7 @@ Sequencer and hooks consult level for:
 
 ---
 
-## Profile spec (preview)
+## Profile spec
 
 ```yaml
 spectrum:
@@ -59,7 +59,19 @@ spectrum:
     - audit
 ```
 
-Stored on agent profiles; summarized on `membrane.ingress` when set. Full level→deny behavior wiring: [#27](https://github.com/ARPAHLS/aura/issues/27).
+| Level | Coat | Enforcement |
+|---|---|---|
+| **low** | Loose | Audit only — explicit profile `rules` still apply; off-scope tools pass |
+| **mid** | Tight | Explicit profile rules only (default when unset) |
+| **high** | Tight | Auto `allow_tools` from profile `skills` (+ sequencer refs) |
+| **full** | Tailored | High bind + `tool.call` must include `step_id` (sequencer bind) |
+
+Stored on agent profiles; summarized on `membrane.ingress` and `session.open`. CLI:
+
+```bash
+aura agent set my-bot --spectrum-level high
+aura agent show my-bot   # includes effective_spectrum + enforcement_rules
+```
 
 Schema: [manifest.schema.json](../spec/manifest.schema.json)
 

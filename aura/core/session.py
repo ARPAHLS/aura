@@ -115,6 +115,11 @@ class Session:
         )
         self._open = True
         self._attach_profile_observers()
+        from aura.core.spectrum_enforcement import effective_spectrum, enforcement_rules
+
+        spectrum = effective_spectrum(self.profile)
+        spectrum_meta = spectrum.summary()
+        spectrum_meta["enforcement_rule_count"] = len(enforcement_rules(self.profile))
         self.emit(
             "membrane.ingress",
             ingress_event_payload(self.profile, self.mode.value, self.snapshot_hash),
@@ -127,6 +132,7 @@ class Session:
                 "purpose": self.profile.purpose,
                 "policy_version": self.profile.policy_version,
                 "agent_ref": self.profile.agent_ref,
+                "spectrum": spectrum_meta,
             },
         )
         if self._operator_identity:

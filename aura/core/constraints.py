@@ -86,6 +86,16 @@ def _tool_name(payload: dict[str, Any]) -> str | None:
     return payload.get("tool") or payload.get("name") or payload.get("tool_name")
 
 
+def _tool_in_allowlist(payload: dict[str, Any], allowed: list[str]) -> bool:
+    tool = _tool_name(payload)
+    skill_id = payload.get("skill_id")
+    if tool and tool in allowed:
+        return True
+    if skill_id and str(skill_id) in allowed:
+        return True
+    return False
+
+
 def _token_count(payload: dict[str, Any]) -> int:
     for key in ("tokens", "token_count", "total_tokens"):
         if key in payload:
@@ -140,15 +150,15 @@ def _rule_allow_tools(ctx: ConstraintContext, rule: dict[str, Any]) -> Constrain
     allowed = rule.get("tools") or rule.get("allow") or []
     if not allowed:
         return None
-    tool = _tool_name(ctx.payload)
-    if tool not in allowed:
-        return ConstraintResult(
-            passed=False,
-            rule=rule,
-            message=f"Tool not allowed: {tool}",
-            blocked=True,
-        )
-    return ConstraintResult(passed=True, rule=rule, message="tool allowed")
+    if _tool_in_allowlist(ctx.payload, allowed):
+        return ConstraintResult(passed=True, rule=rule, message="tool allowed")
+    tool = _tool_name(ctx.payload) or ctx.payload.get("skill_id")
+    return ConstraintResult(
+        passed=False,
+        rule=rule,
+        message=f"Tool not allowed: {tool}",
+        blocked=True,
+    )
 
 
 def _rule_deny_tools(ctx: ConstraintContext, rule: dict[str, Any]) -> ConstraintResult | None:
@@ -166,9 +176,25 @@ def _rule_deny_tools(ctx: ConstraintContext, rule: dict[str, Any]) -> Constraint
     return None
 
 
+def _rule_sequencer_required(
+    ctx: ConstraintContext, rule: dict[str, Any]
+) -> ConstraintResult | None:
+    if ctx.event_kind not in ("tool.call", "action.request"):
+        return None
+    if ctx.payload.get("step_id"):
+        return ConstraintResult(passed=True, rule=rule, message="sequencer step present")
+    return ConstraintResult(
+        passed=False,
+        rule=rule,
+        message="Tool call outside declared sequencer step (spectrum full bind)",
+        blocked=True,
+    )
+
+
 _BUILTIN: dict[str, Any] = {
     "max_tokens_per_step": _rule_max_tokens,
     "confirm_before": _rule_confirm_before,
     "allow_tools": _rule_allow_tools,
     "deny_tools": _rule_deny_tools,
+    "sequencer_required": _rule_sequencer_required,
 }

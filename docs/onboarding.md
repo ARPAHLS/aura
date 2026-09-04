@@ -38,10 +38,11 @@ AURA is the **coat** around your loop — not the loop itself.
 
 | Posture | You want | Typical wiring |
 |---|---|---|
-| **Audit** | Record what happened; rules optional | `agent().session()`, `emit()`, export on close |
-| **Prescriptive** | Declared steps, gates, conformance on close | Sequencer spec + tool host + rules + CI receipt check |
+| **Audit (loose)** | Record what happened; rules optional | `spectrum.level: low` or default emit-only — [example 08](../examples/08-emit-only-loop/) |
+| **Prescriptive (tight)** | Declared steps, gates, conformance on close | `spectrum.level: mid`/`high` + sequencer + tool host + rules + CI receipt check |
+| **Tailored** | Observers + full bind | `spectrum.level: full` + Monitor/Break — [example 10](../examples/10-observer-metrics-snapshot/) |
 
-→ [using-aura.md — Choose a posture](using-aura.md#choose-a-posture)
+→ [using-aura.md — Choose a posture](using-aura.md#choose-a-posture) · [aura-levels.md](aura-levels.md)
 
 Stack-specific bodies (Ollama, OpenAI, Skillware registry) live under [integrations/](integrations/README.md). Core patterns live under [examples/](../examples/README.md).
 
@@ -182,7 +183,7 @@ Run in order from repo root after `pip install -e .`:
 | 6 | [06-skillware-sequencer-chain](../examples/06-skillware-sequencer-chain/) | Declarative chain + conditional `when` |
 | 7 | [07-observer-presets](../examples/07-observer-presets/) | Monitor + Break observer presets |
 | 8 | [08-emit-only-loop](../examples/08-emit-only-loop/) | Loose coat — no tool host |
-| 9 | [audit_pipeline.py](../examples/audit_pipeline.py) | Export slice — report, compare, verify |
+| 9 | [audit_pipeline.py](../examples/audit_pipeline.py) | Export slice — report, compare, OTel assert, verify |
 | 10 | [10-observer-metrics-snapshot](../examples/10-observer-metrics-snapshot/) | Tailored coat — observer metrics snapshot |
 
 Capstone checklist: [reference-tool-host-capstone.md](guides/reference-tool-host-capstone.md).

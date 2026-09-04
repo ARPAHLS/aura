@@ -55,9 +55,11 @@ AURA scales enforcement without changing the body — pick how much the membrane
 
 | Coat | Posture | What AURA does | Typical setup |
 | :--- | :--- | :--- | :--- |
-| **Loose** | Audit | Record boundaries; session receipt at close; no tool blocking | `emit()` only — [example 08](../examples/08-emit-only-loop/) |
-| **Tight** | Enforce | Constitution, gates, allow/deny at **egress** on wired ToolHost paths | Sequencer + `host.execute()` — [examples 05–06](../examples/README.md) |
-| **Tailored** | Escalate | Observers, SLO checks, playbooks on drift or repeated violations | Monitor/Break presets — [example 07](../examples/07-observer-presets/); Gatekeeper run auth ([#56](https://github.com/ARPAHLS/aura/issues/56)) on roadmap |
+| **Loose** | Audit | Record boundaries; session receipt at close; no auto tool blocking | `spectrum.level: low` or `emit()` only — [example 08](../examples/08-emit-only-loop/) |
+| **Tight** | Enforce | Constitution, gates, allow/deny at **egress** on wired ToolHost paths | `spectrum.level: mid` (explicit rules) or `high` (skill allowlist) + sequencer + `host.execute()` — [examples 05–06](../examples/README.md) |
+| **Tailored** | Escalate | Observers, SLO checks, playbooks on drift or repeated violations | `spectrum.level: full` (+ `step_id` on tool calls) + Monitor/Break — [example 10](../examples/10-observer-metrics-snapshot/); Gatekeeper run auth ([#56](https://github.com/ARPAHLS/aura/issues/56)) on roadmap |
+
+Level table and CLI: [aura-levels.md](aura-levels.md). Structured session breakdowns: `python scripts/aura_coat_flow_report.py --json`.
 
 Skillware is one **reference ToolHost** — not required. Any host that routes capabilities through `ToolHost.execute()` gets the same egress audit and policy spine.
 

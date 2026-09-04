@@ -24,7 +24,7 @@ Written for **autonomous and semi-autonomous agents** working on AURA Harness. H
 | Path | Purpose |
 | :--- | :--- |
 | `aura/agents/` | Registry, profiles, `agent_ref`, ULID ids |
-| `aura/core/` | Session, spine, constraints, conformance, audit report, compare, spectrum stub |
+| `aura/core/` | Session, spine, constraints, conformance, audit report, compare, spectrum enforcement |
 | `aura/membrane/` | Ingress context, egress guarded tool calls |
 | `aura/sequencer/` | Prescriptive step pipelines |
 | `aura/hosts/` | SkillwareHost (reference adapter), mock skills |
@@ -43,7 +43,8 @@ Written for **autonomous and semi-autonomous agents** working on AURA Harness. H
 
 - **Identity:** `agent_ref`, ULID `aura_id`, `policy_version`, hash chain on spine events
 - **Session export:** `.jsonl`, `.summary.json` (with `audit_report`), `.otel.jsonl`
-- **CLI:** `aura agent create/set`, `config show`, `paths`, `run`, `logs`, `export`, `export-otel`, `compare`
+- **CLI:** `aura agent create/set` (incl. `--spectrum-level`), `config show` (`spectrum_levels`), `paths`, `run`, `logs`, `export`, `export-otel`, `compare`
+- **Spectrum:** `aura/core/spectrum_enforcement.py` merges rules at session open; debug flows via `scripts/aura_coat_flow_report.py`
 - **SDK helpers:** `AuditSpine.from_jsonl()` for disk verify; `compare_sessions()` includes `agent_ref` and `hash_chain_valid` diffs
 - **CI:** Python 3.10–3.13 matrix on every PR; gate job `lint-test` ([`ci.yml`](../../.github/workflows/ci.yml) → [`reusable-test.yml`](../../.github/workflows/reusable-test.yml))
 
