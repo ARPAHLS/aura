@@ -14,7 +14,7 @@ Design language from [narrative.md](narrative.md). Operation ids live in [spec/c
 | **Audit** | Record what, when, why, under which permissions — always on | **Shipped** — audit spine + export |
 | **Break** | Stop infinite retries, circular reasoning, runaway tools | **Shipped** — `preset: break` |
 | **Track** | Task progress, resource use, retries, lineage across steps | Planned |
-| **Limit** | Budgets, rate caps, scope, spectrum permissions | Planned |
+| **Limit** | Budgets, rate caps, scope, spectrum permissions | Partial — `spectrum.level` enforces bind; Limit preset still planned |
 | **Safeguard** | Enforce guardrails from manifest and constitution | Partial — constraint engine + manifest merge |
 | **Wake** | Restart stalled loops, re-queue work, resume | Planned |
 | **Conserve** | Reduce token waste — redundant calls, repeated failures | Planned |
@@ -39,7 +39,7 @@ All three emit to the same **audit spine**.
 
 ## Spectrum toggle (roadmap)
 
-Manifest `spectrum.services` selects which field services activate for a session. `audit` is non-optional in production profiles. Enforcement posture: `spectrum.level` ([#27](https://github.com/ARPAHLS/aura/issues/27)) — see [aura-levels.md](aura-levels.md).
+Manifest `spectrum.services` lists intended field services (summarized on ingress; runtime activation per service still expanding). `audit` is non-optional in production profiles. Enforcement posture: `spectrum.level` — see [aura-levels.md](aura-levels.md).
 
 ---
 

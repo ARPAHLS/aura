@@ -25,9 +25,9 @@ spectrum:
   services: [monitor, audit]
 ```
 
-`aura agent show` includes `effective_spectrum` and injected `enforcement_rules`. `aura agent set --spectrum-level high` updates the bind.
+`aura agent show` includes `effective_spectrum` and injected `enforcement_rules`. `aura agent set --spectrum-level high` updates the bind. `aura config show` includes a `spectrum_levels` reference table.
 
-See [aura-levels.md](aura-levels.md) for the level table.
+See [aura-levels.md](aura-levels.md) for the level table. Debug a full session receipt: `python scripts/aura_coat_flow_report.py --json`.
 
 AURA is the **harness (coat)**, not the runtime. Your **body** owns the loop; AURA wraps it with **membrane** boundaries and an **audit trail**.
 

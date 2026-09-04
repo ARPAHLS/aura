@@ -28,8 +28,8 @@ Track these **after** closing the reference ToolHost epic ([#12](https://github.
 | **Docs sweep** ([#14](https://github.com/ARPAHLS/aura/issues/14)) | Cross-link INDEX, ROADMAP — onboarding ([#13](https://github.com/ARPAHLS/aura/issues/13)) shipped |
 | ~~Integrations layout + Ollama~~ | **Shipped** ([#19](https://github.com/ARPAHLS/aura/issues/19), [#20](https://github.com/ARPAHLS/aura/issues/20), PRs #51/#53) |
 | **Skillware 0.5.4 sync** | **Shipped** — semver range, chains vs sequencer docs, example 10 metrics snapshot |
-| **Spectrum enforcement ([#27](https://github.com/ARPAHLS/aura/issues/27))** | **Shipped** — `spectrum.level` injects egress rules; CLI set/show; stress sim low vs high scenarios |
-| **Audit pipeline example** | **Shipped** ([#23](https://github.com/ARPAHLS/aura/issues/23)) — `examples/audit_pipeline.py` |
+| **Spectrum enforcement ([#27](https://github.com/ARPAHLS/aura/issues/27))** | **Shipped** — `spectrum.level` injects egress rules; CLI set/show; 16 stress sim scenarios; `aura_coat_flow_report.py` |
+| **Audit pipeline example** | **Shipped** ([#23](https://github.com/ARPAHLS/aura/issues/23)) — `examples/audit_pipeline.py` + OTel CI assert |
 
 ---
 

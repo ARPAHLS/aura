@@ -131,7 +131,7 @@ Follow the [Code of Conduct](CODE_OF_CONDUCT.md). We welcome autonomous logical 
   ```
 
 - Shared fixtures: **`tests/conftest.py`** (`aura_home`, `run_aura` for CLI subprocess tests).
-- Full suite is **64+ tests** across `test_core.py`, `test_core_gaps.py`, `test_v02.py`, `test_v03.py`, `test_cli.py`, `test_examples_smoke.py` — see [TESTING.md](docs/TESTING.md).
+- Full suite is **130+ tests** across core, CLI, examples smoke, spectrum enforcement, host stress sim, and coat flow report — see [TESTING.md](docs/TESTING.md).
 - CI runs on PRs via [`.github/workflows/ci.yml`](.github/workflows/ci.yml) (Python **3.10–3.13** matrix; gate job **`lint-test`**: pytest with coverage report, black, flake8). Steps are defined once in [`.github/workflows/reusable-test.yml`](.github/workflows/reusable-test.yml). Each matrix cell also runs `pip-audit` as a warn-only dependency check; its findings or audit errors do not fail the gate or block a PR. See [TESTING.md](docs/TESTING.md) for the exact commands.
 - Wait for green checks before requesting review.
 
@@ -152,7 +152,8 @@ Pure internal refactors with no user-visible effect may omit CHANGELOG; ask on t
 | :--- | :--- |
 | Public SDK (`aura/api.py`, `SessionRun` methods) | `docs/getting-started.md`, `docs/using-aura.md`, `docs/concepts.md`, tests, CHANGELOG |
 | Session / spine event shape | `spec/aura-event.schema.json` (if applicable), `docs/outputs.md`, tests, CHANGELOG |
-| Agent profile / registry fields | `docs/trust-paths.md`, `aura/agents/profile.py` persistence, tests, CHANGELOG |
+| Agent profile / registry fields | `docs/trust-paths.md`, `docs/aura-levels.md`, `docs/using-aura.md`, `aura/agents/profile.py` persistence, tests, CHANGELOG |
+| `spectrum.level` / enforcement rules | `aura/core/spectrum_enforcement.py`, `docs/aura-levels.md`, `docs/comparison.md`, `docs/ROADMAP.md`, `tests/test_spectrum_enforcement.py`, stress sim / flow report scripts, CHANGELOG |
 | Constraint rule types | `docs/concepts.md`, `aura/core/constraints.py` tests, CHANGELOG |
 | Sequencer step model | `spec/sequencer.schema.json`, `docs/sequencer.md`, `tests/test_v02.py`, CHANGELOG |
 | Skillware host / egress | `integrations/skillware/` (when shipped), `docs/skillware-integration.md` redirect, CHANGELOG |

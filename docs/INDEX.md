@@ -57,7 +57,7 @@ Not on the default onboarding path. Kept for ARPA stack context and long-form de
 |---|---|
 | [narrative.md](narrative.md) | Long-form vision (coat, SoulSig, cybernetics) |
 | [three-rings.md](three-rings.md) | Envelope · Field · Adapter model |
-| [aura-levels.md](aura-levels.md) | Autonomy tiers (enforcement roadmap) |
+| [aura-levels.md](aura-levels.md) | Autonomy tiers — `spectrum.level` enforcement (shipped) |
 | [field-services.md](field-services.md) | Twelve parallel services — shipped vs planned |
 | [glossary.md](glossary.md) | Terminology reference |
 
