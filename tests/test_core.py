@@ -21,6 +21,29 @@ def test_spectrum_from_manifest_defaults():
     assert "audit" in s.services
 
 
+def test_spectrum_coat_and_planes():
+    loose = Spectrum.from_manifest({"spectrum": {"level": "low", "services": ["audit"]}})
+    assert loose.coat() == "loose"
+    assert loose.planes()["audit"] is True
+    assert loose.planes()["enforce"] is False
+
+    tailored = Spectrum.from_manifest(
+        {"spectrum": {"level": "full", "services": ["monitor", "audit", "break"]}}
+    )
+    assert tailored.coat() == "tailored"
+    assert tailored.planes()["escalate"] is True
+
+
+def test_profile_spectrum_roundtrip(aura_home: Path):
+    reg = AgentRegistry()
+    profile = reg.create(
+        name="spectrum-demo",
+        spectrum={"level": "mid", "services": ["monitor", "audit"]},
+    )
+    loaded = reg.get_by_id(profile.aura_id)
+    assert loaded.spectrum == {"level": "mid", "services": ["monitor", "audit"]}
+
+
 def test_registry_ulid_ids(aura_home: Path):
     reg = AgentRegistry()
     a1 = reg.create(name="alpha", agent_ref="acme/alpha")

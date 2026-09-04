@@ -15,7 +15,45 @@ AURA Harness wraps Skillware skills at **egress** — policy, approval, and audi
 | **AURA membrane** | Ingress context, egress guard on every tool call |
 | **Audit trail** | JSONL spine + session export |
 
-Skillware is **optional**: `pip install "aura-harness[skillware]"` (requires Skillware ≥ 0.5.1). Tests and examples use `MockSkill` when Skillware is not installed.
+Skillware is **optional**: `pip install "aura-harness[skillware]"` (see [Version compatibility](#version-compatibility) below). Tests and examples use `MockSkill` when Skillware is not installed.
+
+---
+
+## Version compatibility
+
+AURA pins a **semver range**, not an exact patch — so `pip install -U` picks up Skillware **0.5.x** fixes without editing AURA on every patch release:
+
+```text
+skillware>=0.5.4,<0.6
+```
+
+| Policy | Meaning |
+|---|---|
+| **Floor (`>=0.5.4`)** | Minimum tested API — `SkillContext`, named `chains:`, security support window ([Skillware SECURITY.md](https://github.com/arpahls/skillware/blob/main/SECURITY.md)) |
+| **Ceiling (`<0.6`)** | Conscious bump when Skillware ships breaking 0.6 API — update floor + docs in one PR |
+| **What's new** | Read [Skillware CHANGELOG](https://github.com/arpahls/skillware/blob/main/CHANGELOG.md) — we do not duplicate every skill release in AURA |
+
+CI **`skillware-live`** installs the latest compatible release from PyPI on each run. Local dev checkout: `pip install -e ../skillware` alongside AURA.
+
+---
+
+## Skillware chains vs AURA sequencer
+
+Skillware **0.5.4+** adds host-level orchestration that complements (does not replace) AURA's audited sequencer:
+
+| | **Skillware `run_chain()` / `SkillContext`** | **AURA sequencer** |
+|---|---|---|
+| **Owner** | Skillware host / body script | Agent profile or session spec |
+| **Audit** | None by default | Full spine: `sequencer.step.*`, `tool.*`, export receipt |
+| **Policy** | Host code | Egress gates, constitution, conformance on close |
+| **Conditional skip** | Step `when:` in `chains:` YAML | Step `when:` on prior step result |
+| **Best for** | Scripts, CI, model tool routing | Compliance SOPs, regulated pipelines |
+
+**Rule:** Route every skill `execute()` through **`SkillwareHost`** so AURA records egress regardless of whether ordering comes from Skillware chains or AURA sequencer.
+
+Reference parity: Skillware's `sanitize_input` chain (firewall → rewriter when `is_safe`) matches [example 06](../../examples/06-skillware-sequencer-chain/) — AURA adds the session receipt.
+
+→ Skillware docs: [skill_chaining.md](https://github.com/arpahls/skillware/blob/main/docs/usage/skill_chaining.md) (`SkillContext`, `run_chain`, `chains:` in `.skillware.yaml`)
 
 ---
 

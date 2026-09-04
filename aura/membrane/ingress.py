@@ -5,6 +5,7 @@ from __future__ import annotations
 from typing import Any
 
 from aura.agents.profile import AgentProfile
+from aura.core.spectrum import Spectrum
 
 
 def build_ingress_context(
@@ -32,7 +33,7 @@ def ingress_event_payload(
     mode: str,
     snapshot_hash: str | None,
 ) -> dict[str, Any]:
-    return {
+    payload = {
         "membrane": "ingress",
         "mode": mode,
         "snapshot_hash": snapshot_hash,
@@ -42,6 +43,9 @@ def ingress_event_payload(
         "agent_ref": profile.agent_ref,
         "policy_version": profile.policy_version,
     }
+    if profile.spectrum:
+        payload["spectrum"] = Spectrum.from_profile({"spectrum": profile.spectrum}).summary()
+    return payload
 
 
 def skill_registered_payload(

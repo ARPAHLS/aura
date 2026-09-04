@@ -77,6 +77,7 @@ class AgentRegistry:
         skills: list[str] | None = None,
         sequencer: dict[str, Any] | None = None,
         observers: list[dict[str, Any]] | None = None,
+        spectrum: dict[str, Any] | None = None,
         types: list[dict[str, Any]] | None = None,
         ids: dict[str, Any] | None = None,
         default_mode: str = "script",
@@ -118,6 +119,7 @@ class AgentRegistry:
             skills=skills or [],
             sequencer=sequencer,
             observers=observers or [],
+            spectrum=dict(spectrum) if isinstance(spectrum, dict) else None,
             types=types or [],
             default_mode=default_mode,
         )
@@ -176,6 +178,9 @@ class AgentRegistry:
             profile.ids.update(dict(updates["ids"]))
         if updates.get("rules") is not None:
             profile.rules = list(updates["rules"])
+        if "spectrum" in updates:
+            raw = updates["spectrum"]
+            profile.spectrum = dict(raw) if isinstance(raw, dict) else None
 
         self.save(profile)
         return profile

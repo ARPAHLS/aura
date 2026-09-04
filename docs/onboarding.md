@@ -182,6 +182,8 @@ Run in order from repo root after `pip install -e .`:
 | 6 | [06-skillware-sequencer-chain](../examples/06-skillware-sequencer-chain/) | Declarative chain + conditional `when` |
 | 7 | [07-observer-presets](../examples/07-observer-presets/) | Monitor + Break observer presets |
 | 8 | [08-emit-only-loop](../examples/08-emit-only-loop/) | Loose coat — no tool host |
+| 9 | [audit_pipeline.py](../examples/audit_pipeline.py) | Export slice — report, compare, verify |
+| 10 | [10-observer-metrics-snapshot](../examples/10-observer-metrics-snapshot/) | Tailored coat — observer metrics snapshot |
 
 Capstone checklist: [reference-tool-host-capstone.md](guides/reference-tool-host-capstone.md).
 

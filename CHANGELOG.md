@@ -13,7 +13,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **Integrations layout ([#19](https://github.com/ARPAHLS/aura/issues/19))** — top-level `integrations/README.md` stack index; Skillware `mock_tools.py` / `live_tools.py` entrypoints; LangGraph stub; doc links from getting-started and provider READMEs.
 
+### Added
+
+- **Audit pipeline example ([#23](https://github.com/ARPAHLS/aura/issues/23))** — `examples/audit_pipeline.py`: two sessions, audit report receipt, programmatic compare, hash-chain verify, CLI follow-ups (mock ToolHost; no Skillware required).
+
+- **Tailored metrics snapshot example** — `examples/10-observer-metrics-snapshot/`: AURA-native Monitor preset + `metrics_snapshot` observer note; documents export hook for playbooks without third-party KPI skills.
+
+- **Profile `spectrum` block (preview)** — optional agent profile field; ingress summary; `Spectrum.coat()` / `planes()` helpers ([#27](https://github.com/ARPAHLS/aura/issues/27) docs preview).
+
 ### Changed
+
+- **Skillware compatibility** — optional extra `skillware>=0.5.4,<0.6` (auto patch within 0.5.x; conscious bump at 0.6); docs for `SkillContext`, named chains vs AURA sequencer, version policy in [skillware-integration.md](docs/skillware-integration.md).
 
 - **`docs/comparison.md` ([#39](https://github.com/ARPAHLS/aura/issues/39))** — refresh for shipped egress, audit report, and hash chain; loose / tight / tailored coat section; host-agnostic ToolHost framing (Skillware as reference adapter); trim stale v0.1 / intercept-roadmap voice; fix Gatekeeper roadmap link ([#56](https://github.com/ARPAHLS/aura/issues/56)); INDEX and getting-started link blurbs.
 

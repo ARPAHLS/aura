@@ -14,6 +14,8 @@ Ordered **prescriptive** pipelines inside a session — steps, retries, gates, p
 
 The sequencer is **not** the runtime. It structures work **inside** a session while your **body** (Skillware host, script) executes each step.
 
+**Skillware 0.5.4+** also ships host-level [`run_chain()`](https://github.com/arpahls/skillware/blob/main/docs/usage/skill_chaining.md) and `SkillContext` for model tool routing. Use Skillware chains for scripts and CI; use **AURA sequencer** when you need gates, conformance proof, and session export. Example 06 mirrors Skillware's `sanitize_input` chain with full audit spine.
+
 → Usage: [using-aura.md](using-aura.md) · Skillware: [skillware-integration.md](skillware-integration.md)
 
 ---

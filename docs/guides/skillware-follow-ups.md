@@ -27,6 +27,8 @@ Track these **after** closing the reference ToolHost epic ([#12](https://github.
 | **Skill catalog appendix** | Table of bundled Skillware skills: offline vs API, suggested AURA guardrails |
 | **Docs sweep** ([#14](https://github.com/ARPAHLS/aura/issues/14)) | Cross-link INDEX, ROADMAP — onboarding ([#13](https://github.com/ARPAHLS/aura/issues/13)) shipped |
 | ~~Integrations layout + Ollama~~ | **Shipped** ([#19](https://github.com/ARPAHLS/aura/issues/19), [#20](https://github.com/ARPAHLS/aura/issues/20), PRs #51/#53) |
+| **Skillware 0.5.4 sync** | **Shipped** — semver range, chains vs sequencer docs, example 10 metrics snapshot |
+| **Audit pipeline example** | **Shipped** ([#23](https://github.com/ARPAHLS/aura/issues/23)) — `examples/audit_pipeline.py` |
 
 ---
 

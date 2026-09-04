@@ -171,7 +171,9 @@ Each script demonstrates the same architecture: **LLM body + Skillware egress un
 
 ## Sequencer: skill chaining
 
-For fixed SOPs (scan → transform → budget check), declare steps instead of imperative calls:
+For fixed SOPs (scan → transform → budget check), declare steps instead of imperative calls.
+
+Skillware **0.5.4+** also offers [`run_chain()`](https://github.com/arpahls/skillware/blob/main/docs/usage/skill_chaining.md) and **`SkillContext`** for body-side tool discovery. Prefer **AURA sequencer** when the session receipt must prove step order and policy; use Skillware chains for standalone scripts — always route skill calls through `SkillwareHost`.
 
 ```yaml
 sequencer:

@@ -58,4 +58,6 @@ Inspect `.aura/sessions/*.jsonl` for the full spine: `skill.registered`, `tool.i
 | Compliance needs step order proof | Open-ended chat |
 | Human confirm on specific steps | Ad-hoc tool use |
 
+→ Skillware named chain equivalent: `sanitize_input` — [skill_chaining.md](https://github.com/arpahls/skillware/blob/main/docs/usage/skill_chaining.md)
+
 → [sequencer.md](../../docs/sequencer.md) · [aura-on-skillware.md](../../docs/guides/aura-on-skillware.md)
