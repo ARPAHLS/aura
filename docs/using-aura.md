@@ -219,7 +219,7 @@ Schema: [sequencer.schema.json](../spec/sequencer.schema.json)
 pip install "aura-harness[skillware]"
 ```
 
-Skillware ≥ 0.5.1 runs inside the body; AURA wraps `execute()` at egress. See [skillware-integration.md](skillware-integration.md).
+Skillware ≥ 0.5.4 (see [skillware-integration.md](skillware-integration.md#version-compatibility)) runs inside the body; AURA wraps `execute()` at egress.
 
 ---
 

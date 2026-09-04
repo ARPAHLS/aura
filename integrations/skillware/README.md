@@ -8,7 +8,7 @@ AURA wraps [Skillware](https://github.com/arpahls/skillware) at **egress** — p
 
 ```powershell
 .venv\Scripts\activate
-pip install -e ".[dev,skillware]"     # aura-harness + skillware>=0.5.1
+pip install -e ".[dev,skillware]"     # aura-harness + skillware>=0.5.4,<0.6
 pip install -e ".[integrations]"      # + ollama, openai, anthropic, google clients
 ```
 
@@ -38,6 +38,8 @@ skillware doctor security/prompt_injection_firewall
 |---|---|
 | [05-skillware-skill-types](../../examples/05-skillware-skill-types/) | Security + optimization + monitoring skills |
 | [06-skillware-sequencer-chain](../../examples/06-skillware-sequencer-chain/) | Declarative scan → compress → budget pipeline |
+| [audit_pipeline.py](../../examples/audit_pipeline.py) | Export slice — report, compare, verify |
+| [10-observer-metrics-snapshot](../../examples/10-observer-metrics-snapshot/) | Tailored coat — observer metrics snapshot |
 | [sequencer_pipeline.py](../../examples/sequencer_pipeline.py) | Sequencer concepts with mocks |
 
 Set `$env:SKILLWARE_LIVE = "1"` for live registry skills in examples 05 and 06.

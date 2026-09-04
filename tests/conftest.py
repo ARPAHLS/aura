@@ -12,6 +12,15 @@ import pytest
 from aura import configure
 
 
+@pytest.fixture(scope="module")
+def skillware_installed():
+    from aura.hosts import skillware_available
+
+    if not skillware_available():
+        pytest.skip("skillware extra not installed (pip install -e '.[skillware]')")
+    pytest.importorskip("skillware")
+
+
 @pytest.fixture
 def aura_home(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
     """Isolated AURA_HOME with configure() applied."""

@@ -78,6 +78,7 @@ The workflow also emits a gate job named **`lint-test`** that succeeds only when
 - **New behavior needs a test** — extend the closest file (`test_core.py`, `test_v02.py`, `test_v03.py`, `test_cli.py`, or `test_core_gaps.py`).
 - Shared fixtures live in **`tests/conftest.py`** — do not duplicate `aura_home` in test modules.
 - Optional Skillware registry tests: `tests/test_skillware_integration.py` (`@pytest.mark.skillware`) — run in CI via the **skillware-live** job when `[skillware]` is installed ([#36](https://github.com/ARPAHLS/aura/issues/36)).
+- **Host stress simulation:** `python scripts/aura_host_stress_sim.py` — eleven scenarios (loose/tight/tailored coats, single/multi/chain Skillware paths, sequencer, observers, export compare). CI: `tests/test_host_stress_sim.py` (`@pytest.mark.skillware`).
 - **Real integration tests** live in **`tests/integration/`** (Skillware + Ollama, example 06 live). Default CI **excludes** them (`--ignore=tests/integration`). Run locally:
 
 ```bash

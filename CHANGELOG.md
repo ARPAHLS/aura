@@ -21,6 +21,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **Profile `spectrum` block (preview)** — optional agent profile field; ingress summary; `Spectrum.coat()` / `planes()` helpers ([#27](https://github.com/ARPAHLS/aura/issues/27) docs preview).
 
+- **Host stress simulation** — `scripts/aura_host_stress_sim.py` + `tests/test_host_stress_sim.py`: multi-scenario AURA+Skillware host runs (coats, observers, chains, sequencer, export).
+
 ### Changed
 
 - **Skillware compatibility** — optional extra `skillware>=0.5.4,<0.6` (auto patch within 0.5.x; conscious bump at 0.6); docs for `SkillContext`, named chains vs AURA sequencer, version policy in [skillware-integration.md](docs/skillware-integration.md).
