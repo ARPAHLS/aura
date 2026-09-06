@@ -171,6 +171,16 @@ class Session:
 
                 self._observers.append(create_break_observer(self, entry))
                 continue
+            if preset == "goal_drift":
+                from aura.observers.presets.goal_drift import create_goal_drift_observer
+
+                self._observers.append(create_goal_drift_observer(self, entry))
+                continue
+            if preset == "schedule_slo":
+                from aura.observers.presets.schedule_slo import create_schedule_slo_observer
+
+                self._observers.append(create_schedule_slo_observer(self, entry))
+                continue
             obs_id = entry.get("id")
             if not obs_id:
                 continue

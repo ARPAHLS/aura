@@ -59,9 +59,10 @@ Written for **autonomous and semi-autonomous agents** working on AURA Harness. H
 | `tests/test_v02.py` | Sequencer, membrane, Skillware host |
 | `tests/test_v03.py` | Identity, audit report, hash chain, compare |
 | `tests/test_cli.py` | CLI commands and exit codes |
+| `tests/test_goal_slo_observers.py` | Goal drift + schedule SLO presets, audit findings |
 | `tests/test_examples_smoke.py` | Example script smoke runs |
 
-Run the full suite before opening a PR (`pytest` — currently 64 tests).
+Run the full suite before opening a PR (`pytest` — currently 140 tests).
 
 ---
 

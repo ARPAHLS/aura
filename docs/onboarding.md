@@ -185,6 +185,7 @@ Run in order from repo root after `pip install -e .`:
 | 8 | [08-emit-only-loop](../examples/08-emit-only-loop/) | Loose coat — no tool host |
 | 9 | [audit_pipeline.py](../examples/audit_pipeline.py) | Export slice — report, compare, OTel assert, verify |
 | 10 | [10-observer-metrics-snapshot](../examples/10-observer-metrics-snapshot/) | Tailored coat — observer metrics snapshot |
+| 11 | [11-scheduled-agent-slo](../examples/11-scheduled-agent-slo/) | Goal drift + schedule SLO — nickel cron north star |
 
 Capstone checklist: [reference-tool-host-capstone.md](guides/reference-tool-host-capstone.md).
 
@@ -194,8 +195,9 @@ Capstone checklist: [reference-tool-host-capstone.md](guides/reference-tool-host
 
 Not required for first successful run:
 
-- **Goals and schedules** — tracked in [GH #46](https://github.com/ARPAHLS/aura/issues/46)
 - **Run auth / gatekeeper coat** — [GH #56](https://github.com/ARPAHLS/aura/issues/56)
+
+**Goals and schedules** — shipped via [example 11](../examples/11-scheduled-agent-slo/) and `goal_drift` / `schedule_slo` presets ([#46](https://github.com/ARPAHLS/aura/issues/46)).
 
 ---
 

@@ -13,7 +13,7 @@ Design language from [narrative.md](narrative.md). Operation ids live in [spec/c
 | **Monitor** | Loop state, tool calls, outputs, drift — continuously | **Shipped** — `preset: monitor` |
 | **Audit** | Record what, when, why, under which permissions — always on | **Shipped** — audit spine + export |
 | **Break** | Stop infinite retries, circular reasoning, runaway tools | **Shipped** — `preset: break` |
-| **Track** | Task progress, resource use, retries, lineage across steps | Planned |
+| **Track** | Task progress, resource use, retries, lineage across steps | Partial — `preset: goal_drift` + `preset: schedule_slo` ([#46](https://github.com/ARPAHLS/aura/issues/46)) |
 | **Limit** | Budgets, rate caps, scope, spectrum permissions | Partial — `spectrum.level` enforces bind; Limit preset still planned |
 | **Safeguard** | Enforce guardrails from manifest and constitution | Partial — constraint engine + manifest merge |
 | **Wake** | Restart stalled loops, re-queue work, resume | Planned |

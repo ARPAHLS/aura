@@ -69,6 +69,10 @@ class AuditReportBuilder:
                 "steps_started": len(seq_starts),
                 "step_errors": len(seq_errors),
             },
+            "goal_slo": {
+                "goal_drifts": sum(1 for e in events if e.kind == "conformance.drift"),
+                "schedule_misses": sum(1 for e in events if e.kind == "slo.missed"),
+            },
             "events": conformance.event_count,
         }
 
@@ -126,6 +130,41 @@ class AuditReportBuilder:
                 "Re-run with run.run_sequencer() until all declared steps complete, "
                 "or simplify the sequencer spec."
             )
+
+        for event in events:
+            if event.kind == "conformance.drift":
+                payload = event.payload or {}
+                findings.append(
+                    {
+                        "severity": "high",
+                        "code": "GOAL_DRIFT",
+                        "message": payload.get(
+                            "reason", "Observed behavior drifted from declared goal"
+                        ),
+                        "tool": payload.get("tool"),
+                        "goal": payload.get("goal"),
+                        "event_id": event.event_id,
+                    }
+                )
+                recommendations.append(
+                    "Align tool intents with profile goal variables or tighten egress allowlists."
+                )
+            elif event.kind == "slo.missed":
+                payload = event.payload or {}
+                findings.append(
+                    {
+                        "severity": "high",
+                        "code": "SCHEDULE_SLO_MISS",
+                        "message": payload.get("reason", "Schedule SLO was not met"),
+                        "required_tool": payload.get("required_tool"),
+                        "deadline": payload.get("deadline"),
+                        "event_id": event.event_id,
+                    }
+                )
+                recommendations.append(
+                    "Complete required work within the schedule window or adjust "
+                    "profile schedule/grace."
+                )
 
         for event in seq_errors:
             findings.append(

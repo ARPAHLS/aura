@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Goal drift and schedule SLO observers ([#46](https://github.com/ARPAHLS/aura/issues/46))** — `preset: goal_drift` emits `conformance.drift` when tool payloads diverge from profile `variables.goal` / forbidden topics; `preset: schedule_slo` emits `slo.missed` when required work is incomplete by deadline + grace; `aura/core/goal_slo.py` resolver; audit report findings `GOAL_DRIFT` / `SCHEDULE_SLO_MISS`; conformance `goal_slo` check; example `examples/11-scheduled-agent-slo/`.
+
 - **Ollama integration ([#20](https://github.com/ARPAHLS/aura/issues/20))** — `integrations/ollama/llama_loop.py` stdlib HTTP body loop; README; mocked HTTP test; docs index distinguishes Ollama-only vs Ollama+Skillware paths.
 
 - **Integrations layout ([#19](https://github.com/ARPAHLS/aura/issues/19))** — top-level `integrations/README.md` stack index; Skillware `mock_tools.py` / `live_tools.py` entrypoints; LangGraph stub; doc links from getting-started and provider READMEs.

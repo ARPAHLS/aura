@@ -30,6 +30,7 @@ Set `AURA_HOME` to isolate storage during tests or demos.
 | [08-emit-only-loop](08-emit-only-loop/) | Loose coat — emit-only, no tool host |
 | [09-operator-identity](09-operator-identity/) | Optional verified operator trailer (mock adapter) |
 | [10-observer-metrics-snapshot](10-observer-metrics-snapshot/) | Tailored coat — AURA-native metrics snapshot via observers |
+| [11-scheduled-agent-slo](11-scheduled-agent-slo/) | Goal drift + schedule SLO — declared intent vs observed behavior ([#46](https://github.com/ARPAHLS/aura/issues/46)) |
 
 ```bash
 python examples/07-observer-presets/main.py

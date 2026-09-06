@@ -59,6 +59,14 @@ class ConformanceEngine:
                 for item in seq_check.get("violations", []):
                     violations.append(item)
 
+        goal_slo_check = self._check_goal_slo(spine)
+        if goal_slo_check:
+            checks.append(goal_slo_check)
+            if not goal_slo_check.get("passed", True):
+                passed = False
+                for item in goal_slo_check.get("violations", []):
+                    violations.append(item)
+
         return ConformanceReport(
             passed=passed,
             violations=violations,
@@ -103,3 +111,33 @@ class ConformanceEngine:
                 }
             ]
         return result
+
+    def _check_goal_slo(self, spine: AuditSpine) -> dict[str, Any] | None:
+        drifts = [e for e in spine.stream() if e.kind == "conformance.drift"]
+        misses = [e for e in spine.stream() if e.kind == "slo.missed"]
+        if not drifts and not misses:
+            return None
+        violations: list[dict[str, Any]] = []
+        for event in drifts:
+            violations.append(
+                {
+                    "kind": "conformance.drift",
+                    "message": event.payload.get("reason", "Goal drift detected"),
+                    "event_id": event.event_id,
+                }
+            )
+        for event in misses:
+            violations.append(
+                {
+                    "kind": "slo.missed",
+                    "message": event.payload.get("reason", "Schedule SLO missed"),
+                    "event_id": event.event_id,
+                }
+            )
+        return {
+            "type": "goal_slo",
+            "passed": False,
+            "drift_count": len(drifts),
+            "miss_count": len(misses),
+            "violations": violations,
+        }
