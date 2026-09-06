@@ -12,8 +12,8 @@ abstract: >-
   calls, prescriptive sequencer pipelines, observers, hash-chained audit trails,
   conformance summaries, and structured audit reports — without replacing the
   user's loop, model, or skill runtime.
-version: "0.3.4"
-date-released: "2026-08-26"
+version: "0.3.5"
+date-released: "2026-09-06"
 license: MIT
 repository-code: "https://github.com/ARPAHLS/aura"
 url: "https://github.com/ARPAHLS/aura"

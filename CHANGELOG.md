@@ -7,36 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.5] - 2026-09-06
+
 ### Added
 
 - **Goal drift and schedule SLO observers ([#46](https://github.com/ARPAHLS/aura/issues/46))** — `preset: goal_drift` emits `conformance.drift` when tool payloads diverge from profile `variables.goal` / forbidden topics; `preset: schedule_slo` emits `slo.missed` when required work is incomplete by deadline + grace; `aura/core/goal_slo.py` resolver; audit report findings `GOAL_DRIFT` / `SCHEDULE_SLO_MISS`; conformance `goal_slo` check; example `examples/11-scheduled-agent-slo/`.
-
 - **Ollama integration ([#20](https://github.com/ARPAHLS/aura/issues/20))** — `integrations/ollama/llama_loop.py` stdlib HTTP body loop; README; mocked HTTP test; docs index distinguishes Ollama-only vs Ollama+Skillware paths.
-
 - **Integrations layout ([#19](https://github.com/ARPAHLS/aura/issues/19))** — top-level `integrations/README.md` stack index; Skillware `mock_tools.py` / `live_tools.py` entrypoints; LangGraph stub; doc links from getting-started and provider READMEs.
-
 - **Audit pipeline example ([#23](https://github.com/ARPAHLS/aura/issues/23))** — `examples/audit_pipeline.py`: two sessions, audit report receipt, programmatic compare, hash-chain verify, OTel export assert, CLI follow-ups (mock ToolHost; no Skillware required).
-
 - **Tailored metrics snapshot example** — `examples/10-observer-metrics-snapshot/`: AURA-native Monitor preset + `metrics_snapshot` observer note; documents export hook for playbooks without third-party KPI skills.
-
 - **Host stress simulation** — `scripts/aura_host_stress_sim.py` + `tests/test_host_stress_sim.py`: sixteen scenarios (loose/tight/tailored coats, spectrum low/mid/high/full bind, Skillware paths, sequencer, observers, export).
-
 - **Coat flow report** — `scripts/aura_coat_flow_report.py`: structured session breakdown per spectrum level (agent, skills, timeline, audit receipt).
-
 - **Audit pipeline CI assert** — `tests/test_audit_pipeline_otel.py` verifies OTel export bytes from `examples/audit_pipeline.py`.
 
 ### Changed
 
 - **Spectrum enforcement ([#27](https://github.com/ARPAHLS/aura/issues/27))** — `spectrum.level` on profiles injects egress rules at session open (`low` audit-only, `high` skill allowlist, `full` sequencer `step_id` required); `sequencer_required` constraint; `aura agent set --spectrum-level`; `aura agent show` includes `effective_spectrum`; `aura config show` includes `spectrum_levels` reference; `session.open` carries spectrum summary.
-
 - **Skillware compatibility** — optional extra `skillware>=0.5.4,<0.6` (auto patch within 0.5.x; conscious bump at 0.6); docs for `SkillContext`, named chains vs AURA sequencer, version policy in [skillware-integration.md](docs/skillware-integration.md).
-
 - **`docs/comparison.md` ([#39](https://github.com/ARPAHLS/aura/issues/39))** — refresh for shipped egress, audit report, and hash chain; loose / tight / tailored coat section; host-agnostic ToolHost framing (Skillware as reference adapter); trim stale v0.1 / intercept-roadmap voice; fix Gatekeeper roadmap link ([#56](https://github.com/ARPAHLS/aura/issues/56)); INDEX and getting-started link blurbs.
-
 - **Verified operator identity ([#55](https://github.com/ARPAHLS/aura/issues/55))** — optional identity adapters (manual, mock, OIDC, Auth0); `identity.bound` spine event; `ids.operator` on all event trailers; export redaction; `aura identity show`; profile `types` with `role: identity`.
-
 - **Session lifecycle invariants ([#15](https://github.com/ARPAHLS/aura/issues/15))** — strict closed-session errors (`SessionClosedError`, `SessionAlreadyOpenError`); `export=False` builds in-memory `summary` and `audit_report` on `SessionRun`; atomic summary + OTel commit on export; frozen `declared_rules` / `open_snapshot_hash` at open (runtime rule merges via skill bind still apply to constraints); `trace_id` on summary export.
-
 - **Documentation sweep ([#14](https://github.com/ARPAHLS/aura/issues/14))** — `docs/INDEX.md` three-tier entry (Start / Build / Decide + Optional vision); demoted narrative, three-rings, aura-levels, field-services; refreshed architecture, concepts, stack-position, field-services shipped vs planned; fixed stale v0.2 voice in getting-started and concepts.
 
 ## [0.3.4] - 2026-08-26
@@ -76,7 +66,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - **Reusable CI workflow** — `.github/workflows/reusable-test.yml` shared by PR CI and PyPI publish; fixes publish drift (flake8 scope, `--ignore=tests/integration`) ([#17](https://github.com/ARPAHLS/aura/issues/17)).
-
 - **Docs sync (post–#12)** — INDEX, ROADMAP, integration guides, follow-ups backlog, OTel/observer sections aligned with PR #43 closure ([#41](https://github.com/ARPAHLS/aura/issues/41), [#22](https://github.com/ARPAHLS/aura/issues/22)).
 - **Examples layout** — examples use a flat top-level script layout ([#21](https://github.com/ARPAHLS/aura/issues/21)).
 - **Example 06** — compress step skips when scan `is_safe` is false (sequencer `when`).
@@ -210,7 +199,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - v0.1 is a **runnable kernel**, not the full manifesto stack.
 - Type plugin registry (`aura/core/registry.py`) retained for future adapters; not required to run basic sessions.
 
-[Unreleased]: https://github.com/ARPAHLS/aura/compare/v0.3.4...HEAD
+[Unreleased]: https://github.com/ARPAHLS/aura/compare/v0.3.5...HEAD
+[0.3.5]: https://github.com/ARPAHLS/aura/compare/v0.3.4...v0.3.5
 [0.3.4]: https://github.com/ARPAHLS/aura/compare/v0.3.3...v0.3.4
 [0.3.3]: https://github.com/ARPAHLS/aura/compare/v0.3.2...v0.3.3
 [0.3.2]: https://github.com/ARPAHLS/aura/compare/v0.3.1...v0.3.2

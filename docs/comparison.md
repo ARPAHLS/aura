@@ -207,11 +207,11 @@ Orchestrators optimize for **task completion**. Eval harnesses optimize for **qu
 
 ---
 
-## Where AURA is today (v0.3.4+)
+## Where AURA is today (v0.3.5)
 
-Honest scope — reference ToolHost coat, membrane presets, and CLI/docs depth through v0.3.4; unreleased on `main` adds identity, session invariants, and integrations index. Full zero-intrusion wiring on every transport still growing:
+Honest scope — reference ToolHost coat, membrane presets, spectrum bind, operational SLO observers, identity adapters, and CLI/docs depth through v0.3.5. Full zero-intrusion wiring on every transport still growing:
 
-| Shipped (v0.3.4+ and unreleased on main) | Roadmap |
+| Shipped (v0.3.5) | Roadmap |
 | :--- | :--- |
 | Agent registry, sessions, SDK `emit()` | LangGraph / MCP auto-probe |
 | Constraint engine on events | Full I/O normalizer for arbitrary transports |
@@ -223,11 +223,12 @@ Honest scope — reference ToolHost coat, membrane presets, and CLI/docs depth t
 | **Ingress** + bind enrichment on `skill.registered` | |
 | **Egress** `guarded_tool_call` + **ToolHost** protocol (Skillware reference adapter) | Broader egress adapters |
 | **Sequencer** — linear steps, gates, retries, **`when`** skip | |
-| **Observers** — Monitor + Break presets | Webhooks, enterprise sinks |
+| **Observers** — Monitor + Break + goal drift + schedule SLO presets | Limit preset ([#79](https://github.com/ARPAHLS/aura/issues/79)); webhooks |
+| **Spectrum enforcement** — `spectrum.level` bind at session open ([#27](https://github.com/ARPAHLS/aura/issues/27)) | `spectrum.services[]` runtime activation ([#77](https://github.com/ARPAHLS/aura/issues/77)) |
 | **Skill manifest merge** at bind | Capability broker |
 | **OTel exporter** + promoted span attributes (incl. operator) | HTTP fleet API |
 | **CLI** — `report show`, `agent set`, config/paths, `identity show`, onboarding guide | |
-| **Examples 01–09** (flat + integration demos) | Framework host wraps |
+| **Examples 01–11** (flat + integration demos; audit pipeline + goal/SLO) | Framework host wraps |
 | **Integrations index** + Ollama body loop ([#19](https://github.com/ARPAHLS/aura/issues/19), [#20](https://github.com/ARPAHLS/aura/issues/20)) | |
 
 The **doctrine** is membrane-first: configure gates, rules, and export invariants at the boundary; keep the cavity a black box. v0.3 adds the **receipt** layer (audit report + integrity chain); v0.2 delivered the first egress path via ToolHost reference adapters per [skillware-integration.md](skillware-integration.md) and [sequencer.md](sequencer.md).
