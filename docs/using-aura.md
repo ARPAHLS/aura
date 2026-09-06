@@ -156,7 +156,7 @@ get_registry().register(CallableObserver("metrics", lambda e: print(e["kind"])))
 
 Profile observers (by id) attach at session open. Handlers must be non-blocking.
 
-Packaged presets: `preset: monitor` (analytics notes) and `preset: break` (repeated-intent alerts) — see [examples/07-observer-presets](../examples/07-observer-presets/) and [reference-tool-host-capstone.md](guides/reference-tool-host-capstone.md).
+Packaged presets: `preset: monitor` (analytics notes), `preset: break` (repeated-intent alerts), `preset: goal_drift` (`conformance.drift` vs declared goal), and `preset: schedule_slo` (`slo.missed` on deadline) — see [examples/07-observer-presets](../examples/07-observer-presets/), [examples/11-scheduled-agent-slo](../examples/11-scheduled-agent-slo/), and [reference-tool-host-capstone.md](guides/reference-tool-host-capstone.md).
 
 ---
 
