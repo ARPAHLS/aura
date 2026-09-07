@@ -36,6 +36,8 @@ aura agent list
 aura agent set my-bot --ref tenant/slug --purpose "experiments"
 aura agent set my-bot --spectrum-level mid --spectrum-service audit --spectrum-service monitor
 aura agent show my-bot   # includes effective_spectrum and services when set
+
+Profiles at **`high` or `full`** with a `spectrum` block default to requiring a **verified** operator at session open ([#73](https://github.com/ARPAHLS/aura/issues/73)). Use an identity adapter, or opt out with `spectrum.identity_required: false`.
 aura --help
 ```
 

@@ -32,6 +32,7 @@ if str(_REPO) not in sys.path:
 
 from aura import ApprovalRequired, agent, configure  # noqa: E402
 from aura.core.constraints import ConstraintViolation  # noqa: E402
+from aura.identity.errors import IdentityRequiredError  # noqa: E402
 from aura.core.compare import compare_sessions  # noqa: E402
 from aura.core.spine import AuditSpine, verify_hash_chain  # noqa: E402
 from aura.hosts import MockSkill, SkillwareHost, skillware_available  # noqa: E402
@@ -674,6 +675,153 @@ def scenario_spectrum_full_sequencer() -> ScenarioResult:
     )
 
 
+def scenario_spectrum_identity_required_blocks() -> ScenarioResult:
+    """Spectrum high default — session open fails without verified operator."""
+    configure(identity={})
+    ag = agent("stress-id-block", skills=[FIREWALL], spectrum={"level": "high"})
+    blocked = False
+    reason = ""
+    try:
+        with ag.session(mode="script", export=False) as run:
+            run.emit("turn.start", {})
+    except IdentityRequiredError as exc:
+        blocked = True
+        reason = str(exc)
+    finally:
+        configure(identity={"adapter": "mock", "subject": "stress-sim-operator"})
+    _assert(blocked, "high bind must block session open without verified identity")
+    _assert("level_default:high" in reason or "verified" in reason.lower(), reason)
+    return ScenarioResult(
+        name="spectrum_identity_required_blocks",
+        coat="tight",
+        skillware_mode="none",
+        passed=True,
+        metrics={"blocked": blocked},
+    )
+
+
+def scenario_spectrum_identity_opt_out() -> ScenarioResult:
+    """Explicit identity_required: false allows session without IdP."""
+    configure(identity={})
+    ag = agent(
+        "stress-id-opt-out",
+        skills=[FIREWALL],
+        spectrum={"level": "high", "identity_required": False},
+    )
+    try:
+        with ag.session(mode="script", export=False) as run:
+            run.emit("turn.start", {})
+        opened = True
+    finally:
+        configure(identity={"adapter": "mock", "subject": "stress-sim-operator"})
+    _assert(opened, "opt-out must allow session without verified identity")
+    return ScenarioResult(
+        name="spectrum_identity_opt_out",
+        coat="tight",
+        skillware_mode="none",
+        passed=True,
+        metrics={"opened": opened},
+    )
+
+
+def scenario_spectrum_identity_full_blocks() -> ScenarioResult:
+    """Spectrum full default — stricter coat also blocks without verified operator."""
+    configure(identity={})
+    ag = agent("stress-id-full-block", skills=[FIREWALL], spectrum={"level": "full"})
+    blocked = False
+    try:
+        with ag.session(mode="script", export=False) as run:
+            run.emit("turn.start", {})
+    except IdentityRequiredError:
+        blocked = True
+    finally:
+        configure(identity={"adapter": "mock", "subject": "stress-sim-operator"})
+    _assert(blocked, "full bind must block session open without verified identity")
+    return ScenarioResult(
+        name="spectrum_identity_full_blocks",
+        coat="tailored",
+        skillware_mode="none",
+        passed=True,
+        metrics={"blocked": blocked},
+    )
+
+
+def scenario_spectrum_identity_unverified_manual() -> ScenarioResult:
+    """Manual unverified operator does not satisfy high/full verified-ID gate."""
+    configure(identity={})
+    ag = agent(
+        "stress-id-unverified",
+        skills=[FIREWALL],
+        spectrum={"level": "full"},
+        ids={"operator": {"subject": "manual@corp.com", "verified": False, "method": "manual"}},
+    )
+    blocked = False
+    reason = ""
+    try:
+        with ag.session(mode="script", export=False) as run:
+            run.emit("turn.start", {})
+    except IdentityRequiredError as exc:
+        blocked = True
+        reason = exc.reason
+    finally:
+        configure(identity={"adapter": "mock", "subject": "stress-sim-operator"})
+    _assert(blocked, "unverified manual must not satisfy verified-ID gate")
+    _assert(reason == "operator_not_verified", reason)
+    return ScenarioResult(
+        name="spectrum_identity_unverified_manual",
+        coat="tailored",
+        skillware_mode="none",
+        passed=True,
+        metrics={"blocked": blocked, "reason": reason},
+    )
+
+
+def scenario_spectrum_identity_global_required() -> ScenarioResult:
+    """Global identity_required blocks agents without spectrum opt-out."""
+    configure(identity={}, identity_required=True)
+    ag = agent("stress-id-global", skills=[FIREWALL], spectrum={"level": "mid"})
+    blocked = False
+    try:
+        with ag.session(mode="script", export=False) as run:
+            run.emit("turn.start", {})
+    except IdentityRequiredError:
+        blocked = True
+    finally:
+        configure(identity={"adapter": "mock", "subject": "stress-sim-operator"}, identity_required=False)
+    _assert(blocked, "global identity_required must block when no operator resolves")
+    return ScenarioResult(
+        name="spectrum_identity_global_required",
+        coat="tight",
+        skillware_mode="none",
+        passed=True,
+        metrics={"blocked": blocked},
+    )
+
+
+def scenario_spectrum_identity_mock_verified_ok() -> ScenarioResult:
+    """Mock adapter satisfies high verified-ID default — session opens and binds."""
+    configure(identity={"adapter": "mock", "subject": "stress-verified-operator"})
+    ag = agent("stress-id-mock-ok", skills=[FIREWALL], spectrum={"level": "high"})
+    with ag.session(mode="script", export=False) as run:
+        run.emit("turn.start", {})
+        open_evt = next(e for e in run._session.spine.stream() if e.kind == "session.open")
+        bound = next(e for e in run._session.spine.stream() if e.kind == "identity.bound")
+    spectrum = (open_evt.payload or {}).get("spectrum") or {}
+    operator = ((bound.payload or {}).get("operator") or {}) if bound else {}
+    _assert(spectrum.get("verified_identity_required") is True, spectrum)
+    _assert(operator.get("verified") is True, operator)
+    return ScenarioResult(
+        name="spectrum_identity_mock_verified_ok",
+        coat="tight",
+        skillware_mode="none",
+        passed=True,
+        metrics={
+            "policy_source": spectrum.get("verified_identity_required_source"),
+            "operator": operator.get("subject"),
+        },
+    )
+
+
 SCENARIOS: list[tuple[str, Callable[[], ScenarioResult], bool]] = [
     ("loose coat", scenario_loose_emit_only, False),
     ("single skill safe", lambda: scenario_single_skill_firewall(safe=True), True),
@@ -695,6 +843,12 @@ SCENARIOS: list[tuple[str, Callable[[], ScenarioResult], bool]] = [
     ("spectrum services limit", scenario_spectrum_services_limit, False),
     ("spectrum services unknown", scenario_spectrum_services_unknown, False),
     ("spectrum full sequencer", scenario_spectrum_full_sequencer, True),
+    ("spectrum identity blocks", scenario_spectrum_identity_required_blocks, False),
+    ("spectrum identity opt out", scenario_spectrum_identity_opt_out, False),
+    ("spectrum identity full blocks", scenario_spectrum_identity_full_blocks, False),
+    ("spectrum identity unverified manual", scenario_spectrum_identity_unverified_manual, False),
+    ("spectrum identity global required", scenario_spectrum_identity_global_required, False),
+    ("spectrum identity mock verified ok", scenario_spectrum_identity_mock_verified_ok, False),
 ]
 
 
@@ -733,7 +887,7 @@ def run_all() -> list[ScenarioResult]:
 def main() -> int:
     home = tempfile.mkdtemp(prefix="aura_stress_")
     os.environ["AURA_HOME"] = home
-    configure()
+    configure(identity={"adapter": "mock", "subject": "stress-sim-operator"})
 
     results = run_all()
     passed = sum(1 for r in results if r.passed and not r.skipped)

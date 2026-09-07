@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 
 from aura import agent
+from tests.spectrum_helpers import spectrum_block
 from aura.core.spectrum_services import (
     attach_spectrum_services,
     merge_spectrum_update,
@@ -25,7 +26,7 @@ def test_no_spectrum_block_skips_wiring(aura_home):
 
 
 def test_level_high_defaults_monitor(aura_home):
-    ag = agent("high-default", skills=["research"], spectrum={"level": "high"})
+    ag = agent("high-default", skills=["research"], spectrum=spectrum_block("high"))
     with ag.session(export=False) as run:
         monitors = [o for o in run._session._observers if isinstance(o, MonitorObserver)]
         open_evt = next(e for e in run._session.spine.stream() if e.kind == "session.open")
@@ -36,7 +37,7 @@ def test_level_high_defaults_monitor(aura_home):
 
 
 def test_level_full_defaults_monitor_and_break(aura_home):
-    ag = agent("full-default", skills=["research"], spectrum={"level": "full"})
+    ag = agent("full-default", skills=["research"], spectrum=spectrum_block("full"))
     with ag.session(export=False) as run:
         ids = {getattr(o, "observer_id", "") for o in run._session._observers}
         open_evt = next(e for e in run._session.spine.stream() if e.kind == "session.open")
@@ -75,7 +76,7 @@ def test_explicit_observer_wins_over_service(aura_home):
     ag = agent(
         "dup-monitor",
         skills=["research"],
-        spectrum={"level": "high", "services": ["monitor"]},
+        spectrum={**spectrum_block("high"), "services": ["monitor"]},
         observers=[{"preset": "monitor", "id": "profile-monitor"}],
     )
     with ag.session(export=False) as run:
@@ -146,8 +147,8 @@ def test_service_config_merge(aura_home):
 
 def test_merge_spectrum_update_preserves_services():
     merged = merge_spectrum_update(
-        {"level": "high", "services": ["monitor", "audit"]},
-        {"level": "full"},
+        spectrum_block("high", services=["monitor", "audit"]),
+        spectrum_block("full"),
     )
     assert merged["level"] == "full"
     assert merged["services"] == ["monitor", "audit"]
@@ -239,7 +240,7 @@ def test_cli_agent_set_spectrum_merge(run_aura):
 
 
 def test_attach_spectrum_services_unit(aura_home):
-    ag = agent("unit", skills=["research"], spectrum={"level": "high"})
+    ag = agent("unit", skills=["research"], spectrum=spectrum_block("high"))
     with ag.session(export=False) as run:
         before = len(run._session._observers)
         summary = attach_spectrum_services(run._session)

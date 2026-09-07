@@ -468,7 +468,7 @@ def main() -> int:
 
     home = tempfile.mkdtemp(prefix="aura_flow_")
     os.environ["AURA_HOME"] = home
-    configure()
+    configure(identity={"adapter": "mock", "subject": "coat-flow-operator"})
 
     has_sw = skillware_available()
     reports: list[dict[str, Any]] = []

@@ -98,10 +98,12 @@ def cmd_agent_show(name: str, *, console: Console | None = None) -> int:
             console.print(message, style="bold #FF9AA2")
         return 1
     from aura.core.spectrum_enforcement import effective_spectrum, enforcement_rules
+    from aura.core.spectrum_identity import identity_policy_summary
 
     payload = profile.to_dict()
     spec = effective_spectrum(profile)
     payload["effective_spectrum"] = spec.summary()
+    payload["effective_spectrum"].update(identity_policy_summary(profile))
     payload["effective_spectrum"]["enforcement_rules"] = enforcement_rules(profile)
     text = json.dumps(payload, indent=2)
     if console is None:
@@ -116,6 +118,7 @@ def cmd_run(
     script: str | None = None,
     *,
     mode: str | None = None,
+    require_identity: bool = False,
     console: Console | None = None,
 ) -> int:
     script_path: Path | None = None
@@ -135,7 +138,7 @@ def cmd_run(
         return 1
 
     handle = agent(agent_name) if agent_name else agent()
-    result = run_script(handle, script_path, mode=mode)
+    result = run_script(handle, script_path, mode=mode, require_verified=require_identity)
     payload = json.dumps(result, indent=2)
     if console is None:
         print(payload)
@@ -548,9 +551,23 @@ def cmd_config_show(*, console: Console | None = None) -> int:
                 "enforcement": "audit only — explicit profile rules still apply",
             },
             "mid": {"coat": "tight", "enforcement": "explicit profile rules only (default)"},
-            "high": {"coat": "tight", "enforcement": "auto allow_tools from declared skills"},
-            "full": {"coat": "tailored", "enforcement": "high bind + tool.call requires step_id"},
+            "high": {
+                "coat": "tight",
+                "enforcement": "auto allow_tools from declared skills",
+                "verified_identity_default": True,
+            },
+            "full": {
+                "coat": "tailored",
+                "enforcement": "high bind + tool.call requires step_id",
+                "verified_identity_default": True,
+            },
         },
+        "verified_identity_note": (
+            "Lite aura_id / agent_ref always exist. verified_identity_required applies to "
+            "third-party IdP adapters only. high/full default to required when a profile "
+            "has a spectrum block; opt out with spectrum.identity_required: false or "
+            "aura run --require-identity for session override."
+        ),
     }
     text = json.dumps(payload, indent=2)
     if console is None:

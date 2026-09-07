@@ -55,6 +55,10 @@
           "default": false,
           "description": "Emit observer.alert (not just note) for unknown service names"
         },
+        "identity_required": {
+          "type": "boolean",
+          "description": "Require verified operator identity at session open (high/full default true when set)"
+        },
         "output": {
           "type": "array",
           "items": { "type": "string" }

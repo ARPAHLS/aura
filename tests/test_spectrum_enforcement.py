@@ -7,6 +7,7 @@ import json
 import pytest
 
 from aura import agent
+from tests.spectrum_helpers import spectrum_block
 from aura.core.constraints import ConstraintViolation
 from aura.core.spectrum_enforcement import enforcement_rules, merge_rules_with_spectrum
 
@@ -41,21 +42,21 @@ def test_spectrum_low_allows_off_scope_tool(aura_home):
 
 
 def test_spectrum_high_denies_off_scope_tool(aura_home):
-    ag = agent("high-bind", skills=["research"], spectrum={"level": "high"})
+    ag = agent("high-bind", skills=["research"], spectrum=spectrum_block("high"))
     with ag.session(export=False) as run:
         with pytest.raises(ConstraintViolation):
             run.emit("tool.call", {"tool": "off_scope_tool"})
 
 
 def test_spectrum_high_allows_declared_skill(aura_home):
-    ag = agent("high-bind-ok", skills=["research"], spectrum={"level": "high"})
+    ag = agent("high-bind-ok", skills=["research"], spectrum=spectrum_block("high"))
     with ag.session(export=False) as run:
         run.emit("tool.call", {"tool": "research"})
     assert any(e.kind == "tool.call" for e in run._session.spine.stream())
 
 
 def test_spectrum_full_requires_sequencer_step(aura_home):
-    ag = agent("full-bind", skills=["research"], spectrum={"level": "full"})
+    ag = agent("full-bind", skills=["research"], spectrum=spectrum_block("full"))
     with ag.session(export=False) as run:
         with pytest.raises(ConstraintViolation):
             run.emit("tool.call", {"tool": "research"})
@@ -78,7 +79,7 @@ def test_explicit_rules_still_apply_at_low(aura_home):
 
 
 def test_session_open_includes_spectrum(aura_home):
-    ag = agent("spec-open", skills=["research"], spectrum={"level": "high"})
+    ag = agent("spec-open", skills=["research"], spectrum=spectrum_block("high"))
     with ag.session(export=False) as run:
         open_evt = next(e for e in run._session.spine.stream() if e.kind == "session.open")
         spectrum = (open_evt.payload or {}).get("spectrum") or {}

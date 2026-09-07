@@ -13,7 +13,7 @@ Shipped work stays in [CHANGELOG.md](../CHANGELOG.md). This file lists what is *
 | **v0.3** | ULID + `agent_ref`, audit report, hash chain, OTel export (+ promoted attrs), compare CLI, ToolHost reference coat |
 | **v0.3.4** | Onboarding guide, `report show`, flat core examples, Monitor/Break presets, capstone + examples 05–08 |
 | **v0.3.5** | Verified operator identity, session invariants, integrations index + Ollama loop, spectrum enforcement, goal/SLO observers, audit pipeline example, docs sweep, comparison refresh |
-| **Unreleased** | `spectrum.services[]` runtime activation + Limit preset ([#77](https://github.com/ARPAHLS/aura/issues/77)); level-default observer wiring; `service_config` / `strict_services` |
+| **Unreleased** | `spectrum.services[]` runtime activation + Limit preset ([#77](https://github.com/ARPAHLS/aura/issues/77)); verified identity via spectrum ([#73](https://github.com/ARPAHLS/aura/issues/73)); level-default observer wiring; `service_config` / `strict_services` |
 
 ---
 

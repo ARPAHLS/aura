@@ -219,7 +219,7 @@ Honest scope — reference ToolHost coat, membrane presets, spectrum bind, opera
 | **Hash chain** on spine events + compare + **`aura verify chain`** | Network/shell intercept without host cooperation |
 | **`agent_ref` (ULID)** + policy version on export | DID / verifiable-credential operator adapter |
 | **Session lifecycle invariants** — closed-session errors, atomic export, frozen open snapshot ([#15](https://github.com/ARPAHLS/aura/issues/15)) | Branching / parallel sequencer steps |
-| **Verified operator identity** — optional adapters, `identity.bound`, export redaction ([#55](https://github.com/ARPAHLS/aura/issues/55)) | Gatekeeper pre-session verify ([#56](https://github.com/ARPAHLS/aura/issues/56)) |
+| **Verified operator identity** — optional adapters, `identity.bound`, export redaction ([#55](https://github.com/ARPAHLS/aura/issues/55)); spectrum high/full verified-ID gate ([#73](https://github.com/ARPAHLS/aura/issues/73)) | Gatekeeper pre-session verify ([#56](https://github.com/ARPAHLS/aura/issues/56)) |
 | **Ingress** + bind enrichment on `skill.registered` | |
 | **Egress** `guarded_tool_call` + **ToolHost** protocol (Skillware reference adapter) | Broader egress adapters |
 | **Sequencer** — linear steps, gates, retries, **`when`** skip | |

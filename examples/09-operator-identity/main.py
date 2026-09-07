@@ -1,4 +1,8 @@
-"""Example: optional verified operator identity on session open."""
+"""Example: optional verified operator identity on session open.
+
+For profiles at spectrum high/full, verified identity is required by default
+unless spectrum.identity_required: false — pass a verified adapter as below.
+"""
 
 from aura import agent, configure
 from aura.identity.adapters.mock import MockIdentityAdapter
