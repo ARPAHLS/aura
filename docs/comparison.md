@@ -57,7 +57,7 @@ AURA scales enforcement without changing the body — pick how much the membrane
 | :--- | :--- | :--- | :--- |
 | **Loose** | Audit | Record boundaries; session receipt at close; no auto tool blocking | `spectrum.level: low` or `emit()` only — [example 08](../examples/08-emit-only-loop/) |
 | **Tight** | Enforce | Constitution, gates, allow/deny at **egress** on wired ToolHost paths | `spectrum.level: mid` (explicit rules) or `high` (skill allowlist) + sequencer + `host.execute()` — [examples 05–06](../examples/README.md) |
-| **Tailored** | Escalate | Observers, SLO checks, playbooks on drift or repeated violations | `spectrum.level: full` (+ `step_id` on tool calls) + Monitor/Break/goal SLO — [example 10](../examples/10-observer-metrics-snapshot/), [example 11](../examples/11-scheduled-agent-slo/) ([#46](https://github.com/ARPAHLS/aura/issues/46)); Gatekeeper run auth ([#56](https://github.com/ARPAHLS/aura/issues/56)) on roadmap |
+| **Tailored** | Escalate | Observers, SLO checks, playbooks on drift or repeated violations | `spectrum.level: full` (+ `step_id` on tool calls) + Monitor/Break/Limit/goal SLO — [example 07](../examples/07-observer-presets/), [example 10](../examples/10-observer-metrics-snapshot/), [example 11](../examples/11-scheduled-agent-slo/) ([#46](https://github.com/ARPAHLS/aura/issues/46), [#77](https://github.com/ARPAHLS/aura/issues/77)); Gatekeeper run auth ([#56](https://github.com/ARPAHLS/aura/issues/56)) on roadmap |
 
 Level table and CLI: [aura-levels.md](aura-levels.md). Structured session breakdowns: `python scripts/aura_coat_flow_report.py --json`.
 
@@ -223,8 +223,8 @@ Honest scope — reference ToolHost coat, membrane presets, spectrum bind, opera
 | **Ingress** + bind enrichment on `skill.registered` | |
 | **Egress** `guarded_tool_call` + **ToolHost** protocol (Skillware reference adapter) | Broader egress adapters |
 | **Sequencer** — linear steps, gates, retries, **`when`** skip | |
-| **Observers** — Monitor + Break + goal drift + schedule SLO presets | Limit preset ([#79](https://github.com/ARPAHLS/aura/issues/79)); webhooks |
-| **Spectrum enforcement** — `spectrum.level` bind at session open ([#27](https://github.com/ARPAHLS/aura/issues/27)) | `spectrum.services[]` runtime activation ([#77](https://github.com/ARPAHLS/aura/issues/77)) |
+| **Observers** — Monitor + Break + Limit + goal drift + schedule SLO presets ([#77](https://github.com/ARPAHLS/aura/issues/77)) | Webhooks; escalation playbooks ([#47](https://github.com/ARPAHLS/aura/issues/47)) |
+| **Spectrum** — `spectrum.level` bind + `spectrum.services[]` runtime activation at session open ([#27](https://github.com/ARPAHLS/aura/issues/27), [#77](https://github.com/ARPAHLS/aura/issues/77)) | Constitution schema validation at high bind |
 | **Skill manifest merge** at bind | Capability broker |
 | **OTel exporter** + promoted span attributes (incl. operator) | HTTP fleet API |
 | **CLI** — `report show`, `agent set`, config/paths, `identity show`, onboarding guide | |

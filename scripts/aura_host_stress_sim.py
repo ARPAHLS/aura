@@ -522,6 +522,116 @@ def scenario_spectrum_full_host_block() -> ScenarioResult:
     )
 
 
+def scenario_spectrum_services_no_block() -> ScenarioResult:
+    """No spectrum block — backward compatible, no auto observer wiring."""
+    ag = agent("stress-no-spec", skills=["research"])
+    with ag.session(mode="script", export=False) as run:
+        open_evt = next(e for e in run._session.spine.stream() if e.kind == "session.open")
+        activation = ((open_evt.payload or {}).get("spectrum") or {}).get(
+            "services_activation"
+        ) or {}
+    _assert(run._session._observers == [], "no spectrum block must not wire observers")
+    _assert(activation.get("note") == "no spectrum block — service wiring skipped", activation)
+    return ScenarioResult(
+        name="spectrum_services_no_block",
+        coat="tight",
+        skillware_mode="none",
+        passed=True,
+        metrics={"observers": 0, "services_activation": activation},
+    )
+
+
+def scenario_spectrum_services_high_defaults() -> ScenarioResult:
+    """Spectrum high without explicit services — level default wires monitor."""
+    from aura.observers.presets.monitor import MonitorObserver
+
+    ag = agent("stress-svc-high-default", skills=["research"], spectrum={"level": "high"})
+    with ag.session(mode="script", export=False) as run:
+        open_evt = next(e for e in run._session.spine.stream() if e.kind == "session.open")
+        activation = ((open_evt.payload or {}).get("spectrum") or {}).get(
+            "services_activation"
+        ) or {}
+        monitors = [o for o in run._session._observers if isinstance(o, MonitorObserver)]
+    _assert(len(monitors) == 1, "high level should default-wire monitor")
+    _assert(activation.get("activated") == ["monitor"], activation)
+    return ScenarioResult(
+        name="spectrum_services_high_defaults",
+        coat="tight",
+        skillware_mode="none",
+        passed=True,
+        metrics={"activated": activation.get("activated"), "observer_count": len(monitors)},
+    )
+
+
+def scenario_spectrum_services_limit() -> ScenarioResult:
+    """Explicit spectrum.services limit — warning note then alert on breach."""
+    ag = agent(
+        "stress-svc-limit",
+        skills=["research"],
+        spectrum={
+            "level": "mid",
+            "services": ["limit"],
+            "service_config": {
+                "limit": {"max_tool_calls_per_minute": 2, "max_tokens_per_step": 100}
+            },
+        },
+    )
+    with ag.session(mode="script", export=False) as run:
+        run.emit("tool.call", {"tool": "research", "tokens": 50})
+        run.emit("tool.call", {"tool": "research", "tokens": 50})
+        run.emit("tool.call", {"tool": "research", "tokens": 50})
+        notes = [
+            e
+            for e in run._session.spine.stream()
+            if e.kind == "observer.note"
+            and (e.payload or {}).get("type") in ("rate_limit_warning", "token_budget_warning")
+        ]
+        alerts = [
+            e
+            for e in run._session.spine.stream()
+            if e.kind == "observer.alert"
+            and (e.payload or {}).get("type") in ("rate_limit_exceeded", "token_budget_exceeded")
+        ]
+    _assert(len(notes) >= 1, "expected limit warning note before/at threshold")
+    _assert(len(alerts) >= 1, "expected limit alert on breach")
+    return ScenarioResult(
+        name="spectrum_services_limit",
+        coat="tight",
+        skillware_mode="none",
+        passed=True,
+        metrics={"limit_notes": len(notes), "limit_alerts": len(alerts)},
+    )
+
+
+def scenario_spectrum_services_unknown() -> ScenarioResult:
+    """Unknown spectrum service — note by default, session still opens."""
+    ag = agent(
+        "stress-svc-unknown",
+        skills=["research"],
+        spectrum={"level": "mid", "services": ["not_real_service"]},
+    )
+    with ag.session(mode="script", export=False) as run:
+        open_evt = next(e for e in run._session.spine.stream() if e.kind == "session.open")
+        activation = ((open_evt.payload or {}).get("spectrum") or {}).get(
+            "services_activation"
+        ) or {}
+        notes = [
+            e
+            for e in run._session.spine.stream()
+            if e.kind == "observer.note"
+            and (e.payload or {}).get("type") == "unknown_spectrum_service"
+        ]
+    _assert(activation.get("unknown") == ["not_real_service"], activation)
+    _assert(len(notes) == 1, "unknown service should emit observer.note")
+    return ScenarioResult(
+        name="spectrum_services_unknown",
+        coat="tight",
+        skillware_mode="none",
+        passed=True,
+        metrics={"unknown": activation.get("unknown"), "notes": len(notes)},
+    )
+
+
 def scenario_spectrum_full_sequencer() -> ScenarioResult:
     """Spectrum full — run_sequencer supplies step_id on each step."""
     pipeline = {
@@ -580,6 +690,10 @@ SCENARIOS: list[tuple[str, Callable[[], ScenarioResult], bool]] = [
     ("spectrum mid off-scope", scenario_spectrum_mid_off_scope, False),
     ("spectrum high bind", scenario_spectrum_high_bind, True),
     ("spectrum full host block", scenario_spectrum_full_host_block, True),
+    ("spectrum services no block", scenario_spectrum_services_no_block, False),
+    ("spectrum services high defaults", scenario_spectrum_services_high_defaults, False),
+    ("spectrum services limit", scenario_spectrum_services_limit, False),
+    ("spectrum services unknown", scenario_spectrum_services_unknown, False),
     ("spectrum full sequencer", scenario_spectrum_full_sequencer, True),
 ]
 

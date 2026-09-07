@@ -167,6 +167,11 @@ def _flow_report(
                 (ingress_evt.payload or {}).get("spectrum") if ingress_evt else None
             ),
             "open_spectrum": (open_evt.payload or {}).get("spectrum") if open_evt else None,
+            "services_activation": (
+                ((open_evt.payload or {}).get("spectrum") or {}).get("services_activation")
+                if open_evt
+                else None
+            ),
             "skills_accessed": _skills_accessed(session),
             "sequencer_steps": _sequencer_steps(session),
             "observer_findings": _observer_findings(session),
@@ -368,6 +373,56 @@ def flow_full_sequencer() -> dict[str, Any]:
     )
 
 
+def flow_high_services_defaults() -> dict[str, Any]:
+    """High level without explicit services — monitor auto-wired via level default."""
+    ag = agent(
+        "flow-high-defaults",
+        agent_ref="demo/flow-high-defaults",
+        purpose="High bind with level-default monitor service",
+        skills=[FIREWALL],
+        spectrum={"level": "high"},
+    )
+    with ag.session(mode="script", export=True) as run:
+        run.emit("tool.intent", {"tool": FIREWALL, "args": {"source_text": SAFE_TEXT}})
+        host = SkillwareHost.from_registry(run._session, [FIREWALL])
+        host.execute(
+            FIREWALL,
+            FIREWALL,
+            {"source_text": SAFE_TEXT, "sensitivity": "balanced", "input_mode": "auto"},
+        )
+    return _flow_report(
+        scenario="high_services_level_defaults",
+        coat="tight",
+        run=run,
+        profile=ag.profile,
+        notes="No services[] key — high level default activates monitor preset.",
+    )
+
+
+def flow_spectrum_services_limit() -> dict[str, Any]:
+    ag = agent(
+        "flow-limit",
+        agent_ref="demo/flow-limit",
+        purpose="Rate/token budget via spectrum.services limit",
+        skills=["research"],
+        spectrum={
+            "level": "mid",
+            "services": ["limit"],
+            "service_config": {"limit": {"max_tool_calls_per_minute": 2, "warn_ratio": 0.5}},
+        },
+    )
+    with ag.session(mode="script", export=True) as run:
+        for i in range(3):
+            run.emit("tool.call", {"tool": "research", "tokens": 40 + i})
+    return _flow_report(
+        scenario="mid_spectrum_services_limit",
+        coat="tight",
+        run=run,
+        profile=ag.profile,
+        notes="Limit preset wired from services[] — note at threshold, alert on breach.",
+    )
+
+
 def flow_mid_confirm_governance() -> dict[str, Any]:
     ag = agent(
         "flow-governance",
@@ -398,9 +453,11 @@ FLOWS: list[tuple[str, Callable[[], dict[str, Any]], bool]] = [
     ("low", flow_low_loose, False),
     ("mid", flow_mid_tight, True),
     ("high", flow_high_bind, True),
+    ("high_defaults", flow_high_services_defaults, True),
     ("full_observers", flow_full_tailored_observers, True),
     ("full_sequencer", flow_full_sequencer, True),
     ("mid_governance", flow_mid_confirm_governance, False),
+    ("mid_limit", flow_spectrum_services_limit, False),
 ]
 
 

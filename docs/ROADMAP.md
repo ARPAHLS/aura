@@ -13,6 +13,7 @@ Shipped work stays in [CHANGELOG.md](../CHANGELOG.md). This file lists what is *
 | **v0.3** | ULID + `agent_ref`, audit report, hash chain, OTel export (+ promoted attrs), compare CLI, ToolHost reference coat |
 | **v0.3.4** | Onboarding guide, `report show`, flat core examples, Monitor/Break presets, capstone + examples 05–08 |
 | **v0.3.5** | Verified operator identity, session invariants, integrations index + Ollama loop, spectrum enforcement, goal/SLO observers, audit pipeline example, docs sweep, comparison refresh |
+| **Unreleased** | `spectrum.services[]` runtime activation + Limit preset ([#77](https://github.com/ARPAHLS/aura/issues/77)); level-default observer wiring; `service_config` / `strict_services` |
 
 ---
 
@@ -20,10 +21,8 @@ Shipped work stays in [CHANGELOG.md](../CHANGELOG.md). This file lists what is *
 
 | Item | Why |
 |---|---|
-| **`spectrum.services[]` runtime activation** | Metadata on ingress today; toggling Monitor/Break/Limit presets per service list |
 | **Constitution / schema checks at high bind** | Skill allowlist shipped; manifest schema validation at egress still open |
 | Brain / memory adapters | Plug models and retention without core changes |
-| **Limit** observer preset | Rate/budget circuit breaker — goal/SLO presets shipped ([#46](https://github.com/ARPAHLS/aura/issues/46)); Limit still planned ([#79](https://github.com/ARPAHLS/aura/issues/79)) |
 | Middleware ops | PII mask, compress — schema exists |
 | Signed audit packs | WORM / external sink hooks |
 | HTTP fleet API | Remote session management |

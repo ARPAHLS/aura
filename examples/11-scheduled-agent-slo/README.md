@@ -58,4 +58,4 @@ For tests and demos, inject wall clock via `variables._test_clock_iso` (ISO-8601
 
 - Escalation playbooks on `slo.missed` / `conformance.drift` — [#47](https://github.com/ARPAHLS/aura/issues/47)
 - Schema checks at high bind — [#78](https://github.com/ARPAHLS/aura/issues/78)
-- Limit observer preset (rate/budget) — [#79](https://github.com/ARPAHLS/aura/issues/79)
+- Limit observer preset (rate/budget) — shipped in [#77](https://github.com/ARPAHLS/aura/issues/77); see [example 07](../07-observer-presets/)

@@ -154,6 +154,7 @@ Pure internal refactors with no user-visible effect may omit CHANGELOG; ask on t
 | Session / spine event shape | `spec/aura-event.schema.json` (if applicable), `docs/outputs.md`, tests, CHANGELOG |
 | Agent profile / registry fields | `docs/trust-paths.md`, `docs/aura-levels.md`, `docs/using-aura.md`, `aura/agents/profile.py` persistence, tests, CHANGELOG |
 | `spectrum.level` / enforcement rules | `aura/core/spectrum_enforcement.py`, `docs/aura-levels.md`, `docs/comparison.md`, `docs/ROADMAP.md`, `tests/test_spectrum_enforcement.py`, stress sim / flow report scripts, CHANGELOG |
+| `spectrum.services[]` / field-service wiring | `aura/core/spectrum_services.py`, `aura/observers/presets/limit.py`, `spec/manifest.schema.json`, `docs/observers.md`, `docs/field-services.md`, `docs/using-aura.md`, `tests/test_spectrum_services.py`, stress sim / flow report scripts, CHANGELOG |
 | Constraint rule types | `docs/concepts.md`, `aura/core/constraints.py` tests, CHANGELOG |
 | Sequencer step model | `spec/sequencer.schema.json`, `docs/sequencer.md`, `tests/test_v02.py`, CHANGELOG |
 | Skillware host / egress | `integrations/skillware/` (when shipped), `docs/skillware-integration.md` redirect, CHANGELOG |

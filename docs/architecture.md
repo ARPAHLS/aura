@@ -34,6 +34,7 @@ flowchart LR
 | `aura/core/audit_report.py` | Findings + recommendations |
 | `aura/core/spectrum.py` | Level, services, coat/planes summary |
 | `aura/core/spectrum_enforcement.py` | `spectrum.level` → injected egress rules at session open |
+| `aura/core/spectrum_services.py` | `spectrum.services[]` → observer preset wiring at session open |
 | `aura/membrane/` | Ingress context, egress guarded calls |
 | `aura/sequencer/` | Prescriptive step pipelines |
 | `aura/hosts/` | Skillware / mock skill host |
@@ -42,7 +43,7 @@ flowchart LR
 
 ## Extension surface
 
-**Shipped:** ToolHost protocol, Monitor + Break observer presets, OTel export with promoted span attributes, sequencer `when` guards, **`spectrum.level` enforcement** (low → full bind) — see [aura-levels.md](aura-levels.md) and [reference-tool-host-capstone.md](guides/reference-tool-host-capstone.md).
+**Shipped:** ToolHost protocol, Monitor + Break + Limit observer presets, `spectrum.services[]` runtime wiring ([#77](https://github.com/ARPAHLS/aura/issues/77)), OTel export with promoted span attributes, sequencer `when` guards, **`spectrum.level` enforcement** (low → full bind) — see [aura-levels.md](aura-levels.md) and [reference-tool-host-capstone.md](guides/reference-tool-host-capstone.md).
 
 **Roadmap:** Limit preset, signed audit packs, HTTP fleet API, brain/memory/MCP type plugins — [ROADMAP.md](ROADMAP.md).
 

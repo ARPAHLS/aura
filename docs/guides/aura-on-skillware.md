@@ -258,7 +258,7 @@ python examples/06-skillware-sequencer-chain/main.py
 | `aura/hosts/protocol.py` | `ToolHost` protocol (any skill runtime) |
 | `aura/hosts/bind.py` | Bind context for `skill.registered` |
 | `aura/hosts/skillware.py` | `SkillwareHost`, `from_registry()` |
-| `aura/observers/presets/` | Monitor + Break packaged presets |
+| `aura/observers/presets/` | Monitor + Break + Limit (+ goal_drift, schedule_slo) — see [observers.md](../observers.md) |
 | `integrations/skillware/` | Ollama + reference scripts |
 | `integrations/openai/`, `anthropic/`, `google/` | Cloud body loops |
 | `examples/sequencer_pipeline.py` | Sequencer with mocks |
@@ -270,7 +270,7 @@ python examples/06-skillware-sequencer-chain/main.py
 
 ## Follow-up work
 
-See [skillware-follow-ups.md](skillware-follow-ups.md) for post–#12 backlog: flat examples ([#21](https://github.com/ARPAHLS/aura/issues/21)), limit preset, multi-provider comparison page, docs sweep.
+Deferred work and sequencing: [ROADMAP.md](../ROADMAP.md) and GitHub issues. Local maintainer backlog: `AURA_PLAN.md` and `issues/` (gitignored — not in clone).
 
 ---
 

@@ -112,7 +112,7 @@ with ag.session() as run:
 print(run.exports)
 ```
 
-CLI: `aura agent create`, `aura agent set --spectrum-level`, `aura run`, `aura export`, `aura report show`, `aura identity show`, `aura compare`, `aura export-otel`, `aura verify chain`.
+CLI: `aura agent create`, `aura agent set --spectrum-level`, `aura agent set --spectrum-service`, `aura run`, `aura export`, `aura report show`, `aura identity show`, `aura compare`, `aura export-otel`, `aura verify chain`.
 
 → [getting-started.md](docs/getting-started.md) · [onboarding.md](docs/onboarding.md) · [examples/](examples/)
 

@@ -26,7 +26,7 @@ Use the project **`.venv`** for installs (`pip install -e ".[integrations]"`), n
 |---|---|
 | [05-skillware-skill-types](../../examples/05-skillware-skill-types/) | Three skill categories under AURA |
 | [06-skillware-sequencer-chain](../../examples/06-skillware-sequencer-chain/) | Sequencer chain with conditional `when` steps |
-| [07-observer-presets](../../examples/07-observer-presets/) | Monitor + Break observer presets |
+| [07-observer-presets](../../examples/07-observer-presets/) | Monitor + Break + Limit; `spectrum.services[]` |
 | [08-emit-only-loop](../../examples/08-emit-only-loop/) | Emit-only coat — no tool host |
 | [09-operator-identity](../../examples/09-operator-identity/) | Optional verified operator trailer (mock adapter) |
 | [sequencer_pipeline.py](../../examples/sequencer_pipeline.py) | Sequencer with mocks |
@@ -36,4 +36,5 @@ Use the project **`.venv`** for installs (`pip install -e ".[integrations]"`), n
 - [reference-tool-host-capstone.md](../guides/reference-tool-host-capstone.md) — **360° ToolHost checklist** (AURA-first)
 - [skillware-integration.md](../skillware-integration.md) — API reference
 - [sequencer.md](../sequencer.md) — step model, gates, and `when`
-- [skillware-follow-ups.md](../guides/skillware-follow-ups.md) — post-#12 backlog
+- [observers.md](../observers.md) — packaged presets and `spectrum.services[]` wiring
+- [ROADMAP.md](../ROADMAP.md) — shipped vs deferred

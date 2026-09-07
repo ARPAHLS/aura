@@ -1,6 +1,6 @@
 # Field Services
 
-> **Optional reference** — not required for onboarding. See [INDEX.md](INDEX.md). For shipped observer behavior use [using-aura.md](using-aura.md) and [reference-tool-host-capstone.md](guides/reference-tool-host-capstone.md).
+> **Optional reference** — not required for onboarding. See [INDEX.md](INDEX.md). **Operational preset reference:** [observers.md](observers.md).
 
 The **twelve complementary services** that run **in parallel** with the agent loop — the coat, not bolt-ons.
 
@@ -13,8 +13,8 @@ Design language from [narrative.md](narrative.md). Operation ids live in [spec/c
 | **Monitor** | Loop state, tool calls, outputs, drift — continuously | **Shipped** — `preset: monitor` |
 | **Audit** | Record what, when, why, under which permissions — always on | **Shipped** — audit spine + export |
 | **Break** | Stop infinite retries, circular reasoning, runaway tools | **Shipped** — `preset: break` |
-| **Track** | Task progress, resource use, retries, lineage across steps | Partial — `preset: goal_drift` + `preset: schedule_slo` ([#46](https://github.com/ARPAHLS/aura/issues/46)) |
-| **Limit** | Budgets, rate caps, scope, spectrum permissions | Partial — `spectrum.level` enforces bind; Limit preset still planned |
+| **Track** | Task progress, resource use, retries, lineage across steps | Partial — `preset: goal_drift` + `preset: schedule_slo` ([#46](https://github.com/ARPAHLS/aura/issues/46)); wire via `spectrum.services` ([#77](https://github.com/ARPAHLS/aura/issues/77)) |
+| **Limit** | Budgets, rate caps, scope, spectrum permissions | **Shipped** — `preset: limit` + `spectrum.services: [limit]` ([#77](https://github.com/ARPAHLS/aura/issues/77)); `spectrum.level` enforces egress bind |
 | **Safeguard** | Enforce guardrails from manifest and constitution | Partial — constraint engine + manifest merge |
 | **Wake** | Restart stalled loops, re-queue work, resume | Planned |
 | **Conserve** | Reduce token waste — redundant calls, repeated failures | Planned |
@@ -37,9 +37,9 @@ All three emit to the same **audit spine**.
 
 ---
 
-## Spectrum toggle (roadmap)
+## Spectrum toggle
 
-Manifest `spectrum.services` lists intended field services (summarized on ingress; runtime activation per service still expanding). `audit` is non-optional in production profiles. Enforcement posture: `spectrum.level` — see [aura-levels.md](aura-levels.md).
+Manifest `spectrum.services` lists field services to wire at session open when the profile has an explicit `spectrum` block ([#77](https://github.com/ARPAHLS/aura/issues/77)). `audit` is always on via the spine — listing it is metadata only. When `services` is omitted, level defaults apply: `high` wires `monitor`, `full` wires `monitor` + `break`; `low` / `mid` wire nothing extra. Explicit `profile.observers[]` wins over duplicate service presets. Unknown service names emit `observer.note` (or `observer.alert` when `strict_services: true`); session open never fails by default. Per-service tuning: `spectrum.service_config.{service}`. Enforcement posture: `spectrum.level` — see [aura-levels.md](aura-levels.md).
 
 ---
 
