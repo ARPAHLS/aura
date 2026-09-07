@@ -42,7 +42,13 @@ def test_coat_flow_report_skillware_coats(skillware_installed):
     assert result.returncode == 0, result.stderr or result.stdout
     payload = json.loads(result.stdout)
     assert payload["skillware_installed"] is True
-    assert payload["flows_run"] == 6
+    assert payload["flows_run"] == 8
     scenarios = {f["scenario"] for f in payload["flows"]}
     assert "high_skill_allowlist" in scenarios
+    assert "high_services_level_defaults" in scenarios
+    assert "mid_spectrum_services_limit" in scenarios
     assert "full_sequencer_bind" in scenarios
+    for flow in payload["flows"]:
+        if flow["scenario"] == "high_services_level_defaults":
+            activation = flow["session"].get("services_activation") or {}
+            assert activation.get("activated") == ["monitor"]

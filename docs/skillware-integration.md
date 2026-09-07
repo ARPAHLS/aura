@@ -98,33 +98,9 @@ MockSkill(
 
 Emits `skill.registered` on the spine with `manifest_snapshot_hash`, `agent_ref`, `policy_version`, plus bind context: `host.bind`, `bound_skill_ids`, `session_snapshot_hash` (see [reference-tool-host-capstone.md](guides/reference-tool-host-capstone.md)).
 
-### Monitor observer preset
+### Observer presets (AURA-native)
 
-Add to agent profile `observers`:
-
-```yaml
-observers:
-  - preset: monitor
-    id: loop-monitor
-    config:
-      max_identical_intents: 5
-      log_path: .aura/monitor.log
-```
-
-Tracks tool calls and emits `observer.note` events (analytics only — does not block egress).
-
-### Break observer preset
-
-Circuit-breaker **alerts** on repeated identical tool intents — emits `observer.alert` (analytics only; does not block egress):
-
-```yaml
-observers:
-  - preset: break
-    id: loop-break
-    config:
-      max_identical_intents: 3
-      window_seconds: 60
-```
+Monitor, Break, Limit, goal_drift, and schedule_slo presets are **host-agnostic** — they work with any `ToolHost`, including `SkillwareHost`. Full preset catalog, config, and `spectrum.services[]` wiring: [observers.md](observers.md).
 
 Runnable tour: [examples/07-observer-presets](../../examples/07-observer-presets/).
 

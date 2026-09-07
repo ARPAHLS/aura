@@ -26,6 +26,7 @@ Single entry point for public docs. **Shipped behavior** lives in Tier 1–2; Ti
 | [architecture.md](architecture.md) | Modules, data flow, extension surface |
 | [stack-position.md](stack-position.md) | Optional — harness-centric input layers vs full ARPA stack |
 | [sequencer.md](sequencer.md) | Prescriptive pipelines, gates, `when`, conformance |
+| [observers.md](observers.md) | Packaged presets, `observers[]` vs `spectrum.services[]` wiring |
 | [skillware-integration.md](skillware-integration.md) | Skillware reference adapter (optional host) |
 | [guides/aura-on-skillware.md](guides/aura-on-skillware.md) | Deep dive — Skillware as one ToolHost impl |
 | [trust-paths.md](trust-paths.md) | `agent_ref`, ULID, ids trailer — no central ID service |
@@ -58,7 +59,7 @@ Not on the default onboarding path. Kept for ARPA stack context and long-form de
 | [narrative.md](narrative.md) | Long-form vision (coat, SoulSig, cybernetics) |
 | [three-rings.md](three-rings.md) | Envelope · Field · Adapter model |
 | [aura-levels.md](aura-levels.md) | Autonomy tiers — `spectrum.level` enforcement (shipped) |
-| [field-services.md](field-services.md) | Twelve parallel services — shipped vs planned |
+| [field-services.md](field-services.md) | Twelve parallel services — shipped vs planned (incl. `spectrum.services[]` wiring) |
 | [glossary.md](glossary.md) | Terminology reference |
 
 ---

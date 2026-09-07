@@ -22,10 +22,12 @@ Optional profile block selects autonomy posture — maps to the loose / tight / 
 ```yaml
 spectrum:
   level: mid   # low = audit-only | mid = explicit rules | high = skill allowlist | full = + sequencer step_id
-  services: [monitor, audit]
+  services: [monitor, audit]   # wires presets when spectrum block present; audit is spine-only metadata
 ```
 
-`aura agent show` includes `effective_spectrum` and injected `enforcement_rules`. `aura agent set --spectrum-level high` updates the bind. `aura config show` includes a `spectrum_levels` reference table.
+When the profile has a `spectrum` block but omits `services`, level defaults wire observers: `high` → monitor, `full` → monitor + break ([#77](https://github.com/ARPAHLS/aura/issues/77)). No `spectrum` block → backward-compatible, no auto wiring.
+
+`aura agent show` includes `effective_spectrum` and injected `enforcement_rules`. `aura agent set --spectrum-level high` merges into the existing spectrum block. `aura config show` includes a `spectrum_levels` reference table.
 
 See [aura-levels.md](aura-levels.md) for the level table. Debug a full session receipt: `python scripts/aura_coat_flow_report.py --json`.
 
@@ -156,7 +158,9 @@ get_registry().register(CallableObserver("metrics", lambda e: print(e["kind"])))
 
 Profile observers (by id) attach at session open. Handlers must be non-blocking.
 
-Packaged presets: `preset: monitor` (analytics notes), `preset: break` (repeated-intent alerts), `preset: goal_drift` (`conformance.drift` vs declared goal), and `preset: schedule_slo` (`slo.missed` on deadline) — see [examples/07-observer-presets](../examples/07-observer-presets/), [examples/11-scheduled-agent-slo](../examples/11-scheduled-agent-slo/), and [reference-tool-host-capstone.md](guides/reference-tool-host-capstone.md).
+Packaged presets: `preset: monitor`, `preset: break`, `preset: limit`, `preset: goal_drift`, `preset: schedule_slo` — canonical config and wiring in [observers.md](observers.md). Quick start: [examples/07-observer-presets](../examples/07-observer-presets/), [examples/11-scheduled-agent-slo](../examples/11-scheduled-agent-slo/).
+
+When a profile includes a `spectrum` block, `spectrum.services[]` wires packaged presets at session open ([#77](https://github.com/ARPAHLS/aura/issues/77)). Explicit `profile.observers[]` wins over duplicate service presets.
 
 ---
 
