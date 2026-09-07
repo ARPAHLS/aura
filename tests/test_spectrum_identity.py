@@ -132,7 +132,7 @@ def test_audit_finding_when_unverified_bound(aura_home, tmp_path: Path):
             if row.get("kind") == "session.open":
                 row["payload"]["spectrum"]["verified_identity_required"] = True
             if row.get("kind") == "identity.bound":
-                row["payload"]["verified"] = False
+                row["payload"]["operator"]["verified"] = False
             lines.append(json.dumps(row))
     log_path = tmp_path / "session.jsonl"
     log_path.write_text("\n".join(lines) + "\n", encoding="utf-8")

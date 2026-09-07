@@ -201,18 +201,19 @@ class AuditReportBuilder:
             else:
                 for evt in bound:
                     payload = evt.payload or {}
-                    if not payload.get("verified", False):
+                    operator = payload.get("operator") or {}
+                    if not operator.get("verified", False):
                         findings.append(
                             {
                                 "severity": "high",
                                 "code": "VERIFIED_IDENTITY_REQUIRED",
                                 "message": (
                                     "Session policy required verified operator identity but "
-                                    f"bound operator via {payload.get('method', 'unknown')} "
+                                    f"bound operator via {operator.get('method', 'unknown')} "
                                     "is not verified"
                                 ),
                                 "policy_source": source,
-                                "method": payload.get("method"),
+                                "method": operator.get("method"),
                                 "event_id": evt.event_id,
                             }
                         )
