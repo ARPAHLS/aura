@@ -26,6 +26,8 @@ agent("my-alias")              # by name alias
 agent(aura_id="01J...")        # by internal id
 ```
 
+Renaming an agent replaces its name alias; the previous name no longer resolves.
+
 CLI: `aura agent create --ref acme/bot --policy-version 2`
 
 ## Sessions

@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- **Stale agent name aliases** — renaming or archiving an agent now removes previous name aliases from the registry.
+
 ## [0.3.5] - 2026-09-06
 
 ### Added
