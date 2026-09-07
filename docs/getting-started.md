@@ -34,8 +34,8 @@ aura config show
 aura identity show
 aura agent list
 aura agent set my-bot --ref tenant/slug --purpose "experiments"
-aura agent set my-bot --spectrum-level mid --spectrum-service audit
-aura agent show my-bot   # includes effective_spectrum when set
+aura agent set my-bot --spectrum-level mid --spectrum-service audit --spectrum-service monitor
+aura agent show my-bot   # includes effective_spectrum and services when set
 aura --help
 ```
 

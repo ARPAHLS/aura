@@ -22,6 +22,8 @@ CLI: `aura report show <session_id>`, `aura report show <session_id> --json`, `a
 
 **Spine events (identity):** When an operator adapter binds, the session emits `identity.bound` after `session.open`. Operator fields appear under `agent_ids.ids.operator` on subsequent events. JSONL retains full fields; summary and OTel apply [redaction defaults](../integrations/identity/README.md).
 
+**Spine events (spectrum):** `session.open` and `membrane.ingress` carry a `spectrum` summary when the profile has a `spectrum` block. `session.open` also includes `services_activation` — which presets wired at open (`activated`, `skipped_explicit`, `unknown`). See [aura-levels.md](aura-levels.md).
+
 ---
 
 ## Audit report (summary JSON)

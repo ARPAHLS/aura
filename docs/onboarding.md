@@ -40,7 +40,7 @@ AURA is the **coat** around your loop — not the loop itself.
 |---|---|---|
 | **Audit (loose)** | Record what happened; rules optional | `spectrum.level: low` or default emit-only — [example 08](../examples/08-emit-only-loop/) |
 | **Prescriptive (tight)** | Declared steps, gates, conformance on close | `spectrum.level: mid`/`high` + sequencer + tool host + rules + CI receipt check |
-| **Tailored** | Observers + full bind | `spectrum.level: full` + Monitor/Break — [example 10](../examples/10-observer-metrics-snapshot/) |
+| **Tailored** | Observers + full bind | `spectrum.level: full` + Monitor/Break/Limit — [example 07](../examples/07-observer-presets/), [example 10](../examples/10-observer-metrics-snapshot/) |
 
 → [using-aura.md — Choose a posture](using-aura.md#choose-a-posture) · [aura-levels.md](aura-levels.md)
 
@@ -181,7 +181,7 @@ Run in order from repo root after `pip install -e .`:
 | 4 | [sequencer_pipeline.py](../examples/sequencer_pipeline.py) | Prescriptive pipeline + mock host |
 | 5 | [05-skillware-skill-types](../examples/05-skillware-skill-types/) | ToolHost + three skill categories |
 | 6 | [06-skillware-sequencer-chain](../examples/06-skillware-sequencer-chain/) | Declarative chain + conditional `when` |
-| 7 | [07-observer-presets](../examples/07-observer-presets/) | Monitor + Break observer presets |
+| 7 | [07-observer-presets](../examples/07-observer-presets/) | Monitor + Break + Limit; `spectrum.services[]` wiring |
 | 8 | [08-emit-only-loop](../examples/08-emit-only-loop/) | Loose coat — no tool host |
 | 9 | [audit_pipeline.py](../examples/audit_pipeline.py) | Export slice — report, compare, OTel assert, verify |
 | 10 | [10-observer-metrics-snapshot](../examples/10-observer-metrics-snapshot/) | Tailored coat — observer metrics snapshot |

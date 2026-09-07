@@ -10,6 +10,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - **Stale agent name aliases** — renaming or archiving an agent now removes previous name aliases from the registry.
+### Added
+
+- **Spectrum services runtime activation ([#77](https://github.com/ARPAHLS/aura/issues/77))** — `spectrum.services[]` wires packaged observer presets at session open when a profile has an explicit `spectrum` block; level-aware defaults (`high` → monitor, `full` → monitor + break); `audit` stays spine-only; **`preset: limit`** for rate/token budget notes and alerts; `goal_drift` and `schedule_slo` in the service map; `spectrum.service_config.{service}` overrides; optional `strict_services` for unknown service names; `session.open` includes `services_activation` summary; `aura agent set` merges spectrum patches without dropping level or services; stress sim + coat flow report scenarios.
+- **Observers guide** — [docs/observers.md](docs/observers.md): canonical preset catalog, config reference, and `observers[]` vs `spectrum.services[]` wiring.
+
+### Changed
+
+- **Documentation** — removed internal backlog [docs/guides/skillware-follow-ups.md](docs/guides/skillware-follow-ups.md) from public docs; deferred work stays in [ROADMAP.md](docs/ROADMAP.md) and local `AURA_PLAN.md` / `issues/`; preset YAML consolidated under `observers.md` (trimmed duplicate sections in [skillware-integration.md](docs/skillware-integration.md)).
 
 ## [0.3.5] - 2026-09-06
 

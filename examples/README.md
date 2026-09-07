@@ -26,7 +26,7 @@ Set `AURA_HOME` to isolate storage during tests or demos.
 |---|---|
 | [05-skillware-skill-types](05-skillware-skill-types/) | Three Skillware categories (security, optimization, monitoring) |
 | [06-skillware-sequencer-chain](06-skillware-sequencer-chain/) | Sequencer chain with conditional `when` steps |
-| [07-observer-presets](07-observer-presets/) | Monitor + Break observer presets on ToolHost |
+| [07-observer-presets](07-observer-presets/) | Monitor + Break + Limit presets; explicit observers vs `spectrum.services[]` |
 | [08-emit-only-loop](08-emit-only-loop/) | Loose coat — emit-only, no tool host |
 | [09-operator-identity](09-operator-identity/) | Optional verified operator trailer (mock adapter) |
 | [10-observer-metrics-snapshot](10-observer-metrics-snapshot/) | Tailored coat — AURA-native metrics snapshot via observers |

@@ -408,7 +408,7 @@ def cmd_agent_set(
 ) -> int:
     reg = AgentRegistry()
     try:
-        reg.resolve(key)
+        profile = reg.resolve(key)
     except AgentNotFoundError:
         message = f"not found: {key}"
         if console is None:
@@ -491,7 +491,10 @@ def cmd_agent_set(
             console.print(message, style="bold #FF9AA2")
         return 2
     if spectrum_block is not None:
-        updates["spectrum"] = spectrum_block
+        from aura.core.spectrum_services import merge_spectrum_update
+
+        existing = profile.spectrum if profile and isinstance(profile.spectrum, dict) else None
+        updates["spectrum"] = merge_spectrum_update(existing, spectrum_block)
 
     if not updates:
         message = "no fields to update (pass --ref, --purpose, --skill, etc.)"

@@ -40,7 +40,20 @@
         },
         "services": {
           "type": "array",
-          "items": { "type": "string" }
+          "items": { "type": "string" },
+          "description": "Field services to wire at session open (audit is spine-only metadata)"
+        },
+        "service_config": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "description": "Per-service observer preset overrides"
+          }
+        },
+        "strict_services": {
+          "type": "boolean",
+          "default": false,
+          "description": "Emit observer.alert (not just note) for unknown service names"
         },
         "output": {
           "type": "array",
