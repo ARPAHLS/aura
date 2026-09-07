@@ -9,7 +9,7 @@ import pytest
 import yaml
 
 from aura import agent
-from aura.agents.registry import AgentRegistry
+from aura.agents.registry import AgentNotFoundError, AgentRegistry
 from aura.config import (
     AuraConfig,
     configure,
@@ -96,6 +96,27 @@ def test_registry_archive_frees_name_and_ref(aura_home: Path):
     reg.archive(first.aura_id)
     second = reg.create(name="reuse", agent_ref="team/reuse")
     assert second.aura_id != first.aura_id
+
+
+def test_registry_rename_removes_stale_alias(aura_home: Path):
+    reg = AgentRegistry()
+    profile = reg.create(name="before")
+
+    renamed = reg.update_profile("before", name="after")
+
+    assert renamed.name == "after"
+    assert reg.get_by_name("after").aura_id == profile.aura_id
+    with pytest.raises(AgentNotFoundError):
+        reg.get_by_name("before")
+
+    reloaded = AgentRegistry()
+    assert reloaded.get_by_name("after").aura_id == profile.aura_id
+    with pytest.raises(AgentNotFoundError):
+        reloaded.get_by_name("before")
+
+    reloaded.archive(profile.aura_id)
+    with pytest.raises(AgentNotFoundError):
+        reloaded.get_by_name("after")
 
 
 def test_hash_chain_detects_tamper(tmp_path: Path):

@@ -56,6 +56,16 @@ class AgentRegistry:
         aliases[name] = aura_id
         self._save_state()
 
+    def _remove_aliases(self, aura_id: str, *, keep: str | None = None) -> None:
+        aliases: dict[str, str] = self._state.setdefault("aliases", {})
+        removed = [
+            name for name, mapped_id in aliases.items() if mapped_id == aura_id and name != keep
+        ]
+        for name in removed:
+            del aliases[name]
+        if removed:
+            self._save_state()
+
     def _register_ref(self, agent_ref: str, aura_id: str) -> None:
         refs: dict[str, str] = self._state.setdefault("refs", {})
         existing = refs.get(agent_ref)
@@ -147,6 +157,7 @@ class AgentRegistry:
             new_name = updates["name"]
             if new_name != profile.name:
                 self._register_alias(new_name, aura_id)
+                self._remove_aliases(aura_id, keep=new_name)
                 profile.name = new_name
 
         if "agent_ref" in updates:
@@ -241,9 +252,7 @@ class AgentRegistry:
         profile = self.get_by_id(aura_id)
         profile.archived = True
         self.save(profile)
-        aliases: dict[str, str] = self._state.get("aliases", {})
-        if profile.name and aliases.get(profile.name) == aura_id:
-            del aliases[profile.name]
+        self._remove_aliases(aura_id)
         refs: dict[str, str] = self._state.get("refs", {})
         if profile.agent_ref and refs.get(profile.agent_ref) == aura_id:
             del refs[profile.agent_ref]
