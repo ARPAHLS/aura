@@ -10,7 +10,6 @@ from pathlib import Path
 
 from aura import agent, configure
 from aura.core.audit_report import AuditReportBuilder
-from aura.core.conformance import ConformanceEngine
 from aura.core.spectrum_identity import resolve_verified_identity_required
 from aura.core.spine import AuditSpine
 from aura.identity.adapters.mock import MockIdentityAdapter
@@ -112,7 +111,9 @@ def test_agent_show_includes_identity_policy(run_aura):
     assert show.returncode == 0
     payload = json.loads(show.stdout)
     assert payload["effective_spectrum"]["verified_identity_required"] is True
-    assert payload["effective_spectrum"]["verified_identity_required_source"] == "level_default:high"
+    assert (
+        payload["effective_spectrum"]["verified_identity_required_source"] == "level_default:high"
+    )
 
 
 def test_audit_finding_when_unverified_bound(aura_home, tmp_path: Path):

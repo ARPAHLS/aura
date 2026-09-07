@@ -124,9 +124,9 @@ class Session:
         spectrum_meta = spectrum.summary()
         spectrum_meta["enforcement_rule_count"] = len(enforcement_rules(self.profile))
         spectrum_meta["services_activation"] = services_activation
-        policy = getattr(self, "_verified_identity_policy", None) or resolve_verified_identity_required(
-            self.profile, identity_options=identity_options
-        )
+        policy = getattr(
+            self, "_verified_identity_policy", None
+        ) or resolve_verified_identity_required(self.profile, identity_options=identity_options)
         spectrum_meta["verified_identity_required"] = policy.required
         spectrum_meta["verified_identity_required_source"] = policy.source
         self.emit(

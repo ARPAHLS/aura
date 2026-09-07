@@ -7,7 +7,6 @@ from dataclasses import dataclass, field
 from typing import Any
 
 from aura.config import get_config
-from aura.identity.errors import IdentityRequiredError
 from aura.identity.models import OperatorIdentity
 from aura.identity.policy import enforce_verified_identity_policy
 from aura.identity.protocol import IdentityContext, OperatorIdentityAdapter
