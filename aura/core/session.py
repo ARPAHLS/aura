@@ -116,6 +116,7 @@ class Session:
         self._open = True
         self._attach_profile_observers()
         from aura.core.spectrum_enforcement import effective_spectrum, enforcement_rules
+        from aura.core.spectrum_identity import resolve_verified_identity_required
         from aura.core.spectrum_services import attach_spectrum_services
 
         services_activation = attach_spectrum_services(self)
@@ -123,6 +124,11 @@ class Session:
         spectrum_meta = spectrum.summary()
         spectrum_meta["enforcement_rule_count"] = len(enforcement_rules(self.profile))
         spectrum_meta["services_activation"] = services_activation
+        policy = getattr(self, "_verified_identity_policy", None) or resolve_verified_identity_required(
+            self.profile, identity_options=identity_options
+        )
+        spectrum_meta["verified_identity_required"] = policy.required
+        spectrum_meta["verified_identity_required_source"] = policy.source
         self.emit(
             "membrane.ingress",
             ingress_event_payload(self.profile, self.mode.value, self.snapshot_hash),

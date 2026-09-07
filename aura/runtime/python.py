@@ -16,6 +16,7 @@ def run_script(
     *,
     mode: str | None = None,
     argv: list[str] | None = None,
+    require_verified: bool = False,
 ) -> dict[str, Any]:
     """Run a Python script under an AURA session."""
     path = Path(script_path).resolve()
@@ -23,7 +24,8 @@ def run_script(
         raise FileNotFoundError(script_path)
 
     session_mode = mode or agent.profile.default_mode
-    with agent.session(mode=session_mode) as run:
+    identity_cfg = {"require_verified": True} if require_verified else None
+    with agent.session(mode=session_mode, identity=identity_cfg) as run:
         run.emit("runtime.attach", {"runtime": "python", "script": str(path)})
         old_argv = sys.argv[:]
         try:

@@ -42,6 +42,8 @@ AURA is the **coat** around your loop — not the loop itself.
 | **Prescriptive (tight)** | Declared steps, gates, conformance on close | `spectrum.level: mid`/`high` + sequencer + tool host + rules + CI receipt check |
 | **Tailored** | Observers + full bind | `spectrum.level: full` + Monitor/Break/Limit — [example 07](../examples/07-observer-presets/), [example 10](../examples/10-observer-metrics-snapshot/) |
 
+At **`high` / `full`**, profiles with a `spectrum` block also default to **verified operator required** at session open ([#73](https://github.com/ARPAHLS/aura/issues/73)) — configure an IdP adapter or set `spectrum.identity_required: false`.
+
 → [using-aura.md — Choose a posture](using-aura.md#choose-a-posture) · [aura-levels.md](aura-levels.md)
 
 Stack-specific bodies (Ollama, OpenAI, Skillware registry) live under [integrations/](integrations/README.md). Core patterns live under [examples/](../examples/README.md).

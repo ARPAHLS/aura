@@ -177,6 +177,51 @@ class AuditReportBuilder:
                 }
             )
 
+        open_evt = next((e for e in events if e.kind == "session.open"), None)
+        spectrum = (open_evt.payload or {}).get("spectrum") if open_evt else None
+        if isinstance(spectrum, dict) and spectrum.get("verified_identity_required"):
+            bound = [e for e in events if e.kind == "identity.bound"]
+            source = spectrum.get("verified_identity_required_source", "unknown")
+            if not bound:
+                findings.append(
+                    {
+                        "severity": "high",
+                        "code": "VERIFIED_IDENTITY_REQUIRED",
+                        "message": (
+                            "Session policy required verified operator identity but "
+                            "identity.bound was never emitted"
+                        ),
+                        "policy_source": source,
+                    }
+                )
+                recommendations.append(
+                    "Configure an identity adapter (OIDC, Auth0, mock) or pass a verified "
+                    "operator at session open when spectrum.identity_required is true."
+                )
+            else:
+                for evt in bound:
+                    payload = evt.payload or {}
+                    if not payload.get("verified", False):
+                        findings.append(
+                            {
+                                "severity": "high",
+                                "code": "VERIFIED_IDENTITY_REQUIRED",
+                                "message": (
+                                    "Session policy required verified operator identity but "
+                                    f"bound operator via {payload.get('method', 'unknown')} "
+                                    "is not verified"
+                                ),
+                                "policy_source": source,
+                                "method": payload.get("method"),
+                                "event_id": evt.event_id,
+                            }
+                        )
+                        recommendations.append(
+                            "Use a third-party IdP adapter that sets verified=true, or "
+                            "opt out with spectrum.identity_required: false when manual "
+                            "labels are acceptable."
+                        )
+
         chain_ok = verify_hash_chain(spine)
         if chain_ok is False:
             findings.append(

@@ -82,6 +82,8 @@ spectrum:
 
 No `spectrum` block on the profile → backward compatible; nothing auto-wires.
 
+**Verified identity ([#73](https://github.com/ARPAHLS/aura/issues/73)):** `high` / `full` default to requiring a verified operator at session open when a `spectrum` block is present. Observers and services wiring are independent — identity is enforced at bind, before presets attach.
+
 `session.open` includes `spectrum.services_activation` (`activated`, `skipped_explicit`, `unknown`). See [outputs.md](outputs.md), [aura-levels.md](aura-levels.md).
 
 CLI merge (does not drop existing `services` / `service_config`):

@@ -69,9 +69,10 @@ def test_session_operator_override(aura_home: Path):
 def test_identity_required_raises(aura_home: Path):
     configure(identity_required=True)
     ag = agent("id-required")
-    with pytest.raises(IdentityRequiredError):
+    with pytest.raises(IdentityRequiredError) as exc:
         with ag.session(export=False) as run:
             run.emit("turn.start", {})
+    assert exc.value.source == "global_config"
     configure(identity_required=False)
 
 

@@ -54,6 +54,7 @@ Sequencer and hooks consult level for:
 ```yaml
 spectrum:
   level: mid   # low | mid | high | full
+  identity_required: false   # opt out of high/full verified-ID default
   services:
     - monitor
     - audit
@@ -67,10 +68,12 @@ spectrum:
 |---|---|---|---|
 | **low** | Loose | Audit only — explicit profile `rules` still apply; off-scope tools pass | none |
 | **mid** | Tight | Explicit profile rules only (default when unset) | none |
-| **high** | Tight | Auto `allow_tools` from profile `skills` (+ sequencer refs) | `monitor` |
-| **full** | Tailored | High bind + `tool.call` must include `step_id` (sequencer bind) | `monitor`, `break` |
+| **high** | Tight | Auto `allow_tools` from profile `skills` (+ sequencer refs) | `monitor` | verified operator **required** (opt out) |
+| **full** | Tailored | High bind + `tool.call` must include `step_id` (sequencer bind) | `monitor`, `break` | verified operator **required** (opt out) |
 
-When `services` is present, exactly those presets attach (except `audit`, which is implicit). Profiles **without** a `spectrum` block behave as before — no automatic service wiring.
+**Verified identity** — lite `aura_id` / `agent_ref` always exist for audit trails. **Verified** operator identity comes from your IdP adapter (OIDC, Auth0, mock). When `identity_required` is true (explicitly or by high/full default), session open **fails** if no verified operator resolves — not warn-only. Opt out per profile with `spectrum.identity_required: false`, or override a single run with `aura run --require-identity`.
+
+When `services` is present, exactly those presets attach (except `audit`, which is implicit). Profiles **without** a `spectrum` block behave as before — no automatic service wiring and no spectrum-level identity requirement.
 
 Stored on agent profiles; summarized on `membrane.ingress` and `session.open` (`services_activation`). CLI:
 

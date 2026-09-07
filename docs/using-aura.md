@@ -27,6 +27,8 @@ spectrum:
 
 When the profile has a `spectrum` block but omits `services`, level defaults wire observers: `high` → monitor, `full` → monitor + break ([#77](https://github.com/ARPAHLS/aura/issues/77)). No `spectrum` block → backward-compatible, no auto wiring.
 
+**Verified identity ([#73](https://github.com/ARPAHLS/aura/issues/73)):** `high` / `full` also default to requiring a **verified** operator from your IdP adapter at session open. Lite `aura_id` / `agent_ref` always exist; this gate applies to third-party verification only. Opt out with `spectrum.identity_required: false` or enforce a one-off run with `aura run --require-identity`.
+
 `aura agent show` includes `effective_spectrum` and injected `enforcement_rules`. `aura agent set --spectrum-level high` merges into the existing spectrum block. `aura config show` includes a `spectrum_levels` reference table.
 
 See [aura-levels.md](aura-levels.md) for the level table. Debug a full session receipt: `python scripts/aura_coat_flow_report.py --json`.

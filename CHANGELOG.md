@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Stale agent name aliases** — renaming or archiving an agent now removes previous name aliases from the registry.
 ### Added
 
+- **Verified identity via spectrum ([#73](https://github.com/ARPAHLS/aura/issues/73))** — `spectrum.identity_required` and level defaults (`high` / `full` → verified operator mandatory when a profile has a `spectrum` block); session open fails with `IdentityRequiredError` when policy requires verified IdP identity and none resolves; lite `aura_id` / `agent_ref` unchanged; `session.open` spectrum summary includes `verified_identity_required` + source; audit finding `VERIFIED_IDENTITY_REQUIRED`; `aura run --require-identity` session override; `aura agent show` / `aura config show` document policy.
 - **Spectrum services runtime activation ([#77](https://github.com/ARPAHLS/aura/issues/77))** — `spectrum.services[]` wires packaged observer presets at session open when a profile has an explicit `spectrum` block; level-aware defaults (`high` → monitor, `full` → monitor + break); `audit` stays spine-only; **`preset: limit`** for rate/token budget notes and alerts; `goal_drift` and `schedule_slo` in the service map; `spectrum.service_config.{service}` overrides; optional `strict_services` for unknown service names; `session.open` includes `services_activation` summary; `aura agent set` merges spectrum patches without dropping level or services; stress sim + coat flow report scenarios.
 - **Observers guide** — [docs/observers.md](docs/observers.md): canonical preset catalog, config reference, and `observers[]` vs `spectrum.services[]` wiring.
 
@@ -28,7 +29,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Integrations layout ([#19](https://github.com/ARPAHLS/aura/issues/19))** — top-level `integrations/README.md` stack index; Skillware `mock_tools.py` / `live_tools.py` entrypoints; LangGraph stub; doc links from getting-started and provider READMEs.
 - **Audit pipeline example ([#23](https://github.com/ARPAHLS/aura/issues/23))** — `examples/audit_pipeline.py`: two sessions, audit report receipt, programmatic compare, hash-chain verify, OTel export assert, CLI follow-ups (mock ToolHost; no Skillware required).
 - **Tailored metrics snapshot example** — `examples/10-observer-metrics-snapshot/`: AURA-native Monitor preset + `metrics_snapshot` observer note; documents export hook for playbooks without third-party KPI skills.
-- **Host stress simulation** — `scripts/aura_host_stress_sim.py` + `tests/test_host_stress_sim.py`: sixteen scenarios (loose/tight/tailored coats, spectrum low/mid/high/full bind, Skillware paths, sequencer, observers, export).
+- **Host stress simulation** — `scripts/aura_host_stress_sim.py` + `tests/test_host_stress_sim.py`: twenty-six scenarios (loose/tight/tailored coats, spectrum bind, verified-identity gate, Skillware paths, sequencer, observers, export).
 - **Coat flow report** — `scripts/aura_coat_flow_report.py`: structured session breakdown per spectrum level (agent, skills, timeline, audit receipt).
 - **Audit pipeline CI assert** — `tests/test_audit_pipeline_otel.py` verifies OTel export bytes from `examples/audit_pipeline.py`.
 

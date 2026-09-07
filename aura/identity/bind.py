@@ -9,6 +9,7 @@ from typing import Any
 from aura.config import get_config
 from aura.identity.errors import IdentityRequiredError
 from aura.identity.models import OperatorIdentity
+from aura.identity.policy import enforce_verified_identity_policy
 from aura.identity.protocol import IdentityContext, OperatorIdentityAdapter
 from aura.identity.registry import adapter_chain_from_config
 
@@ -84,13 +85,7 @@ def bind_operator_identity(
 ) -> OperatorIdentity | None:
     """Attach operator to session; does not emit spine events."""
     identity = resolve_operator_identity(session, options)
-    required = bool(get_config().values.get("identity_required", False))
-    merged = _merged_identity_config(options)
-    if merged.get("required") is True:
-        required = True
-
-    if identity is None and required:
-        raise IdentityRequiredError(session.session_id)
+    enforce_verified_identity_policy(session, identity, identity_options=options)
 
     if identity is not None:
         session._operator_identity = identity

@@ -112,8 +112,10 @@ By default, `email` / `name` / `phone` are stripped from **summary and OTel** ex
 
 ```yaml
 identity_export_pii: true   # opt in to include PII on export surfaces
-identity_required: true     # fail session open when no operator resolves
+identity_required: true     # global: fail session open when no verified operator resolves
 ```
+
+Spectrum profiles can also set `spectrum.identity_required` (wins over global). **`high` and `full` default to required** when a profile has a `spectrum` block — set `identity_required: false` to opt out. Session override: `aura run --require-identity` or `session(identity={"require_verified": True})`.
 
 CLI: `aura identity show`
 

@@ -110,6 +110,11 @@ def build_parser() -> argparse.ArgumentParser:
     run_p.add_argument("target", help="Agent name or script path")
     run_p.add_argument("script", nargs="?", help="Script path when agent given first")
     run_p.add_argument("--mode", help="Session mode: script, task, continuous")
+    run_p.add_argument(
+        "--require-identity",
+        action="store_true",
+        help="Require verified operator identity for this run (session override)",
+    )
 
     logs_p = sub.add_parser("logs", help="Print session JSONL")
     logs_p.add_argument("session_id", help="Session id")
@@ -162,7 +167,12 @@ def dispatch(args: argparse.Namespace) -> int:
     if args.command == "paths":
         return _dispatch_paths(args)
     if args.command == "run":
-        return commands.cmd_run(args.target, args.script, mode=args.mode)
+        return commands.cmd_run(
+            args.target,
+            args.script,
+            mode=args.mode,
+            require_identity=args.require_identity,
+        )
     if args.command == "logs":
         return commands.cmd_logs(args.session_id)
     if args.command == "export":

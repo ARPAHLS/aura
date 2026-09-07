@@ -35,6 +35,7 @@ flowchart LR
 | `aura/core/spectrum.py` | Level, services, coat/planes summary |
 | `aura/core/spectrum_enforcement.py` | `spectrum.level` → injected egress rules at session open |
 | `aura/core/spectrum_services.py` | `spectrum.services[]` → observer preset wiring at session open |
+| `aura/core/spectrum_identity.py` | `spectrum.identity_required` + level defaults → verified operator gate at session open ([#73](https://github.com/ARPAHLS/aura/issues/73)) |
 | `aura/membrane/` | Ingress context, egress guarded calls |
 | `aura/sequencer/` | Prescriptive step pipelines |
 | `aura/hosts/` | Skillware / mock skill host |

@@ -8,9 +8,25 @@ class IdentityError(Exception):
 class IdentityRequiredError(IdentityError):
     """Session requires verified operator identity but none was resolved."""
 
-    def __init__(self, session_id: str | None = None) -> None:
-        sid = session_id or "unknown"
-        super().__init__(f"Verified operator identity required for session {sid}")
+    def __init__(
+        self,
+        session_id: str | None = None,
+        *,
+        reason: str = "verified_identity_required",
+        source: str | None = None,
+        detail: str | None = None,
+        method: str | None = None,
+        subject: str | None = None,
+    ) -> None:
+        self.session_id = session_id or "unknown"
+        self.reason = reason
+        self.source = source
+        self.method = method
+        self.subject = subject
+        message = detail or f"Verified operator identity required for session {self.session_id}"
+        if source:
+            message = f"{message} (policy source: {source})"
+        super().__init__(message)
 
 
 class IdentityVerificationError(IdentityError):

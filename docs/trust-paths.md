@@ -38,4 +38,6 @@ Optional future adapters may add more fields — core behavior is unchanged when
 
 **Operator identity ([#55](https://github.com/ARPAHLS/aura/issues/55)):** optional adapter at session open adds `ids.operator` to every event's `agent_ids` trailer and emits `identity.bound`. Configure via profile `types` (`role: identity`), `configure(identity={...})`, or `session(identity_adapter=...)`. Export redacts PII by default.
 
+**Spectrum gate ([#73](https://github.com/ARPAHLS/aura/issues/73)):** profiles with `spectrum.level: high` or `full` default to **verified operator required** at session open (fail-fast, not warn-only). Manual / unverified labels do not satisfy the gate — use an IdP adapter or opt out with `spectrum.identity_required: false`.
+
 → [concepts.md](concepts.md) · [outputs.md](outputs.md)
