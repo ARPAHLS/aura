@@ -10,7 +10,7 @@ Nickel cron **north star** from Phase D ([#46](https://github.com/ARPAHLS/aura/i
 | **Schedule SLO** | `preset: schedule_slo` requires `sql/append` before deadline + grace → `slo.missed` on close if incomplete |
 | **Audit receipt** | `aura report show` / summary JSON surfaces `GOAL_DRIFT` and `SCHEDULE_SLO_MISS` findings |
 
-Observers **alert only** — enforcement stays in egress rules and escalation playbooks ([#47](https://github.com/ARPAHLS/aura/issues/47)).
+Observers **alert only** — enforcement stays in egress rules; **`escalations[]`** playbooks fire on `slo.missed` / `conformance.drift` ([#47](https://github.com/ARPAHLS/aura/issues/47)).
 
 ## Run
 
@@ -56,6 +56,6 @@ For tests and demos, inject wall clock via `variables._test_clock_iso` (ISO-8601
 
 ## Next
 
-- Escalation playbooks on `slo.missed` / `conformance.drift` — [#47](https://github.com/ARPAHLS/aura/issues/47)
+- Escalation playbooks on `slo.missed` / `conformance.drift` — see [example 12](../12-escalation-playbooks/) and [observers.md](../docs/observers.md#3-escalation-playbooks--profileescalations-47) ([#47](https://github.com/ARPAHLS/aura/issues/47))
 - Schema checks at high bind — [#78](https://github.com/ARPAHLS/aura/issues/78)
 - Limit observer preset (rate/budget) — shipped in [#77](https://github.com/ARPAHLS/aura/issues/77); see [example 07](../07-observer-presets/)

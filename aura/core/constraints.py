@@ -191,10 +191,32 @@ def _rule_sequencer_required(
     )
 
 
+def _rule_escalation_pause(ctx: ConstraintContext, rule: dict[str, Any]) -> ConstraintResult | None:
+    if ctx.event_kind not in ("tool.call", "action.request"):
+        return None
+    request_id = rule.get("request_id")
+    if not request_id:
+        return None
+    if request_id in ctx.approved_requests:
+        return ConstraintResult(
+            passed=True,
+            rule=rule,
+            message="escalation pause cleared",
+        )
+    return ConstraintResult(
+        passed=False,
+        rule=rule,
+        message="Escalation playbook paused egress — call approve() to continue",
+        request_id=str(request_id),
+        blocked=False,
+    )
+
+
 _BUILTIN: dict[str, Any] = {
     "max_tokens_per_step": _rule_max_tokens,
     "confirm_before": _rule_confirm_before,
     "allow_tools": _rule_allow_tools,
     "deny_tools": _rule_deny_tools,
     "sequencer_required": _rule_sequencer_required,
+    "escalation_pause": _rule_escalation_pause,
 }

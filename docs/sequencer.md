@@ -143,4 +143,4 @@ On session close, declared step ids are compared to `sequencer.step.end` events 
 
 Implementation: `aura/sequencer/` — `SequencerRunner`, `SequencerEngine`
 
-Example: [examples/sequencer_pipeline.py](../examples/sequencer_pipeline.py)
+Example: [examples/04-sequencer-pipeline](../examples/04-sequencer-pipeline/)

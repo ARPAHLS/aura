@@ -1,4 +1,4 @@
-"""Guarded tools — token limit, confirm-before-action, allow/deny lists."""
+"""Example 02 — Guarded tools: token limit, confirm-before-action, allow/deny lists."""
 
 from aura import ApprovalRequired, agent, configure
 

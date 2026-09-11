@@ -14,7 +14,7 @@ From [narrative.md](narrative.md). Enforced by Spectrum + conformance engine + h
 |---|---|---|
 | **Audit** | Loose | Spine + export receipt — always on in production profiles |
 | **Enforce** | Tight | Egress rules, sequencer gates, constitution at `tool.call` |
-| **Escalate** | Tailored | Observers (Monitor, Break, Limit), metrics snapshots, goal/SLO presets; wire via `profile.observers[]` or `spectrum.services[]` ([#77](https://github.com/ARPAHLS/aura/issues/77)) |
+| **Escalate** | Tailored | Observers (Monitor, Break, Limit), metrics snapshots, goal/SLO presets; wire via `profile.observers[]` or `spectrum.services[]` ([#77](https://github.com/ARPAHLS/aura/issues/77)); **`escalations[]` playbooks** on drift / SLO miss / alerts / policy violations ([#47](https://github.com/ARPAHLS/aura/issues/47)) |
 
 AURA-native tailored patterns use **observers + export** — see [example 10](../../examples/10-observer-metrics-snapshot/). Third-party registry skills may consume exports optionally; AURA does not require them for SLO visibility.
 

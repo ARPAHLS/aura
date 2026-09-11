@@ -5,7 +5,7 @@ Runs two short sessions and compares summaries programmatically; prints CLI foll
 
 From repo root:
   pip install -e ".[dev]"
-  python examples/audit_pipeline.py
+  python examples/09-audit-pipeline/main.py
 
 Then inspect receipt artifacts:
   aura report show <session_id>

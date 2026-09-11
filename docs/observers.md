@@ -32,7 +32,7 @@ Custom handlers: `CallableObserver` or profile entries with an `id` + handler �
 | **goal_drift** | `conformance.drift` | Tool payloads vs declared goal / forbidden topics |
 | **schedule_slo** | `slo.missed` | Required work incomplete by schedule + grace |
 
-Runnable tours: [example 07](../examples/07-observer-presets/) (monitor, break, limit), [example 11](../examples/11-scheduled-agent-slo/) (goal_drift, schedule_slo), [example 10](../examples/10-observer-metrics-snapshot/) (custom metrics note).
+Runnable tours: [example 07](../examples/07-observer-presets/) (monitor, break, limit), [example 11](../examples/11-scheduled-agent-slo/) (goal_drift, schedule_slo), [example 12](../examples/12-escalation-playbooks/) (escalation playbooks), [example 10](../examples/10-observer-metrics-snapshot/) (custom metrics note).
 
 ---
 
@@ -84,7 +84,39 @@ No `spectrum` block on the profile → backward compatible; nothing auto-wires.
 
 **Verified identity ([#73](https://github.com/ARPAHLS/aura/issues/73)):** `high` / `full` default to requiring a verified operator at session open when a `spectrum` block is present. Observers and services wiring are independent — identity is enforced at bind, before presets attach.
 
-`session.open` includes `spectrum.services_activation` (`activated`, `skipped_explicit`, `unknown`). See [outputs.md](outputs.md), [aura-levels.md](aura-levels.md).
+### 3. Escalation playbooks — `profile.escalations[]` ([#47](https://github.com/ARPAHLS/aura/issues/47))
+
+**Profile, not manifest:** declare `escalations[]` on the **agent profile** (registry JSON / `agent(..., escalations=...)`), alongside `rules`, `observers`, and `spectrum`. Session **manifest bindings** describe brain/tool types for birth — playbooks are durable agent policy and belong on the profile. Runnable tour: [example 12](../examples/12-escalation-playbooks/).
+
+When observers emit trigger events, configured playbooks run on the **escalate** plane (alert-only observers unchanged):
+
+| Trigger | Typical source |
+|---|---|
+| `slo.missed` | `schedule_slo` preset |
+| `conformance.drift` | `goal_drift` preset |
+| `observer.alert` | `break` / `limit` presets |
+| `constraint.violated` | egress policy |
+
+```yaml
+escalations:
+  - on: slo.missed
+    after_minutes: 15          # metadata for external schedulers; in-session fires immediately
+    actions: [log, email:ops@company.com]
+  - on: conformance.drift
+    actions: [pause, nudge:"Re-align to declared goal"]
+```
+
+| Action | Spine event | Notes |
+|---|---|---|
+| `log` | `escalation.fired` | default conservative action |
+| `alert` / `alert:msg` | `observer.note` (`type: escalation_alert`) | lightweight in-session signal |
+| `nudge` / `nudge:msg` | `membrane.nudge` | host/brain may consume message |
+| `pause` | `escalation.fired` + `escalation_pause` rule | requires spectrum ≥ mid; unblock via `approve()` |
+| `email:addr` | `escalation.email` | stub delivery — coat op [#49](https://github.com/ARPAHLS/aura/issues/49) |
+| `wake` | `escalation.wake` | field-service stub |
+| `custom` | via `session(escalation_handler=...)` | programmatic hook |
+
+`session.open` includes `spectrum.escalations` (rule summary) and `spectrum.services_activation` (`activated`, `skipped_explicit`, `unknown`) when configured. Audit report finding `ESCALATION_FIRED` when `escalation.fired` is on the spine. See [outputs.md](outputs.md), [aura-levels.md](aura-levels.md).
 
 CLI merge (does not drop existing `services` / `service_config`):
 

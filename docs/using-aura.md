@@ -162,6 +162,8 @@ Profile observers (by id) attach at session open. Handlers must be non-blocking.
 
 Packaged presets: `preset: monitor`, `preset: break`, `preset: limit`, `preset: goal_drift`, `preset: schedule_slo` — canonical config and wiring in [observers.md](observers.md). Quick start: [examples/07-observer-presets](../examples/07-observer-presets/), [examples/11-scheduled-agent-slo](../examples/11-scheduled-agent-slo/).
 
+**Escalation playbooks ([#47](https://github.com/ARPAHLS/aura/issues/47)):** add `escalations[]` on the **agent profile** (not manifest bindings) to run log / alert / nudge / pause / email / wake / custom actions when the spine emits `slo.missed`, `conformance.drift`, `observer.alert`, or `constraint.violated`. Tour: [example 12](../examples/12-escalation-playbooks/). See [observers.md — Escalation playbooks](observers.md#3-escalation-playbooks--profileescalations-47).
+
 When a profile includes a `spectrum` block, `spectrum.services[]` wires packaged presets at session open ([#77](https://github.com/ARPAHLS/aura/issues/77)). Explicit `profile.observers[]` wins over duplicate service presets.
 
 ---
@@ -177,7 +179,7 @@ aura config show        # merged config + resolved paths
 aura paths              # view paths; set-project / set-storage persist YAML
 aura agent create my-bot --purpose "compliance"
 aura agent set my-bot --ref acme/my-bot --skill research --variable model=llama3.2
-aura run my-bot examples/sequencer_pipeline.py
+aura run my-bot examples/04-sequencer-pipeline/main.py
 aura logs aura_sess_xxxxxxxxxxxx
 aura export aura_sess_xxxxxxxxxxxx
 aura report show aura_sess_xxxxxxxxxxxx

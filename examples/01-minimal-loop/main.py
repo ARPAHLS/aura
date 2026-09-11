@@ -1,4 +1,4 @@
-"""Minimal loop — auto agent ID, audit only."""
+"""Example 01 — Minimal loop: auto agent ID, audit only."""
 
 from aura import agent, configure
 

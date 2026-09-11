@@ -119,4 +119,4 @@ Spectrum profiles can also set `spectrum.identity_required` (wins over global). 
 
 CLI: `aura identity show`
 
-→ [trust-paths.md](../docs/trust-paths.md) · [examples/09-operator-identity](../examples/09-operator-identity/main.py)
+→ [trust-paths.md](../docs/trust-paths.md) · [examples/13-operator-identity](../examples/13-operator-identity/)

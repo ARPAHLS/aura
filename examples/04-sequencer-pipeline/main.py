@@ -1,4 +1,4 @@
-"""Sequencer pipeline — ordered steps with mock skills and approval gates."""
+"""Example 04 — Sequencer pipeline: ordered steps with mock skills and approval gates."""
 
 from __future__ import annotations
 

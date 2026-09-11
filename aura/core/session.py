@@ -65,6 +65,7 @@ class Session:
     _open_snapshot_hash: str | None = None
     _operator_identity: OperatorIdentity | None = None
     _identity_ids_overlay: dict[str, Any] = field(default_factory=dict)
+    _escalation_engine: Any = None
 
     def __setattr__(self, name: str, value: Any) -> None:
         if (
@@ -96,6 +97,7 @@ class Session:
         sessions_dir: Path,
         *,
         identity_options: IdentityOptions | None = None,
+        escalation_handler: Any | None = None,
     ) -> None:
         if self._closed:
             raise SessionClosedError(self.session_id)
@@ -115,6 +117,7 @@ class Session:
         )
         self._open = True
         self._attach_profile_observers()
+        from aura.core.escalations import attach_escalation_engine, escalation_summary
         from aura.core.spectrum_enforcement import effective_spectrum, enforcement_rules
         from aura.core.spectrum_identity import resolve_verified_identity_required
         from aura.core.spectrum_services import attach_spectrum_services
@@ -129,6 +132,10 @@ class Session:
         ) or resolve_verified_identity_required(self.profile, identity_options=identity_options)
         spectrum_meta["verified_identity_required"] = policy.required
         spectrum_meta["verified_identity_required_source"] = policy.source
+        escalation_meta = escalation_summary(self.profile)
+        attach_escalation_engine(self, custom_handler=escalation_handler)
+        if escalation_meta.get("rule_count"):
+            spectrum_meta["escalations"] = escalation_meta
         self.emit(
             "membrane.ingress",
             ingress_event_payload(self.profile, self.mode.value, self.snapshot_hash),

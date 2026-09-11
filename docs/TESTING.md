@@ -78,10 +78,11 @@ The workflow also emits a gate job named **`lint-test`** that succeeds only when
 - **New behavior needs a test** — extend the closest file (`test_core.py`, `test_v02.py`, `test_v03.py`, `test_cli.py`, or `test_core_gaps.py`).
 - Shared fixtures live in **`tests/conftest.py`** — do not duplicate `aura_home` in test modules.
 - Optional Skillware registry tests: `tests/test_skillware_integration.py` (`@pytest.mark.skillware`) — run in CI via the **skillware-live** job when `[skillware]` is installed ([#36](https://github.com/ARPAHLS/aura/issues/36)).
-- **Host stress simulation:** `python scripts/aura_host_stress_sim.py` — twenty-six scenarios (loose/tight/tailored coats, spectrum low/mid/high/full bind, verified-identity gate edge cases, single/multi/chain Skillware paths, sequencer, observers, export compare). CI: `tests/test_host_stress_sim.py` (`@pytest.mark.skillware`).
+- **Host stress simulation:** `python scripts/aura_host_stress_sim.py` — twenty-seven scenarios (loose/tight/tailored coats, spectrum low/mid/high/full bind, verified-identity gate edge cases, escalation SLO playbook, single/multi/chain Skillware paths, sequencer, observers, export compare). CI: `tests/test_host_stress_sim.py` (`@pytest.mark.skillware`).
 - **Coat flow report:** `python scripts/aura_coat_flow_report.py --json` — full session breakdown per spectrum level; CI: `tests/test_coat_flow_report.py`.
 - **Spectrum enforcement:** `tests/test_spectrum_enforcement.py` — level-driven allowlist, sequencer bind, CLI set/show.
 - **Verified identity via spectrum:** `tests/test_spectrum_identity.py` — level defaults, opt-out, session override, audit finding, CLI `--require-identity` ([#73](https://github.com/ARPAHLS/aura/issues/73)).
+- **Escalation playbooks:** `tests/test_escalations.py` — SLO/drift/alert/constraint triggers, log/alert/nudge/pause/email/custom actions, audit `ESCALATION_FIRED` ([#47](https://github.com/ARPAHLS/aura/issues/47)); example smoke `tests/test_example_12_escalation_playbooks.py`.
 - **Real integration tests** live in **`tests/integration/`** (Skillware + Ollama, example 06 live). Default CI **excludes** them (`--ignore=tests/integration`). Run locally:
 
 ```bash
@@ -117,7 +118,7 @@ Integration tests **fail** (not skip) if Ollama or Skillware is missing — that
 | CLI | Version, agent CRUD, run, logs, export, export-otel, compare, identity show (`test_cli.py`) |
 | Config / runtime | YAML merge, `run_script`, middleware, session modes (`test_core_gaps.py`) |
 | Compare / OTel | Summary diff incl. `agent_ref` + `hash_chain_valid`, OTel JSONL export (`test_v03.py`, `test_core_gaps.py`) |
-| Examples | Smoke run all `examples/*.py` (`test_examples_smoke.py`) |
+| Examples | Smoke run all `examples/*/main.py` — 13 numbered folders (`test_examples_smoke.py`) |
 | Skillware | Live registry skills via `test_skillware_integration.py` (CI **skillware-live** job) |
 | Integration | `tests/integration/` — Ollama + Skillware + example 06 (local only) |
 

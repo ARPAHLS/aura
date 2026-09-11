@@ -97,6 +97,7 @@ def cmd_agent_show(name: str, *, console: Console | None = None) -> int:
         else:
             console.print(message, style="bold #FF9AA2")
         return 1
+    from aura.core.escalations import escalation_summary
     from aura.core.spectrum_enforcement import effective_spectrum, enforcement_rules
     from aura.core.spectrum_identity import identity_policy_summary
 
@@ -105,6 +106,7 @@ def cmd_agent_show(name: str, *, console: Console | None = None) -> int:
     payload["effective_spectrum"] = spec.summary()
     payload["effective_spectrum"].update(identity_policy_summary(profile))
     payload["effective_spectrum"]["enforcement_rules"] = enforcement_rules(profile)
+    payload["escalations"] = escalation_summary(profile)
     text = json.dumps(payload, indent=2)
     if console is None:
         print(text)

@@ -38,9 +38,9 @@ skillware doctor security/prompt_injection_firewall
 |---|---|
 | [05-skillware-skill-types](../../examples/05-skillware-skill-types/) | Security + optimization + monitoring skills |
 | [06-skillware-sequencer-chain](../../examples/06-skillware-sequencer-chain/) | Declarative scan → compress → budget pipeline |
-| [audit_pipeline.py](../../examples/audit_pipeline.py) | Export slice — report, compare, verify |
+| [09-audit-pipeline](../../examples/09-audit-pipeline/) | Export slice — report, compare, verify |
 | [10-observer-metrics-snapshot](../../examples/10-observer-metrics-snapshot/) | Tailored coat — observer metrics snapshot |
-| [sequencer_pipeline.py](../../examples/sequencer_pipeline.py) | Sequencer concepts with mocks |
+| [04-sequencer-pipeline](../../examples/04-sequencer-pipeline/) | Sequencer concepts with mocks |
 
 Set `$env:SKILLWARE_LIVE = "1"` for live registry skills in examples 05 and 06.
 
