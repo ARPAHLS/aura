@@ -215,7 +215,7 @@ sequencer:
         args: { to: "team@example.com", subject: "Brief" }
 ```
 
-Runnable example: [examples/sequencer_pipeline.py](../examples/sequencer_pipeline.py). Conditional steps via `when` (prior step result): [examples/06-skillware-sequencer-chain](../examples/06-skillware-sequencer-chain/) · [sequencer.md](sequencer.md).
+Runnable example: [examples/04-sequencer-pipeline](../examples/04-sequencer-pipeline/). Conditional steps via `when` (prior step result): [examples/06-skillware-sequencer-chain](../examples/06-skillware-sequencer-chain/) · [sequencer.md](sequencer.md).
 
 ---
 
@@ -238,7 +238,7 @@ See [outputs.md](outputs.md) and [reference-tool-host-capstone.md](guides/refere
 
 ```bash
 pip install -e ".[dev]"
-python examples/sequencer_pipeline.py                  # MockSkill
+python examples/04-sequencer-pipeline/main.py            # MockSkill
 pip install -e ".[skillware]"
 pytest -m skillware tests/test_skillware_integration.py   # real registry skills
 pytest -m "not ollama"                                    # default CI (no Ollama daemon)

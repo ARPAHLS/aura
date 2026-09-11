@@ -822,6 +822,34 @@ def scenario_spectrum_identity_mock_verified_ok() -> ScenarioResult:
     )
 
 
+def scenario_escalation_slo_playbook() -> ScenarioResult:
+    """SLO miss triggers escalation.fired + email stub."""
+    configure(identity={"adapter": "mock", "subject": "stress-sim-operator"})
+    ag = agent(
+        "stress-escalation",
+        variables={
+            "schedule": "0 9 * * *",
+            "schedule_grace_minutes": 15,
+            "_test_clock_iso": "2026-06-01T09:20:00+00:00",
+        },
+        observers=[{"preset": "schedule_slo", "config": {"required_tool": "sql/append"}}],
+        escalations=[{"on": "slo.missed", "actions": ["log", "email:ops@stress.test"]}],
+    )
+    with ag.session(mode="script", export=False) as run:
+        run.emit("turn.end", {"status": "no_write"})
+    kinds = _kinds(run._session)
+    _assert("slo.missed" in kinds, kinds)
+    _assert("escalation.fired" in kinds, kinds)
+    _assert("escalation.email" in kinds, kinds)
+    return ScenarioResult(
+        name="escalation_slo_playbook",
+        coat="tailored",
+        skillware_mode="none",
+        passed=True,
+        metrics={"kinds": len(set(kinds))},
+    )
+
+
 SCENARIOS: list[tuple[str, Callable[[], ScenarioResult], bool]] = [
     ("loose coat", scenario_loose_emit_only, False),
     ("single skill safe", lambda: scenario_single_skill_firewall(safe=True), True),
@@ -849,6 +877,7 @@ SCENARIOS: list[tuple[str, Callable[[], ScenarioResult], bool]] = [
     ("spectrum identity unverified manual", scenario_spectrum_identity_unverified_manual, False),
     ("spectrum identity global required", scenario_spectrum_identity_global_required, False),
     ("spectrum identity mock verified ok", scenario_spectrum_identity_mock_verified_ok, False),
+    ("escalation slo playbook", scenario_escalation_slo_playbook, False),
 ]
 
 

@@ -84,7 +84,7 @@ Pick how your loop executes inside the session:
 |---|---|---|
 | **Emit-only** | Custom script; you emit spine events yourself | [examples/08-emit-only-loop](../examples/08-emit-only-loop/) |
 | **Tool host** | Skills/tools at egress; membrane enforces rules | `SkillwareHost` or any `ToolHost` — [reference-tool-host-capstone.md](guides/reference-tool-host-capstone.md) |
-| **Sequencer** | Declared step order + gates | [sequencer_pipeline.py](../examples/sequencer_pipeline.py) |
+| **Sequencer** | Declared step order + gates | [04-sequencer-pipeline](../examples/04-sequencer-pipeline/) |
 | **Stack integration** | Ollama / cloud API as body | [integrations/README.md](integrations/README.md) |
 
 Minimal SDK pattern (audit posture):
@@ -177,17 +177,18 @@ Run in order from repo root after `pip install -e .`:
 
 | Step | Example | Teaches |
 |---|---|---|
-| 1 | [minimal_loop.py](../examples/minimal_loop.py) | Audit posture — emit + export |
-| 2 | [guarded_tools.py](../examples/guarded_tools.py) | Rules, approval gates, allow/deny |
-| 3 | [task_mode.py](../examples/task_mode.py) | Task mode + `complete_goal()` |
-| 4 | [sequencer_pipeline.py](../examples/sequencer_pipeline.py) | Prescriptive pipeline + mock host |
+| 1 | [01-minimal-loop](../examples/01-minimal-loop/) | Audit posture — emit + export |
+| 2 | [02-guarded-tools](../examples/02-guarded-tools/) | Rules, approval gates, allow/deny |
+| 3 | [03-task-mode](../examples/03-task-mode/) | Task mode + `complete_goal()` |
+| 4 | [04-sequencer-pipeline](../examples/04-sequencer-pipeline/) | Prescriptive pipeline + mock host |
 | 5 | [05-skillware-skill-types](../examples/05-skillware-skill-types/) | ToolHost + three skill categories |
 | 6 | [06-skillware-sequencer-chain](../examples/06-skillware-sequencer-chain/) | Declarative chain + conditional `when` |
 | 7 | [07-observer-presets](../examples/07-observer-presets/) | Monitor + Break + Limit; `spectrum.services[]` wiring |
 | 8 | [08-emit-only-loop](../examples/08-emit-only-loop/) | Loose coat — no tool host |
-| 9 | [audit_pipeline.py](../examples/audit_pipeline.py) | Export slice — report, compare, OTel assert, verify |
+| 9 | [09-audit-pipeline](../examples/09-audit-pipeline/) | Export slice — report, compare, OTel assert, verify |
 | 10 | [10-observer-metrics-snapshot](../examples/10-observer-metrics-snapshot/) | Tailored coat — observer metrics snapshot |
 | 11 | [11-scheduled-agent-slo](../examples/11-scheduled-agent-slo/) | Goal drift + schedule SLO — nickel cron north star |
+| 12 | [12-escalation-playbooks](../examples/12-escalation-playbooks/) | Escalation playbooks — triggers + nudge/pause/email/custom |
 
 Capstone checklist: [reference-tool-host-capstone.md](guides/reference-tool-host-capstone.md).
 
@@ -200,6 +201,8 @@ Not required for first successful run:
 - **Run auth / gatekeeper coat** — [GH #56](https://github.com/ARPAHLS/aura/issues/56)
 
 **Goals and schedules** — shipped via [example 11](../examples/11-scheduled-agent-slo/) and `goal_drift` / `schedule_slo` presets ([#46](https://github.com/ARPAHLS/aura/issues/46)).
+
+**Escalation playbooks** — [example 12](../examples/12-escalation-playbooks/); profile `escalations[]` ([#47](https://github.com/ARPAHLS/aura/issues/47)).
 
 ---
 

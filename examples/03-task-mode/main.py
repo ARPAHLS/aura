@@ -1,4 +1,4 @@
-"""Task mode — run until goal complete."""
+"""Example 03 — Task mode: run until goal complete."""
 
 from aura import agent, configure
 

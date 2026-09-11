@@ -177,6 +177,21 @@ class AuditReportBuilder:
                 }
             )
 
+        for event in events:
+            if event.kind == "escalation.fired":
+                payload = event.payload or {}
+                findings.append(
+                    {
+                        "severity": "medium",
+                        "code": "ESCALATION_FIRED",
+                        "message": (
+                            f"Escalation playbook fired for {payload.get('trigger_kind', 'event')}"
+                        ),
+                        "actions": payload.get("actions"),
+                        "event_id": event.event_id,
+                    }
+                )
+
         open_evt = next((e for e in events if e.kind == "session.open"), None)
         spectrum = (open_evt.payload or {}).get("spectrum") if open_evt else None
         if isinstance(spectrum, dict) and spectrum.get("verified_identity_required"):

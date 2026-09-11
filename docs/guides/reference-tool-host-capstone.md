@@ -48,7 +48,9 @@ Open `.aura/sessions/<id>.jsonl` and confirm:
 
 | Path | Command | Coat |
 |---|---|---|
-| **Mock host** | `python examples/06-skillware-sequencer-chain/main.py` | Tight — sequencer + conditional steps |
+| **Minimal audit** | `python examples/01-minimal-loop/main.py` | Loose — emit + export |
+| **Sequencer (mock)** | `python examples/04-sequencer-pipeline/main.py` | Tight — steps + approval gate |
+| **Mock host chain** | `python examples/06-skillware-sequencer-chain/main.py` | Tight — sequencer + conditional steps |
 | **Live registry** | `$env:SKILLWARE_LIVE=1` + same | Same API, real bundled skills |
 | **Observers** | `python examples/07-observer-presets/main.py` | Analytics only |
 | **Emit-only** | `python examples/08-emit-only-loop/main.py` | Loose — no tool host |

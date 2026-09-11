@@ -108,6 +108,7 @@ class AgentHandle:
         identity_adapter: OperatorIdentityAdapter | None = None,
         operator: dict[str, Any] | None = None,
         identity: dict[str, Any] | None = None,
+        escalation_handler: Any | None = None,
     ) -> Iterator[SessionRun]:
         cfg = get_config()
         session = _build_session(self, mode, rules, sequencer)
@@ -117,7 +118,11 @@ class AgentHandle:
             operator=operator,
             config=dict(identity or {}),
         )
-        session.open(cfg.sessions_dir(), identity_options=identity_options)
+        session.open(
+            cfg.sessions_dir(),
+            identity_options=identity_options,
+            escalation_handler=escalation_handler,
+        )
         token = _current_run.set(run)
         try:
             yield run

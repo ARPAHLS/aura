@@ -155,12 +155,13 @@ Pure internal refactors with no user-visible effect may omit CHANGELOG; ask on t
 | Agent profile / registry fields | `docs/trust-paths.md`, `docs/aura-levels.md`, `docs/using-aura.md`, `aura/agents/profile.py` persistence, tests, CHANGELOG |
 | `spectrum.level` / enforcement rules | `aura/core/spectrum_enforcement.py`, `docs/aura-levels.md`, `docs/comparison.md`, `docs/ROADMAP.md`, `tests/test_spectrum_enforcement.py`, stress sim / flow report scripts, CHANGELOG |
 | `spectrum.services[]` / field-service wiring | `aura/core/spectrum_services.py`, `aura/observers/presets/limit.py`, `spec/manifest.schema.json`, `docs/observers.md`, `docs/field-services.md`, `docs/using-aura.md`, `tests/test_spectrum_services.py`, stress sim / flow report scripts, CHANGELOG |
+| `escalations[]` playbooks | `aura/core/escalations.py`, `aura/core/constraints.py` (`escalation_pause`), `aura/agents/profile.py`, `docs/observers.md`, `docs/outputs.md`, `examples/12-escalation-playbooks/`, `tests/test_escalations.py`, `tests/test_example_12_escalation_playbooks.py`, stress sim, CHANGELOG |
 | Constraint rule types | `docs/concepts.md`, `aura/core/constraints.py` tests, CHANGELOG |
 | Sequencer step model | `spec/sequencer.schema.json`, `docs/sequencer.md`, `tests/test_v02.py`, CHANGELOG |
 | Skillware host / egress | `integrations/skillware/` (when shipped), `docs/skillware-integration.md` redirect, CHANGELOG |
 | Integration example (Ollama, API, framework) | `integrations/<stack>/`, `docs/integrations/README.md`, `.env.example`, CHANGELOG |
 | CLI commands or flags | `docs/getting-started.md`, `README.md` quick start line, `docs/outputs.md` (export/compare shapes), CHANGELOG |
-| New core example | Flat script in `examples/`, `examples/README.md`, optional link from `docs/getting-started.md` |
+| New core example | Numbered folder `examples/NN-short-name/` with `main.py` + `README.md`, `examples/README.md`, onboarding learning path if applicable |
 | Architecture terminology | `docs/architecture.md`, `docs/INDEX.md`, `README.md` diagrams (keep in sync) |
 | Public docs tree / INDEX tiers | `docs/INDEX.md`, cross-links from `getting-started.md`, `onboarding.md`, `ROADMAP.md` |
 | Release / PyPI behavior | `docs/PUBLISHING.md`, `.github/workflows/publish-pypi.yml`, CHANGELOG |

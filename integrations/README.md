@@ -7,7 +7,7 @@ Pick your stack, then run the matching AURA loop.
 | Ollama (local body) | [ollama/](ollama/) | `python integrations/ollama/llama_loop.py` |
 | Ollama + Skillware | [skillware/](skillware/) | `python integrations/skillware/ollama_skill_loop.py` |
 | Skillware (tools only) | [skillware/](skillware/) | `python integrations/skillware/mock_tools.py` |
-| Operator identity | [identity/](identity/) | `python examples/09-operator-identity/main.py` |
+| Operator identity | [identity/](identity/) | `python examples/13-operator-identity/main.py` |
 | OpenAI (ChatGPT) | [openai/](openai/) | `python integrations/openai/skillware_body_loop.py` |
 | Anthropic (Claude) | [anthropic/](anthropic/) | `python integrations/anthropic/skillware_body_loop.py` |
 | Google Gemini | [google/](google/) | `python integrations/google/skillware_body_loop.py` |

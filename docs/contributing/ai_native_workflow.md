@@ -34,7 +34,7 @@ Written for **autonomous and semi-autonomous agents** working on AURA Harness. H
 | `aura/api.py` | Public SDK (`agent()`, `session()`, `emit()`) |
 | `aura/runtime/` | Script wrap helpers |
 | `tests/` | pytest suite (see below) |
-| `examples/` | Runnable flat core demos |
+| `examples/` | Runnable numbered demos (`01-*` … `13-*`, each with `main.py`) |
 | `docs/` | User and contributor documentation |
 | `spec/` | JSON schemas (contracts) |
 | `.github/` | Issue templates, labels, workflows |

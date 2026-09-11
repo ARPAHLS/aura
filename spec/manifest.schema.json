@@ -64,6 +64,26 @@
           "items": { "type": "string" }
         }
       }
+    },
+    "EscalationRule": {
+      "type": "object",
+      "required": ["on"],
+      "properties": {
+        "on": {
+          "type": "string",
+          "description": "Trigger event kind: slo.missed, conformance.drift, observer.alert, constraint.violated"
+        },
+        "actions": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "log, alert, nudge, pause, email:addr, wake, custom"
+        },
+        "after_minutes": {
+          "type": "integer",
+          "description": "Schedule metadata for external playbooks; in-session triggers fire immediately"
+        },
+        "id": { "type": "string" }
+      }
     }
   }
 }

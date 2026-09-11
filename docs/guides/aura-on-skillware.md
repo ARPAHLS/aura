@@ -261,8 +261,8 @@ python examples/06-skillware-sequencer-chain/main.py
 | `aura/observers/presets/` | Monitor + Break + Limit (+ goal_drift, schedule_slo) — see [observers.md](../observers.md) |
 | `integrations/skillware/` | Ollama + reference scripts |
 | `integrations/openai/`, `anthropic/`, `google/` | Cloud body loops |
-| `examples/sequencer_pipeline.py` | Sequencer with mocks |
-| `examples/05-*` … `08-*` | ToolHost tour: skills, chain, observers, emit-only |
+| `examples/04-sequencer-pipeline/` | Sequencer with mocks |
+| `examples/05-*` … `13-*` | ToolHost tour: skills, chain, observers, emit-only, SLO, escalations, identity |
 | `docs/skillware-integration.md` | API-focused reference |
 | `docs/guides/reference-tool-host-capstone.md` | AURA-first 360° checklist |
 

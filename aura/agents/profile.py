@@ -21,6 +21,7 @@ class AgentProfile:
     skills: list[str] = field(default_factory=list)
     sequencer: dict[str, Any] | None = None
     observers: list[dict[str, Any]] = field(default_factory=list)
+    escalations: list[dict[str, Any]] = field(default_factory=list)
     spectrum: dict[str, Any] | None = None
     types: list[dict[str, Any]] = field(default_factory=list)
     default_mode: str = "script"
@@ -39,6 +40,7 @@ class AgentProfile:
             "skills": self.skills,
             "sequencer": self.sequencer,
             "observers": self.observers,
+            "escalations": self.escalations,
             "spectrum": self.spectrum,
             "types": self.types,
             "default_mode": self.default_mode,
@@ -59,6 +61,7 @@ class AgentProfile:
             skills=list(data.get("skills") or []),
             sequencer=data.get("sequencer"),
             observers=list(data.get("observers") or []),
+            escalations=list(data.get("escalations") or []),
             spectrum=dict(data["spectrum"]) if isinstance(data.get("spectrum"), dict) else None,
             types=list(data.get("types") or []),
             default_mode=data.get("default_mode", "script"),

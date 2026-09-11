@@ -22,14 +22,18 @@ Use the project **`.venv`** for installs (`pip install -e ".[integrations]"`), n
 
 ## Runnable examples
 
+Full catalog: [examples/README.md](../../examples/README.md) (**01–13**, each `NN-name/main.py`).
+
 | Example | Shows |
 |---|---|
+| [01-minimal-loop](../../examples/01-minimal-loop/) | Emit + export (loose coat) |
+| [04-sequencer-pipeline](../../examples/04-sequencer-pipeline/) | Sequencer with mocks |
 | [05-skillware-skill-types](../../examples/05-skillware-skill-types/) | Three skill categories under AURA |
 | [06-skillware-sequencer-chain](../../examples/06-skillware-sequencer-chain/) | Sequencer chain with conditional `when` steps |
 | [07-observer-presets](../../examples/07-observer-presets/) | Monitor + Break + Limit; `spectrum.services[]` |
-| [08-emit-only-loop](../../examples/08-emit-only-loop/) | Emit-only coat — no tool host |
-| [09-operator-identity](../../examples/09-operator-identity/) | Optional verified operator trailer (mock adapter) |
-| [sequencer_pipeline.py](../../examples/sequencer_pipeline.py) | Sequencer with mocks |
+| [09-audit-pipeline](../../examples/09-audit-pipeline/) | Export slice — report, compare, verify |
+| [12-escalation-playbooks](../../examples/12-escalation-playbooks/) | Escalation playbooks on observer/SLO triggers |
+| [13-operator-identity](../../examples/13-operator-identity/) | Verified operator trailer (mock adapter) |
 
 ## Related docs
 
