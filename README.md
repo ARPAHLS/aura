@@ -71,6 +71,7 @@ flowchart LR
     AURA --> TRAIL["Audit Trail"]
     TRAIL --> EXPORT["Session Export"]
     TRAIL -.-> OBS["Observers"]
+    TRAIL -.-> ESC["Escalation playbooks"]
 ```
 
 → [architecture.md](docs/architecture.md) · [stack-position.md](docs/stack-position.md)
@@ -112,9 +113,22 @@ with ag.session() as run:
 print(run.exports)
 ```
 
-CLI: `aura agent create`, `aura agent set --spectrum-level`, `aura agent set --spectrum-service`, `aura run`, `aura export`, `aura report show`, `aura identity show`, `aura compare`, `aura export-otel`, `aura verify chain`.
+**CLI** (see `aura --help` for full list):
 
-→ [getting-started.md](docs/getting-started.md) · [onboarding.md](docs/onboarding.md) · [examples/](examples/)
+| Command | Purpose |
+| :--- | :--- |
+| `aura agent create` | Register an agent profile |
+| `aura agent set --spectrum-level` | Set enforcement posture (loose → tailored) |
+| `aura agent set --spectrum-service` | Wire observer presets at session open |
+| `aura run` | Run a script under an audited session |
+| `aura export` | Print session summary JSON |
+| `aura report show` | Human-readable audit report |
+| `aura identity show` | Operator identity adapter config |
+| `aura compare` | Diff two session summaries |
+| `aura export-otel` | OTel-style JSONL beside session |
+| `aura verify chain` | Validate exported JSONL hash chain |
+
+→ [getting-started.md](docs/getting-started.md) · [onboarding.md](docs/onboarding.md) · [examples/README.md](examples/README.md) (01→12)
 
 ---
 
@@ -124,7 +138,7 @@ CLI: `aura agent create`, `aura agent set --spectrum-level`, `aura agent set --s
 | :--- | :--- |
 | **Index** | [docs/INDEX.md](docs/INDEX.md) — full doc map (Start / Build / Decide) |
 | **Start** | [onboarding.md](docs/onboarding.md) · [getting-started.md](docs/getting-started.md) · [concepts.md](docs/concepts.md) · [using-aura.md](docs/using-aura.md) |
-| **Integration** | [reference-tool-host-capstone.md](docs/guides/reference-tool-host-capstone.md) · [guides/aura-on-skillware.md](docs/guides/aura-on-skillware.md) · [skillware-integration.md](docs/skillware-integration.md) · [sequencer.md](docs/sequencer.md) |
+| **Integration** | [reference-tool-host-capstone.md](docs/guides/reference-tool-host-capstone.md) · [guides/aura-on-skillware.md](docs/guides/aura-on-skillware.md) · [skillware-integration.md](docs/skillware-integration.md) · [sequencer.md](docs/sequencer.md) · [observers.md](docs/observers.md) |
 | **Identity & audit** | [trust-paths.md](docs/trust-paths.md) · [integrations/identity/](integrations/identity/) · [outputs.md](docs/outputs.md) |
 | **Compare & position** | [comparison.md](docs/comparison.md) · [ROADMAP.md](docs/ROADMAP.md) |
 | **Contribute** | [CONTRIBUTING.md](CONTRIBUTING.md) · [Agent workflow](docs/contributing/ai_native_workflow.md) · [TESTING.md](docs/TESTING.md) · [PUBLISHING.md](docs/PUBLISHING.md) · [CHANGELOG.md](CHANGELOG.md) |
