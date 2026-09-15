@@ -26,6 +26,8 @@ CLI: `aura report show <session_id>`, `aura report show <session_id> --json`, `a
 
 **Spine events (spectrum):** `session.open` and `membrane.ingress` carry a `spectrum` summary when the profile has a `spectrum` block. `session.open` also includes `services_activation` — which presets wired at open (`activated`, `skipped_explicit`, `unknown`) — and `verified_identity_required` + source when the verified-ID gate applies ([#73](https://github.com/ARPAHLS/aura/issues/73)). See [aura-levels.md](aura-levels.md).
 
+**Spine events (capabilities):** When `profile.capabilities[]` is set, `session.open` spectrum summary includes a capabilities block (`count`, `ids`, `gated_tools`, `secret_refs`, broker kind). Scope misses emit `constraint.violated` (with `audit_only` at spectrum `low`). `constraint.passed` lists only rules that passed. Successful inject emits `capability.injected` (capability id + secret **ref**, never the value). Secret-like payload keys (`token`, `api_key`, …) are redacted on every emit, including sessions without capabilities. Findings: `CAPABILITY_DENIED`, `CAPABILITY_AUDIT`, `SECRET_BROKER_ERROR`. See [capabilities.md](capabilities.md).
+
 ---
 
 ## Audit report (summary JSON)

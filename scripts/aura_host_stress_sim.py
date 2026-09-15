@@ -30,7 +30,7 @@ _REPO = Path(__file__).resolve().parents[1]
 if str(_REPO) not in sys.path:
     sys.path.insert(0, str(_REPO))
 
-from aura import ApprovalRequired, agent, configure  # noqa: E402
+from aura import ApprovalRequired, MapSecretBroker, agent, configure  # noqa: E402
 from aura.core.constraints import ConstraintViolation  # noqa: E402
 from aura.identity.errors import IdentityRequiredError  # noqa: E402
 from aura.core.compare import compare_sessions  # noqa: E402
@@ -787,7 +787,9 @@ def scenario_spectrum_identity_global_required() -> ScenarioResult:
     except IdentityRequiredError:
         blocked = True
     finally:
-        configure(identity={"adapter": "mock", "subject": "stress-sim-operator"}, identity_required=False)
+        configure(
+            identity={"adapter": "mock", "subject": "stress-sim-operator"}, identity_required=False
+        )
     _assert(blocked, "global identity_required must block when no operator resolves")
     return ScenarioResult(
         name="spectrum_identity_global_required",
@@ -850,6 +852,222 @@ def scenario_escalation_slo_playbook() -> ScenarioResult:
     )
 
 
+_CAP_SECRET = "tok_live_shop_x_card_y_99"
+_CAP_BROKER = MapSecretBroker({"env:AURA_CAP_SHOP_X_CARD_Y": _CAP_SECRET})
+_CAP = {
+    "id": "shop-x-milk",
+    "tool": "payment",
+    "allowed": {"merchant": "shop-x", "item": "milk", "card": "Y"},
+    "secret": {"ref": "env:AURA_CAP_SHOP_X_CARD_Y"},
+}
+
+
+def scenario_capability_allow_inject() -> ScenarioResult:
+    captured: dict[str, Any] = {}
+
+    def pay(args: dict[str, Any]) -> dict[str, Any]:
+        captured.update(args)
+        return {"ok": True}
+
+    ag = agent(
+        "stress-cap-allow",
+        capabilities=[_CAP],
+        spectrum={"level": "mid", "services": ["audit"]},
+    )
+    with ag.session(export=False, secret_broker=_CAP_BROKER) as run:
+        host = SkillwareHost(run._session)
+        host.register(MockSkill("pay", {"payment": pay}))
+        host.execute(
+            "pay",
+            "payment",
+            {
+                "capability_id": "shop-x-milk",
+                "merchant": "shop-x",
+                "item": "milk",
+                "card": "Y",
+            },
+        )
+    kinds = _kinds(run._session)
+    blob = json.dumps([e.to_dict() for e in run._session.spine.stream()])
+    _assert(captured.get("token") == _CAP_SECRET, captured)
+    _assert(_CAP_SECRET not in blob, "secret leaked")
+    _assert("capability.injected" in kinds, kinds)
+    return ScenarioResult(
+        name="capability_allow_inject",
+        coat="tight",
+        skillware_mode="none",
+        passed=True,
+        metrics={"injected": True},
+    )
+
+
+def scenario_capability_deny_mid() -> ScenarioResult:
+    ran = {"n": 0}
+
+    def pay(args: dict[str, Any]) -> dict[str, Any]:
+        ran["n"] += 1
+        return args
+
+    ag = agent(
+        "stress-cap-deny",
+        capabilities=[_CAP],
+        spectrum={"level": "mid", "services": ["audit"]},
+    )
+    with ag.session(export=False, secret_broker=_CAP_BROKER) as run:
+        host = SkillwareHost(run._session)
+        host.register(MockSkill("pay", {"payment": pay}))
+        blocked = False
+        try:
+            host.execute(
+                "pay",
+                "payment",
+                {
+                    "capability_id": "shop-x-milk",
+                    "merchant": "shop-x",
+                    "item": "milk",
+                    "card": "Z",
+                },
+            )
+        except ConstraintViolation:
+            blocked = True
+    _assert(blocked and ran["n"] == 0, {"blocked": blocked, "ran": ran})
+    return ScenarioResult(
+        name="capability_deny_mid",
+        coat="tight",
+        skillware_mode="none",
+        passed=True,
+    )
+
+
+def scenario_capability_low_audit() -> ScenarioResult:
+    ran = {"n": 0}
+
+    def pay(args: dict[str, Any]) -> dict[str, Any]:
+        ran["n"] += 1
+        return {"token_present": "token" in args}
+
+    ag = agent(
+        "stress-cap-low",
+        capabilities=[_CAP],
+        spectrum={"level": "low", "services": ["audit"]},
+    )
+    with ag.session(export=False, secret_broker=_CAP_BROKER) as run:
+        host = SkillwareHost(run._session)
+        host.register(MockSkill("pay", {"payment": pay}))
+        result = host.execute(
+            "pay",
+            "payment",
+            {
+                "capability_id": "shop-x-milk",
+                "merchant": "shop-x",
+                "item": "milk",
+                "card": "Z",
+            },
+        )
+    _assert(ran["n"] == 1, ran)
+    _assert(result.get("token_present") is False, result)
+    _assert("constraint.violated" in _kinds(run._session), _kinds(run._session))
+    return ScenarioResult(
+        name="capability_low_audit",
+        coat="loose",
+        skillware_mode="none",
+        passed=True,
+    )
+
+
+def scenario_capability_token_bypass() -> ScenarioResult:
+    captured: dict[str, Any] = {}
+
+    def pay(args: dict[str, Any]) -> dict[str, Any]:
+        captured.update(args)
+        return args
+
+    ag = agent(
+        "stress-cap-bypass",
+        capabilities=[_CAP],
+        spectrum={"level": "mid", "services": ["audit"]},
+    )
+    with ag.session(export=False, secret_broker=_CAP_BROKER) as run:
+        host = SkillwareHost(run._session)
+        host.register(MockSkill("pay", {"payment": pay}))
+        host.execute(
+            "pay",
+            "payment",
+            {
+                "capability_id": "shop-x-milk",
+                "merchant": "shop-x",
+                "item": "milk",
+                "card": "Y",
+                "token": "attacker-supplied-token-value",
+            },
+        )
+    blob = json.dumps([e.to_dict() for e in run._session.spine.stream()])
+    _assert(captured.get("token") == _CAP_SECRET, captured)
+    _assert("attacker-supplied-token-value" not in blob, blob[:200])
+    _assert(_CAP_SECRET not in blob, "live secret leaked")
+    return ScenarioResult(
+        name="capability_token_bypass",
+        coat="tight",
+        skillware_mode="none",
+        passed=True,
+    )
+
+
+def scenario_capability_high_bind() -> ScenarioResult:
+    from tests.spectrum_helpers import spectrum_block
+
+    ag = agent(
+        "stress-cap-high",
+        capabilities=[_CAP],
+        spectrum=spectrum_block("high"),
+    )
+    with ag.session(export=False, secret_broker=_CAP_BROKER) as run:
+        run.emit(
+            "tool.call",
+            {
+                "tool": "payment",
+                "capability_id": "shop-x-milk",
+                "args": {"merchant": "shop-x", "item": "milk", "card": "Y"},
+            },
+        )
+    _assert("tool.call" in _kinds(run._session), _kinds(run._session))
+    return ScenarioResult(
+        name="capability_high_bind",
+        coat="tight",
+        skillware_mode="none",
+        passed=True,
+    )
+
+
+def scenario_capability_escalation() -> ScenarioResult:
+    ag = agent(
+        "stress-cap-esc",
+        capabilities=[_CAP],
+        spectrum={"level": "mid"},
+        escalations=[{"on": "constraint.violated", "actions": ["nudge"]}],
+    )
+    with ag.session(export=False, secret_broker=_CAP_BROKER) as run:
+        try:
+            run.emit(
+                "tool.call",
+                {
+                    "tool": "payment",
+                    "capability_id": "shop-x-milk",
+                    "args": {"merchant": "shop-x", "item": "milk", "card": "Z"},
+                },
+            )
+        except ConstraintViolation:
+            pass
+    kinds = _kinds(run._session)
+    _assert("escalation.fired" in kinds, kinds)
+    return ScenarioResult(
+        name="capability_escalation",
+        coat="tight",
+        skillware_mode="none",
+        passed=True,
+    )
+
+
 SCENARIOS: list[tuple[str, Callable[[], ScenarioResult], bool]] = [
     ("loose coat", scenario_loose_emit_only, False),
     ("single skill safe", lambda: scenario_single_skill_firewall(safe=True), True),
@@ -878,6 +1096,12 @@ SCENARIOS: list[tuple[str, Callable[[], ScenarioResult], bool]] = [
     ("spectrum identity global required", scenario_spectrum_identity_global_required, False),
     ("spectrum identity mock verified ok", scenario_spectrum_identity_mock_verified_ok, False),
     ("escalation slo playbook", scenario_escalation_slo_playbook, False),
+    ("capability allow inject", scenario_capability_allow_inject, False),
+    ("capability deny mid", scenario_capability_deny_mid, False),
+    ("capability low audit", scenario_capability_low_audit, False),
+    ("capability token bypass", scenario_capability_token_bypass, False),
+    ("capability high bind", scenario_capability_high_bind, False),
+    ("capability escalation", scenario_capability_escalation, False),
 ]
 
 

@@ -120,6 +120,7 @@ print(run.exports)
 | `aura agent create` | Register an agent profile |
 | `aura agent set --spectrum-level` | Set enforcement posture (loose → tailored) |
 | `aura agent set --spectrum-service` | Wire observer presets at session open |
+| `aura agent set --capabilities-file` | Named intents + secret refs (capability broker) |
 | `aura run` | Run a script under an audited session |
 | `aura export` | Print session summary JSON |
 | `aura report show` | Human-readable audit report |
@@ -128,7 +129,7 @@ print(run.exports)
 | `aura export-otel` | OTel-style JSONL beside session |
 | `aura verify chain` | Validate exported JSONL hash chain |
 
-→ [getting-started.md](docs/getting-started.md) · [onboarding.md](docs/onboarding.md) · [examples/README.md](examples/README.md) (01→12)
+→ [getting-started.md](docs/getting-started.md) · [onboarding.md](docs/onboarding.md) · [examples/README.md](examples/README.md) (01→14)
 
 ---
 

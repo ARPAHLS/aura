@@ -9,6 +9,16 @@
       "owner": "core",
       "description": "Always-on audit spine (Job B)"
     },
+    "auth.secret_inject": {
+      "stage": "pre_tool",
+      "owner": "core",
+      "description": "Resolve capability secret refs at egress after capability_scope passes (#48)"
+    },
+    "capability.scope_check": {
+      "stage": "pre_tool",
+      "owner": "core",
+      "description": "Named intent + allowed-field subset on tool.call (#48)"
+    },
     "monitor.loop": {
       "stage": "parallel",
       "owner": "op",

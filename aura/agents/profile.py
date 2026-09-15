@@ -6,6 +6,14 @@ from dataclasses import dataclass, field
 from typing import Any
 
 
+def _capabilities_from_dict(raw: Any) -> list[dict[str, Any]]:
+    """Load capabilities for persistence; strip plaintext secret keys if present."""
+    from aura.core.capabilities import capabilities_to_public, parse_capabilities
+
+    caps = parse_capabilities(raw or [], strict=False)
+    return capabilities_to_public(caps)
+
+
 @dataclass
 class AgentProfile:
     """Persistent agent record."""
@@ -23,6 +31,7 @@ class AgentProfile:
     observers: list[dict[str, Any]] = field(default_factory=list)
     escalations: list[dict[str, Any]] = field(default_factory=list)
     spectrum: dict[str, Any] | None = None
+    capabilities: list[dict[str, Any]] = field(default_factory=list)
     types: list[dict[str, Any]] = field(default_factory=list)
     default_mode: str = "script"
     archived: bool = False
@@ -42,6 +51,7 @@ class AgentProfile:
             "observers": self.observers,
             "escalations": self.escalations,
             "spectrum": self.spectrum,
+            "capabilities": self.capabilities,
             "types": self.types,
             "default_mode": self.default_mode,
             "archived": self.archived,
@@ -63,6 +73,7 @@ class AgentProfile:
             observers=list(data.get("observers") or []),
             escalations=list(data.get("escalations") or []),
             spectrum=dict(data["spectrum"]) if isinstance(data.get("spectrum"), dict) else None,
+            capabilities=_capabilities_from_dict(data.get("capabilities")),
             types=list(data.get("types") or []),
             default_mode=data.get("default_mode", "script"),
             archived=bool(data.get("archived", False)),

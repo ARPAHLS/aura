@@ -13,8 +13,9 @@ AURA does **not** run a central identity service. Identity is **layered** so hum
 | **External** | `ids.external` | Your CMDB, assistant ids, tickets |
 | **Run** | `session_id`, `trace_id`, `step_id` | One activation, causal grouping |
 | **Policy** | `policy_version` | Label for constitution version at session open |
-| **Binding** | `snapshot_hash` | Hash of rules + sequencer at open |
+| **Binding** | `snapshot_hash` | Hash of rules + sequencer + capabilities at open |
 | **Operator (optional)** | `ids.operator` | Verified or manual human/service principal — see [identity adapter](../integrations/identity/README.md) |
+| **Capabilities (optional)** | `capabilities[]` | Named intents + secret refs; broker injects at egress — [capabilities.md](capabilities.md) |
 
 Legacy profiles with `AURA-000n` ids still load.
 

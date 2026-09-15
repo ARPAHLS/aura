@@ -19,7 +19,7 @@ End-to-end **AURA membrane** coverage for hosts that execute capabilities throug
 | Plane | Mechanism |
 |---|---|
 | **Before call** | `membrane.ingress`, `host.bind`, `skill.registered`, merged constitution |
-| **At call** | `tool.intent` → `tool.call` → constraints → `tool.result` |
+| **At call** | `tool.intent` → `tool.call` → constraints (`capability_scope` when `capabilities[]` set) → optional secret inject → `tool.result` |
 | **After call** | Observer presets (`monitor`, `break`), session export, OTel |
 
 ---
@@ -35,7 +35,7 @@ Open `.aura/sessions/<id>.jsonl` and confirm:
 | 3 | `host.bind` | First capability registered on host |
 | 4 | `skill.registered` | Per-skill manifest snapshot + `bound_skill_ids` |
 | 5 | `sequencer.step.*` | Declared pipeline order (if using sequencer) |
-| 6 | `tool.intent` / `tool.call` / `tool.result` | Egress audit per capability |
+| 6 | `tool.intent` / `tool.call` / `tool.result` | Egress audit per capability; `capability.injected` when a secret ref resolves |
 | 7 | `pipeline.verdict` or host logic | Host decision before body LLM (recommended) |
 | 8 | `observer.note` / `observer.alert` | Optional after-call analytics |
 | 9 | `sequencer.step.skipped` | Conditional steps when prior result fails `when` |

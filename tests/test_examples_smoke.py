@@ -10,7 +10,7 @@ from tests.conftest import run_example
 
 EXAMPLES_DIR = Path(__file__).resolve().parents[1] / "examples"
 
-# Keep in sync with examples/README.md (learning path 01–12 + supplementary 13).
+# Keep in sync with examples/README.md (learning path 01–12 + supplementary 13–14).
 EXPECTED_EXAMPLE_DIRS = (
     "01-minimal-loop",
     "02-guarded-tools",
@@ -25,6 +25,7 @@ EXPECTED_EXAMPLE_DIRS = (
     "11-scheduled-agent-slo",
     "12-escalation-playbooks",
     "13-operator-identity",
+    "14-capability-broker",
 )
 
 

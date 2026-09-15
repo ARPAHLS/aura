@@ -62,7 +62,15 @@ class AuditReportBuilder:
                 "denied": sum(
                     1
                     for e in tool_denied
-                    if (e.payload.get("rule") or {}).get("type") in ("deny_tools", "allow_tools")
+                    if (e.payload.get("rule") or {}).get("type")
+                    in ("deny_tools", "allow_tools", "capability_scope")
+                    and not e.payload.get("audit_only")
+                ),
+                "capability_audit": sum(
+                    1
+                    for e in tool_denied
+                    if (e.payload.get("rule") or {}).get("type") == "capability_scope"
+                    and e.payload.get("audit_only")
                 ),
             },
             "sequencer": {
@@ -82,6 +90,29 @@ class AuditReportBuilder:
         for event in tool_denied:
             rule = event.payload.get("rule") or {}
             rtype = rule.get("type", "unknown")
+            audit_only = bool(event.payload.get("audit_only"))
+            if rtype == "capability_scope":
+                findings.append(
+                    {
+                        "severity": "medium" if audit_only else "high",
+                        "code": "CAPABILITY_AUDIT" if audit_only else "CAPABILITY_DENIED",
+                        "message": event.payload.get("message", "Capability scope violation"),
+                        "rule_type": rtype,
+                        "audit_only": audit_only,
+                        "event_id": event.event_id,
+                    }
+                )
+                if audit_only:
+                    recommendations.append(
+                        "Capability miss recorded in audit-only mode (spectrum low) — "
+                        "raise spectrum.level to mid or higher to block off-scope calls."
+                    )
+                else:
+                    recommendations.append(
+                        "Capability scope denied the tool call — use a declared capability_id "
+                        "whose allowed fields match the request, or update profile.capabilities."
+                    )
+                continue
             findings.append(
                 {
                     "severity": "high",
@@ -132,6 +163,25 @@ class AuditReportBuilder:
             )
 
         for event in events:
+            if event.kind == "tool.error" and (event.payload or {}).get("error") == (
+                "secret_broker_unresolved"
+            ):
+                findings.append(
+                    {
+                        "severity": "high",
+                        "code": "SECRET_BROKER_ERROR",
+                        "message": (
+                            "Capability allowed but the secret broker could not resolve the ref"
+                        ),
+                        "secret_ref": (event.payload or {}).get("secret_ref"),
+                        "capability_id": (event.payload or {}).get("capability_id"),
+                        "event_id": event.event_id,
+                    }
+                )
+                recommendations.append(
+                    "Bind the capability secret ref in the environment or pass "
+                    "session(secret_broker=...) so egress can inject the credential."
+                )
             if event.kind == "conformance.drift":
                 payload = event.payload or {}
                 findings.append(

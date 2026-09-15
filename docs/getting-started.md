@@ -35,9 +35,13 @@ aura identity show
 aura agent list
 aura agent set my-bot --ref tenant/slug --purpose "experiments"
 aura agent set my-bot --spectrum-level mid --spectrum-service audit --spectrum-service monitor
-aura agent show my-bot   # includes effective_spectrum and services when set
+aura agent set my-bot --capabilities-file caps.json
+aura agent show my-bot   # includes effective_spectrum, capabilities_summary when set
+```
 
 Profiles at **`high` or `full`** with a `spectrum` block default to requiring a **verified** operator at session open ([#73](https://github.com/ARPAHLS/aura/issues/73)). Use an identity adapter, or opt out with `spectrum.identity_required: false`.
+
+```bash
 aura --help
 ```
 
@@ -131,7 +135,7 @@ ids:
 
 ## Examples
 
-See [examples/](../examples/README.md) — including [04-sequencer-pipeline](../examples/04-sequencer-pipeline/), [07-observer-presets](../examples/07-observer-presets/), and the ToolHost capstone in [reference-tool-host-capstone.md](guides/reference-tool-host-capstone.md). Order: [onboarding.md](onboarding.md#examples-learning-path).
+See [examples/](../examples/README.md) — including [04-sequencer-pipeline](../examples/04-sequencer-pipeline/), [07-observer-presets](../examples/07-observer-presets/), [14-capability-broker](../examples/14-capability-broker/), and the ToolHost capstone in [reference-tool-host-capstone.md](guides/reference-tool-host-capstone.md). Order: [onboarding.md](onboarding.md#examples-learning-path).
 
 Stack-specific loops live in [integrations/](../integrations/README.md) — start there for Ollama, OpenAI, Anthropic, Gemini, Skillware, and framework wrappers.
 

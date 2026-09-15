@@ -40,3 +40,5 @@ A green audit does not guarantee that every dependency is free of vulnerabilitie
 ## Audit logs
 
 Session exports may contain sensitive data from your agent runs. Store `.aura/sessions/` and export files with appropriate access controls. AURA does not encrypt logs by default in v0.1.
+
+**Credentials:** do not put live API keys, tokens, or card numbers on agent profiles. Use `capabilities[].secret.ref` (for example `env:AURA_CAP_…`) and a SecretBroker; egress injects the value after policy and redacts it from the spine. See [docs/capabilities.md](docs/capabilities.md).

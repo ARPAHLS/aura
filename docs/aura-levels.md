@@ -66,9 +66,9 @@ spectrum:
 
 | Level | Coat | Enforcement | Default services (when `services` omitted) |
 |---|---|---|---|
-| **low** | Loose | Audit only — explicit profile `rules` still apply; off-scope tools pass | none |
-| **mid** | Tight | Explicit profile rules only (default when unset) | none |
-| **high** | Tight | Auto `allow_tools` from profile `skills` (+ sequencer refs) | `monitor` | verified operator **required** (opt out) |
+| **low** | Loose | Audit only — explicit profile `rules` still apply; off-scope tools pass; capability misses are recorded (`audit_only`) and the call still runs without inject | none |
+| **mid** | Tight | Explicit profile rules only (default when unset); capability misses **block** | none |
+| **high** | Tight | Auto `allow_tools` from profile `skills` (+ sequencer refs + capability tools) | `monitor` | verified operator **required** (opt out) |
 | **full** | Tailored | High bind + `tool.call` must include `step_id` (sequencer bind) | `monitor`, `break` | verified operator **required** (opt out) |
 
 **Verified identity** — lite `aura_id` / `agent_ref` always exist for audit trails. **Verified** operator identity comes from your IdP adapter (OIDC, Auth0, mock). When `identity_required` is true (explicitly or by high/full default), session open **fails** if no verified operator resolves — not warn-only. Opt out per profile with `spectrum.identity_required: false`, or override a single run with `aura run --require-identity`.
@@ -80,7 +80,7 @@ Stored on agent profiles; summarized on `membrane.ingress` and `session.open` (`
 ```bash
 aura agent set my-bot --spectrum-level high
 aura agent set my-bot --spectrum-service monitor --spectrum-service limit
-aura agent show my-bot   # includes effective_spectrum + enforcement_rules
+aura agent show my-bot   # includes effective_spectrum + enforcement_rules + capabilities_summary
 ```
 
 Setting only `--spectrum-level` merges with existing `services` and `service_config` — it does not replace the whole block.

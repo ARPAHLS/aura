@@ -66,6 +66,7 @@ class Session:
     _operator_identity: OperatorIdentity | None = None
     _identity_ids_overlay: dict[str, Any] = field(default_factory=dict)
     _escalation_engine: Any = None
+    _secret_broker: Any = None
 
     def __setattr__(self, name: str, value: Any) -> None:
         if (
@@ -98,6 +99,7 @@ class Session:
         *,
         identity_options: IdentityOptions | None = None,
         escalation_handler: Any | None = None,
+        secret_broker: Any | None = None,
     ) -> None:
         if self._closed:
             raise SessionClosedError(self.session_id)
@@ -117,6 +119,7 @@ class Session:
         )
         self._open = True
         self._attach_profile_observers()
+        from aura.core.capabilities import attach_capability_state
         from aura.core.escalations import attach_escalation_engine, escalation_summary
         from aura.core.spectrum_enforcement import effective_spectrum, enforcement_rules
         from aura.core.spectrum_identity import resolve_verified_identity_required
@@ -136,6 +139,9 @@ class Session:
         attach_escalation_engine(self, custom_handler=escalation_handler)
         if escalation_meta.get("rule_count"):
             spectrum_meta["escalations"] = escalation_meta
+        capability_meta = attach_capability_state(self, secret_broker)
+        if capability_meta.get("count"):
+            spectrum_meta["capabilities"] = capability_meta
         self.emit(
             "membrane.ingress",
             ingress_event_payload(self.profile, self.mode.value, self.snapshot_hash),
@@ -241,9 +247,15 @@ class Session:
         step_id: str | None = None,
     ) -> dict[str, Any]:
         self._ensure_active()
+        raw_payload = dict(payload or {})
+        from aura.core.capabilities import injected_secret_values
+        from aura.core.payload_redaction import redact_payload
+
+        secrets = injected_secret_values(self)
+        safe_payload = redact_payload(raw_payload, secret_values=secrets)
         ctx = ConstraintContext(
             event_kind=kind,
-            payload=dict(payload or {}),
+            payload=raw_payload,
             rules=self.rules,
             session_state=self.state,
             approved_requests=self._approved,
@@ -251,8 +263,15 @@ class Session:
         constraint_results: list[dict[str, Any]] = []
         try:
             results = self._engine.check_emit(ctx)
+            self.state["_last_constraint_results"] = results
             constraint_results = [
-                {"passed": r.passed, "message": r.message, "rule": r.rule} for r in results
+                {
+                    "passed": r.passed,
+                    "message": r.message,
+                    "rule": r.rule,
+                    "audit_only": r.audit_only,
+                }
+                for r in results
             ]
         except ApprovalRequired as exc:
             self.spine.append(
@@ -261,7 +280,10 @@ class Session:
                     "request_id": exc.request_id,
                     "message": str(exc),
                     "rule": exc.rule,
-                    "pending_event": {"kind": kind, "payload": payload or {}},
+                    "pending_event": {
+                        "kind": kind,
+                        "payload": redact_payload(payload or {}, secret_values=secrets),
+                    },
                 },
                 agent_ids=self.agent_ids_trailer(),
             )
@@ -269,24 +291,44 @@ class Session:
         except ConstraintViolation as exc:
             self.spine.append(
                 "constraint.violated",
-                {"message": str(exc), "rule": exc.rule, "event": exc.event},
+                {
+                    "message": str(exc),
+                    "rule": exc.rule,
+                    "event": redact_payload(exc.event, secret_values=secrets),
+                    "audit_only": False,
+                },
                 agent_ids=self.agent_ids_trailer(),
             )
             raise
 
+        for result in self.state.get("_last_constraint_results") or []:
+            if result.audit_only and result.blocked and not result.passed:
+                self.spine.append(
+                    "constraint.violated",
+                    {
+                        "message": result.message,
+                        "rule": result.rule,
+                        "event": safe_payload,
+                        "audit_only": True,
+                    },
+                    agent_ids=self.agent_ids_trailer(),
+                )
+
         event = self.spine.append(
             kind,
-            payload or {},
+            safe_payload,
             agent_ids=self.agent_ids_trailer(),
             task_id=self.task_id,
             step_id=step_id,
         )
         if constraint_results:
-            self.spine.append(
-                "constraint.passed",
-                {"results": constraint_results, "for_event": event.event_id},
-                agent_ids=self.agent_ids_trailer(),
-            )
+            passed_only = [item for item in constraint_results if item.get("passed")]
+            if passed_only:
+                self.spine.append(
+                    "constraint.passed",
+                    {"results": passed_only, "for_event": event.event_id},
+                    agent_ids=self.agent_ids_trailer(),
+                )
         self._dispatch_observers(event.to_dict())
         return event.to_dict()
 
@@ -382,6 +424,7 @@ def _snapshot_hash(profile: AgentProfile, rules: list[dict[str, Any]]) -> str:
             "rules": rules,
             "skills": profile.skills,
             "sequencer": profile.sequencer,
+            "capabilities": getattr(profile, "capabilities", None) or [],
         },
         sort_keys=True,
     )

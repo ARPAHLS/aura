@@ -55,8 +55,8 @@ class SkillwareHost:
         if skill is None:
             raise KeyError(f"Skill not registered: {skill_id}")
 
-        def run() -> Any:
-            return skill.execute(tool, args)
+        def run(live_args: dict[str, Any]) -> Any:
+            return skill.execute(tool, live_args)
 
         audit_tool = tool or skill_id
         return guarded_tool_call(

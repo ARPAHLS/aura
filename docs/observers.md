@@ -95,7 +95,7 @@ When observers emit trigger events, configured playbooks run on the **escalate**
 | `slo.missed` | `schedule_slo` preset |
 | `conformance.drift` | `goal_drift` preset |
 | `observer.alert` | `break` / `limit` presets |
-| `constraint.violated` | egress policy |
+| `constraint.violated` | egress policy (`allow_tools`, `capability_scope`, …) |
 
 ```yaml
 escalations:

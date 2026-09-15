@@ -11,6 +11,14 @@ from aura.config import get_config
 from aura.core.ids import is_legacy_aura_id, new_ulid, tenant_from_ref, validate_agent_ref
 
 
+def _normalize_capabilities(raw: Any) -> list[dict[str, Any]]:
+    from aura.core.capabilities import normalize_capabilities_for_store
+
+    if raw is None:
+        return []
+    return normalize_capabilities_for_store(raw)
+
+
 class DuplicateAgentError(ValueError):
     pass
 
@@ -89,6 +97,7 @@ class AgentRegistry:
         observers: list[dict[str, Any]] | None = None,
         escalations: list[dict[str, Any]] | None = None,
         spectrum: dict[str, Any] | None = None,
+        capabilities: list[dict[str, Any]] | None = None,
         types: list[dict[str, Any]] | None = None,
         ids: dict[str, Any] | None = None,
         default_mode: str = "script",
@@ -132,6 +141,7 @@ class AgentRegistry:
             observers=observers or [],
             escalations=escalations or [],
             spectrum=dict(spectrum) if isinstance(spectrum, dict) else None,
+            capabilities=_normalize_capabilities(capabilities),
             types=types or [],
             default_mode=default_mode,
         )
@@ -194,6 +204,8 @@ class AgentRegistry:
         if "spectrum" in updates:
             raw = updates["spectrum"]
             profile.spectrum = dict(raw) if isinstance(raw, dict) else None
+        if updates.get("capabilities") is not None:
+            profile.capabilities = _normalize_capabilities(updates["capabilities"])
 
         self.save(profile)
         return profile

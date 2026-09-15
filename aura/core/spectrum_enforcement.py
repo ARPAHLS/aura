@@ -32,6 +32,13 @@ def allowed_tool_ids(profile: AgentProfile) -> list[str]:
             tool = config.get("tool")
             if tool:
                 tools.append(str(tool))
+    from aura.core.capabilities import parse_capabilities
+
+    for cap in parse_capabilities(getattr(profile, "capabilities", None) or [], strict=False):
+        if cap.tool:
+            tools.append(cap.tool)
+        if cap.skill_id:
+            tools.append(cap.skill_id)
     seen: set[str] = set()
     ordered: list[str] = []
     for item in tools:
