@@ -35,6 +35,7 @@ Run in order — [onboarding.md](../docs/onboarding.md#examples-learning-path):
 | # | Folder | Teaches |
 |---|---|---|
 | **13** | [13-operator-identity](13-operator-identity/) | Verified operator trailer (mock adapter) |
+| **14** | [14-capability-broker](14-capability-broker/) | Named intents, secret refs, egress inject ([#48](https://github.com/ARPAHLS/aura/issues/48)) |
 
 Live registry skills (examples **05–06**): `$env:SKILLWARE_LIVE="1"` (PowerShell).
 

@@ -16,6 +16,14 @@ from aura.api import (
     create_agent,
     current_session,
     list_agents,
+    CapabilityConfigError,
+    SecretBrokerError,
+    SecretConfigError,
+    SecretNotFoundError,
+    EnvSecretBroker,
+    MapSecretBroker,
+    CallableSecretBroker,
+    ChainSecretBroker,
 )
 
 __version__ = "0.3.5"
@@ -37,4 +45,12 @@ __all__ = [
     "OperatorIdentityAdapter",
     "IdentityRequiredError",
     "IdentityVerificationError",
+    "CapabilityConfigError",
+    "SecretBrokerError",
+    "SecretConfigError",
+    "SecretNotFoundError",
+    "EnvSecretBroker",
+    "MapSecretBroker",
+    "CallableSecretBroker",
+    "ChainSecretBroker",
 ]

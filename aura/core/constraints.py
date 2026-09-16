@@ -41,6 +41,7 @@ class ConstraintResult:
     message: str
     request_id: str | None = None
     blocked: bool = False
+    audit_only: bool = False
 
 
 class ConstraintEngine:
@@ -72,12 +73,16 @@ class ConstraintEngine:
         return results
 
     def check_emit(self, ctx: ConstraintContext) -> list[ConstraintResult]:
-        """Run constraints; raise on block or approval required."""
+        """Run constraints; raise on block or approval required.
+
+        ``audit_only`` failures (spectrum ``low`` capability misses) are returned
+        without raising so the event may still be recorded and executed.
+        """
         results = self.evaluate(ctx)
         for result in results:
             if result.request_id and result.request_id not in ctx.approved_requests:
                 raise ApprovalRequired(result.request_id, result.message, result.rule)
-            if result.blocked:
+            if result.blocked and not result.audit_only:
                 raise ConstraintViolation(result.message, result.rule, ctx.payload)
         return results
 
@@ -191,6 +196,12 @@ def _rule_sequencer_required(
     )
 
 
+def _rule_capability_scope(ctx: ConstraintContext, rule: dict[str, Any]) -> ConstraintResult | None:
+    from aura.core.capabilities import evaluate_capability_scope
+
+    return evaluate_capability_scope(ctx, rule)
+
+
 def _rule_escalation_pause(ctx: ConstraintContext, rule: dict[str, Any]) -> ConstraintResult | None:
     if ctx.event_kind not in ("tool.call", "action.request"):
         return None
@@ -219,4 +230,5 @@ _BUILTIN: dict[str, Any] = {
     "deny_tools": _rule_deny_tools,
     "sequencer_required": _rule_sequencer_required,
     "escalation_pause": _rule_escalation_pause,
+    "capability_scope": _rule_capability_scope,
 }

@@ -66,7 +66,8 @@ aura agent create research-bot \
 | **`aura_id`** | Internal ULID (auto unless you set `--aura-id`) |
 | **`policy_version`** | Tie runs to a policy snapshot (profile or per-session) |
 | **`purpose`** | Declared intent — appears in profile and spine |
-| **`rules`** | Constitution — `confirm_before`, `allow_tools`, `deny_tools`, token limits |
+| **`rules`** | Constitution — `confirm_before`, `allow_tools`, `deny_tools`, token limits, `capability_scope` |
+| **`capabilities[]`** | Named intents + secret **refs** (broker injects at egress; never store values) — [capabilities.md](capabilities.md) |
 | **`ids`** | Your external IDs (company, vendor assistant id) — AURA does not replace them |
 | **`ids.operator`** (optional) | Human/service principal when using an identity adapter — see [integrations/identity](../integrations/identity/README.md) |
 
@@ -189,6 +190,7 @@ Run in order from repo root after `pip install -e .`:
 | 10 | [10-observer-metrics-snapshot](../examples/10-observer-metrics-snapshot/) | Tailored coat — observer metrics snapshot |
 | 11 | [11-scheduled-agent-slo](../examples/11-scheduled-agent-slo/) | Goal drift + schedule SLO — nickel cron north star |
 | 12 | [12-escalation-playbooks](../examples/12-escalation-playbooks/) | Escalation playbooks — triggers + nudge/pause/email/custom |
+| 14 | [14-capability-broker](../examples/14-capability-broker/) | Named intents, secret refs, egress inject ([#48](https://github.com/ARPAHLS/aura/issues/48)) |
 
 Capstone checklist: [reference-tool-host-capstone.md](guides/reference-tool-host-capstone.md).
 
@@ -203,6 +205,8 @@ Not required for first successful run:
 **Goals and schedules** — shipped via [example 11](../examples/11-scheduled-agent-slo/) and `goal_drift` / `schedule_slo` presets ([#46](https://github.com/ARPAHLS/aura/issues/46)).
 
 **Escalation playbooks** — [example 12](../examples/12-escalation-playbooks/); profile `escalations[]` ([#47](https://github.com/ARPAHLS/aura/issues/47)).
+
+**Capability broker** — [example 14](../examples/14-capability-broker/); profile `capabilities[]` ([#48](https://github.com/ARPAHLS/aura/issues/48)).
 
 ---
 

@@ -14,6 +14,16 @@ from aura.config import configure as _configure, get_config
 from aura.core.conformance import ConformanceEngine, ConformanceReport
 from aura.core.constraints import ApprovalRequired
 from aura.core.errors import ExportError, SessionClosedError, SessionNotOpenError
+from aura.core.secrets import (
+    CallableSecretBroker,
+    ChainSecretBroker,
+    EnvSecretBroker,
+    MapSecretBroker,
+    SecretBrokerError,
+    SecretConfigError,
+    SecretNotFoundError,
+)
+from aura.core.capabilities import CapabilityConfigError
 from aura.core.session import Session, SessionMode
 from aura.exporters.jsonl import build_session_summary, export_session
 from aura.identity.bind import IdentityOptions
@@ -43,8 +53,10 @@ class SessionRun:
     def trace_id(self) -> str | None:
         return self._session.trace_id
 
-    def emit(self, kind: str, payload: dict[str, Any] | None = None) -> dict[str, Any]:
-        return self._session.emit(kind, payload)
+    def emit(
+        self, kind: str, payload: dict[str, Any] | None = None, *, step_id: str | None = None
+    ) -> dict[str, Any]:
+        return self._session.emit(kind, payload, step_id=step_id)
 
     def approve(self, request_id: str, *, principal: str | None = None) -> None:
         self._session.approve(request_id, principal=principal)
@@ -109,6 +121,7 @@ class AgentHandle:
         operator: dict[str, Any] | None = None,
         identity: dict[str, Any] | None = None,
         escalation_handler: Any | None = None,
+        secret_broker: Any | None = None,
     ) -> Iterator[SessionRun]:
         cfg = get_config()
         session = _build_session(self, mode, rules, sequencer)
@@ -122,6 +135,7 @@ class AgentHandle:
             cfg.sessions_dir(),
             identity_options=identity_options,
             escalation_handler=escalation_handler,
+            secret_broker=secret_broker,
         )
         token = _current_run.set(run)
         try:
@@ -148,6 +162,9 @@ def _build_session(
     from aura.core.spectrum_enforcement import enforcement_rules
 
     merged_rules.extend(enforcement_rules(agent.profile))
+    from aura.core.capabilities import merge_capability_rules
+
+    merged_rules = merge_capability_rules(agent.profile, merged_rules)
     if rules:
         merged_rules.extend(rules)
     from aura.sequencer.spec import merge_sequencer_spec
@@ -212,4 +229,12 @@ __all__ = [
     "OperatorIdentityAdapter",
     "IdentityRequiredError",
     "IdentityVerificationError",
+    "CapabilityConfigError",
+    "SecretBrokerError",
+    "SecretConfigError",
+    "SecretNotFoundError",
+    "EnvSecretBroker",
+    "MapSecretBroker",
+    "CallableSecretBroker",
+    "ChainSecretBroker",
 ]

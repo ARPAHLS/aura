@@ -93,6 +93,15 @@ def build_parser() -> argparse.ArgumentParser:
         help="Spectrum service id (repeatable; replaces services list)",
     )
     set_p.add_argument("--spectrum-json", help="Inline JSON object for spectrum block")
+    set_p.add_argument(
+        "--capabilities-file",
+        type=Path,
+        help="JSON file with capabilities array (refs only; replaces list)",
+    )
+    set_p.add_argument(
+        "--capabilities-json",
+        help="Inline JSON array of capabilities (refs only; replaces list)",
+    )
 
     config_p = sub.add_parser("config", help="Configuration")
     config_sub = config_p.add_subparsers(dest="config_command")
@@ -234,6 +243,8 @@ def _dispatch_agent(args: argparse.Namespace) -> int:
             spectrum_level=args.spectrum_level,
             spectrum_services=args.spectrum_services,
             spectrum_json=args.spectrum_json,
+            capabilities_file=args.capabilities_file,
+            capabilities_json=args.capabilities_json,
         )
     print("usage: aura agent {create|list|show|set}", file=sys.stderr)
     return 1

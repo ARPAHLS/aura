@@ -31,6 +31,8 @@ When the profile has a `spectrum` block but omits `services`, level defaults wir
 
 `aura agent show` includes `effective_spectrum` and injected `enforcement_rules`. `aura agent set --spectrum-level high` merges into the existing spectrum block. `aura config show` includes a `spectrum_levels` reference table.
 
+**Capabilities ([#48](https://github.com/ARPAHLS/aura/issues/48)):** `profile.capabilities[]` names intents and **secret refs** (not values). Egress `capability_scope` checks `capability_id` + allowed fields; a SecretBroker injects the live token only after allow. Spectrum `low` records misses without blocking; `mid`+ blocks. See [capabilities.md](capabilities.md).
+
 See [aura-levels.md](aura-levels.md) for the level table. Debug a full session receipt: `python scripts/aura_coat_flow_report.py --json`.
 
 AURA is the **harness (coat)**, not the runtime. Your **body** owns the loop; AURA wraps it with **membrane** boundaries and an **audit trail**.
@@ -187,7 +189,7 @@ aura report show aura_sess_xxxxxxxxxxxx --json
 aura verify chain ~/.aura/sessions/aura_sess_xxxxxxxxxxxx.jsonl
 ```
 
-Profiles live as JSON under `{AURA_HOME}/agents/`. Global defaults: `~/.aura/config.yaml`. Project overrides: `{project}/aura.project.yaml`. Use env vars for API keys; store non-secret refs in profile `variables`.
+Profiles live as JSON under `{AURA_HOME}/agents/`. Global defaults: `~/.aura/config.yaml`. Project overrides: `{project}/aura.project.yaml`. Store **secret refs** on `capabilities[].secret.ref` (or env vars for body APIs); never put live keys in profile JSON. See [capabilities.md](capabilities.md).
 
 Interactive menu: **agents** (list/show/create/edit), **sessions**, **run**, **paths**, help, version.
 
@@ -215,6 +217,11 @@ sequencer:
 rules:
   - type: confirm_before
     tools: [send]
+capabilities:
+  - id: shop-x-milk
+    tool: payment
+    allowed: { merchant: shop-x, item: milk, card: Y }
+    secret: { ref: env:AURA_CAP_SHOP_X_CARD_Y }
 observers:
   - id: slack-alerts
 ```

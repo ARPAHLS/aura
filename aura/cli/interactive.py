@@ -41,7 +41,10 @@ def _agents_submenu(
         console.print("    [1] list   — registered agents", style=MENU_STYLE)
         console.print("    [2] show   — profile by name or agent_ref", style=MENU_STYLE)
         console.print("    [3] create — register a new agent", style=MENU_STYLE)
-        console.print("    [4] edit   — update ref, purpose, skills, variables", style=MENU_STYLE)
+        console.print(
+            "    [4] edit   — update ref, purpose, skills, variables, capabilities",
+            style=MENU_STYLE,
+        )
         _print_nav_footer(console, show_back=True)
 
         raw = _read_line("  agents> ", input_fn)
@@ -104,6 +107,10 @@ def _agents_submenu(
             if variable is None:
                 console.print("  Cancelled.", style="dim")
                 continue
+            caps_raw = _read_line("  capabilities JSON (Enter to skip)> ", input_fn)
+            if caps_raw is None:
+                console.print("  Cancelled.", style="dim")
+                continue
             kwargs: dict = {}
             if agent_ref.strip():
                 kwargs["agent_ref"] = agent_ref.strip()
@@ -113,6 +120,8 @@ def _agents_submenu(
                 kwargs["skills"] = [s.strip() for s in skills_raw.split(",") if s.strip()]
             if variable.strip():
                 kwargs["variables"] = [variable.strip()]
+            if caps_raw.strip():
+                kwargs["capabilities_json"] = caps_raw.strip()
             if not kwargs:
                 console.print("  Nothing to update.", style="dim")
                 continue

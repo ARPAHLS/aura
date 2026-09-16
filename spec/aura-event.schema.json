@@ -16,12 +16,12 @@
     "timestamp": { "type": "string", "format": "date-time" },
     "kind": {
       "type": "string",
-      "description": "Event type, e.g. session.open, session.close, identity.bound, membrane.ingress, tool.call, constraint.approved"
+      "description": "Event type, e.g. session.open, session.close, identity.bound, membrane.ingress, tool.call, constraint.approved, capability.injected, constraint.violated"
     },
     "constitution_hash": { "type": "string" },
     "payload": {
       "type": "object",
-      "description": "Event-specific body. identity.bound carries operator verification metadata under operator."
+      "description": "Event-specific body. identity.bound carries operator verification metadata under operator. capability.injected carries capability_id and secret_ref only (never the live credential)."
     },
     "agent_ids": {
       "type": "object",

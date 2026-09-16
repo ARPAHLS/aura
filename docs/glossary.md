@@ -37,6 +37,8 @@
 | **Soma** | Body / host while running |
 | **SoulSig** | Birth contract on Live ID |
 | **Spectrum** | See Aura Spectrum |
+| **Capability** | Named intent on `profile.capabilities[]` — scope check + secret ref, not a live credential |
+| **SecretBroker** | Resolves a capability secret ref at egress after policy passes; never stored on the profile |
 | **Trust tier** | ephemeral · unverified · verified_live_id |
 | **Type** | Registered plugin kind — `arpa.brain.gemini`, etc. |
 | **UBH** | Ultimate Beneficiary Human |

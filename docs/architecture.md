@@ -37,6 +37,9 @@ flowchart LR
 | `aura/core/spectrum_services.py` | `spectrum.services[]` → observer preset wiring at session open |
 | `aura/core/spectrum_identity.py` | `spectrum.identity_required` + level defaults → verified operator gate at session open ([#73](https://github.com/ARPAHLS/aura/issues/73)) |
 | `aura/core/escalations.py` | `escalations[]` playbooks on SLO/drift/alert/constraint triggers ([#47](https://github.com/ARPAHLS/aura/issues/47)) |
+| `aura/core/capabilities.py` | `capabilities[]` parse, `capability_scope`, last-moment inject ([#48](https://github.com/ARPAHLS/aura/issues/48)) |
+| `aura/core/secrets.py` | SecretBroker protocol (env / map / callable / chain) |
+| `aura/core/payload_redaction.py` | Secret-like keys and injected values stripped from spine payloads |
 | `aura/membrane/` | Ingress context, egress guarded calls |
 | `aura/sequencer/` | Prescriptive step pipelines |
 | `aura/hosts/` | Skillware / mock skill host |
@@ -45,7 +48,7 @@ flowchart LR
 
 ## Extension surface
 
-**Shipped:** ToolHost protocol, Monitor + Break + Limit observer presets, `spectrum.services[]` runtime wiring ([#77](https://github.com/ARPAHLS/aura/issues/77)), OTel export with promoted span attributes, sequencer `when` guards, **`spectrum.level` enforcement** (low → full bind) — see [aura-levels.md](aura-levels.md) and [reference-tool-host-capstone.md](guides/reference-tool-host-capstone.md).
+**Shipped:** ToolHost protocol, Monitor + Break + Limit observer presets, `spectrum.services[]` runtime wiring ([#77](https://github.com/ARPAHLS/aura/issues/77)), OTel export with promoted span attributes, sequencer `when` guards, **`spectrum.level` enforcement** (low → full bind), **capability broker** at egress ([#48](https://github.com/ARPAHLS/aura/issues/48)) — see [aura-levels.md](aura-levels.md), [capabilities.md](capabilities.md), and [reference-tool-host-capstone.md](guides/reference-tool-host-capstone.md).
 
 **Roadmap:** Limit preset, signed audit packs, HTTP fleet API, brain/memory/MCP type plugins — [ROADMAP.md](ROADMAP.md).
 

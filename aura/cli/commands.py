@@ -8,6 +8,7 @@ from pathlib import Path
 
 from aura import __version__, agent, create_agent
 from aura.agents.registry import AgentNotFoundError, AgentRegistry, DuplicateAgentError
+from aura.core.capabilities import CapabilityConfigError
 from aura.core.compare import compare_sessions
 from aura.core.spine import AuditSpine, first_broken_event_id, verify_hash_chain
 from aura.exporters.otel import export_session_otel
@@ -97,6 +98,7 @@ def cmd_agent_show(name: str, *, console: Console | None = None) -> int:
         else:
             console.print(message, style="bold #FF9AA2")
         return 1
+    from aura.core.capabilities import capabilities_summary, parse_capabilities
     from aura.core.escalations import escalation_summary
     from aura.core.spectrum_enforcement import effective_spectrum, enforcement_rules
     from aura.core.spectrum_identity import identity_policy_summary
@@ -107,6 +109,8 @@ def cmd_agent_show(name: str, *, console: Console | None = None) -> int:
     payload["effective_spectrum"].update(identity_policy_summary(profile))
     payload["effective_spectrum"]["enforcement_rules"] = enforcement_rules(profile)
     payload["escalations"] = escalation_summary(profile)
+    caps = parse_capabilities(profile.capabilities, strict=False)
+    payload["capabilities_summary"] = capabilities_summary(caps)
     text = json.dumps(payload, indent=2)
     if console is None:
         print(text)
@@ -394,6 +398,13 @@ def _spectrum_from_cli(
     return block
 
 
+def _parse_capabilities_json(raw: str) -> list:
+    data = json.loads(raw)
+    if not isinstance(data, list):
+        raise ValueError("--capabilities-json must be a JSON array")
+    return data
+
+
 def cmd_agent_set(
     key: str,
     *,
@@ -409,6 +420,8 @@ def cmd_agent_set(
     spectrum_level: str | None = None,
     spectrum_services: list[str] | None = None,
     spectrum_json: str | None = None,
+    capabilities_file: Path | None = None,
+    capabilities_json: str | None = None,
     console: Console | None = None,
 ) -> int:
     reg = AgentRegistry()
@@ -464,6 +477,35 @@ def cmd_agent_set(
                 console.print(message, style="bold #FF9AA2")
             return 2
 
+    capabilities: list[dict] | None = None
+    if capabilities_file is not None:
+        if not capabilities_file.is_file():
+            message = f"not found: {capabilities_file}"
+            if console is None:
+                print(message, file=sys.stderr)
+            else:
+                console.print(message, style="bold #FF9AA2")
+            return 1
+        loaded = json.loads(capabilities_file.read_text(encoding="utf-8"))
+        if not isinstance(loaded, list):
+            message = "capabilities file must contain a JSON array"
+            if console is None:
+                print(message, file=sys.stderr)
+            else:
+                console.print(message, style="bold #FF9AA2")
+            return 2
+        capabilities = loaded
+    elif capabilities_json is not None:
+        try:
+            capabilities = _parse_capabilities_json(capabilities_json)
+        except ValueError as exc:
+            message = str(exc)
+            if console is None:
+                print(message, file=sys.stderr)
+            else:
+                console.print(message, style="bold #FF9AA2")
+            return 2
+
     updates: dict = {}
     if agent_ref is not None:
         updates["agent_ref"] = agent_ref or None
@@ -481,6 +523,8 @@ def cmd_agent_set(
         updates["ids"] = id_map
     if rules is not None:
         updates["rules"] = rules
+    if capabilities is not None:
+        updates["capabilities"] = capabilities
 
     try:
         spectrum_block = _spectrum_from_cli(
@@ -502,7 +546,7 @@ def cmd_agent_set(
         updates["spectrum"] = merge_spectrum_update(existing, spectrum_block)
 
     if not updates:
-        message = "no fields to update (pass --ref, --purpose, --skill, etc.)"
+        message = "no fields to update (pass --ref, --purpose, --skill, --capabilities-json, etc.)"
         if console is None:
             print(message, file=sys.stderr)
         else:
@@ -511,7 +555,7 @@ def cmd_agent_set(
 
     try:
         profile = reg.update_profile(key, **updates)
-    except (ValueError, DuplicateAgentError) as exc:
+    except (ValueError, DuplicateAgentError, CapabilityConfigError) as exc:
         message = str(exc)
         if console is None:
             print(message, file=sys.stderr)
@@ -569,6 +613,12 @@ def cmd_config_show(*, console: Console | None = None) -> int:
             "third-party IdP adapters only. high/full default to required when a profile "
             "has a spectrum block; opt out with spectrum.identity_required: false or "
             "aura run --require-identity for session override."
+        ),
+        "capabilities_note": (
+            "Profile capabilities[] declare named intents and secret refs only. "
+            "Egress injects credentials after capability_scope passes. "
+            "spectrum low records misses (audit_only); mid+ blocks. "
+            "Use aura agent set --capabilities-json or --capabilities-file."
         ),
     }
     text = json.dumps(payload, indent=2)

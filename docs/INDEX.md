@@ -27,6 +27,7 @@ Single entry point for public docs. **Shipped behavior** lives in Tier 1–2; Ti
 | [stack-position.md](stack-position.md) | Optional — harness-centric input layers vs full ARPA stack |
 | [sequencer.md](sequencer.md) | Prescriptive pipelines, gates, `when`, conformance |
 | [observers.md](observers.md) | Packaged presets, `observers[]` vs `spectrum.services[]` wiring |
+| [capabilities.md](capabilities.md) | Capability broker — named intents, secret refs, egress inject ([#48](https://github.com/ARPAHLS/aura/issues/48)) |
 | [skillware-integration.md](skillware-integration.md) | Skillware reference adapter (optional host) |
 | [guides/aura-on-skillware.md](guides/aura-on-skillware.md) | Deep dive — Skillware as one ToolHost impl |
 | [trust-paths.md](trust-paths.md) | `agent_ref`, ULID, ids trailer — no central ID service |
@@ -74,7 +75,7 @@ Stable contracts for adapters and tooling.
 | [sequencer.schema.json](../spec/sequencer.schema.json) | Step pipeline |
 | [manifest.schema.json](../spec/manifest.schema.json) | Session/agent declaration |
 | [type-plugin.contract.md](../spec/type-plugin.contract.md) | Adapter interface |
-| [capability.registry.json](../spec/capability.registry.json) | Operation ids (roadmap) |
+| [capability.registry.json](../spec/capability.registry.json) | Operation ids (incl. capability scope / secret inject) |
 
 ---
 

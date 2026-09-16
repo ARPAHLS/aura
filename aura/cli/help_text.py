@@ -17,7 +17,10 @@ HELP_GROUPS: List[Tuple[str, List[Tuple[str, str]], str]] = [
             ("aura agent create <name>", "register agent profile (optional --ref)"),
             ("aura agent list", "list aura_id, agent_ref, and name"),
             ("aura agent show <id>", "JSON profile by name, agent_ref, or aura_id"),
-            ("aura agent set <id> …", "update ref, purpose, skills, variables, rules, spectrum"),
+            (
+                "aura agent set <id> …",
+                "update ref, purpose, skills, variables, rules, spectrum, capabilities",
+            ),
         ],
         _DOCS_ONBOARDING,
     ),
@@ -72,6 +75,7 @@ _HELP_MENU: List[Tuple[str, str, str, Union[int, str]]] = [
 CLI_USAGE_EXAMPLES: Tuple[str, ...] = (
     "aura agent create demo-bot --ref acme/demo",
     "aura agent set demo-bot --ref acme/demo --purpose compliance",
+    "aura agent set demo-bot --capabilities-file caps.json",
     "aura agent list",
     "aura config show",
     "aura identity show",

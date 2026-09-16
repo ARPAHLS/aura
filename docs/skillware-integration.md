@@ -81,7 +81,7 @@ Every execution emits:
 
 1. `skill.registered` — when the skill carries a manifest (merged into session rules)
 2. `tool.intent` — egress intent
-3. `tool.call` — constraint checks (allow/deny, confirm_before, …)
+3. `tool.call` — constraint checks (allow/deny, confirm_before, `capability_scope` when `capabilities[]` is set, …)
 4. `tool.result` or `tool.error`
 
 ### Manifest guardrails at bind

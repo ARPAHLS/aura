@@ -15,7 +15,7 @@ A logical entity you run under AURA.
 
 Legacy profiles with `AURA-000n` ids still load. See [trust-paths.md](trust-paths.md) and [integrations/identity/README.md](../integrations/identity/README.md) for optional verified operator adapters.
 
-Profile fields also include **`skills`**, **`sequencer`** spec, **`observers`**, **`rules`**, and optional **`spectrum`** (enforcement posture — see [aura-levels.md](aura-levels.md)).
+Profile fields also include **`skills`**, **`sequencer`** spec, **`observers`**, **`rules`**, optional **`spectrum`** (enforcement posture — see [aura-levels.md](aura-levels.md)), and optional **`capabilities[]`** (named intents + secret refs — see [capabilities.md](capabilities.md)).
 
 ## Session
 
@@ -63,7 +63,7 @@ Rules, guardrails, and constraints the run must obey — on the agent profile, i
 
 A constraint checked when relevant events are emitted.
 
-Built-in types: `max_tokens_per_step`, `confirm_before`, `allow_tools`, `deny_tools`.
+Built-in types: `max_tokens_per_step`, `confirm_before`, `allow_tools`, `deny_tools`, `sequencer_required`, `escalation_pause`, `capability_scope`.
 
 ## Conformance
 

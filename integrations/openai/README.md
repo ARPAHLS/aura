@@ -20,14 +20,14 @@ Run ChatGPT as the **body** and Skillware skills at AURA **egress**.
 | **AURA** | Session identity, egress policy, approval gates, JSONL audit export |
 | **Your script** | Loop order: when to call the model vs when to call skills |
 
-AURA does **not** hold your API keys beyond what your script passes to the OpenAI client. It **does** record every Skillware call and enforce rules at `tool.call`.
+AURA does **not** hold your OpenAI API key beyond what your script passes to the OpenAI client. Tool credentials that must not live on the agent profile belong in `capabilities[].secret.ref` with a SecretBroker ([capabilities.md](../../docs/capabilities.md)). AURA **does** record Skillware calls and enforce rules at `tool.call`.
 
 ## When to add AURA
 
 Add AURA when you need:
 
-- **Provable audit** — who ran which skill, with what args (redacted as configured)
-- **Policy at egress** — deny, confirm-before, token limits on tool calls
+- **Provable audit** — who ran which skill, with what args (secret-like keys redacted on the spine)
+- **Policy at egress** — deny, confirm-before, token limits, and optional capability scope on tool calls
 - **Conformance** — declared sequencer steps vs spine on close
 - **Export** — JSONL + summary for compliance or CI gates
 

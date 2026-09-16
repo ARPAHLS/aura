@@ -46,7 +46,7 @@ class TypeCapabilities:
 | drive | `arpa.drive.goal`, `arpa.drive.cron` |
 | guardrails | `arpa.guardrails.ruleset`, `arpa.guardrails.evm`, `arpa.guardrails.whitelist` |
 | identity | `arpa.identity.live_id`, `arpa.identity.ephemeral` |
-| auth | `arpa.auth.live_id_cli`, `api_key` |
+| auth | `arpa.auth.live_id_cli`, `api_key` — AURA-native SecretBroker is the shipped credential path ([capabilities.md](../docs/capabilities.md)); `role: auth` + `config.provider: env` selects `EnvSecretBroker`. Map/callable brokers bind at `session(secret_broker=...)`, not in profile JSON. |
 | skills | `arpa.skills.bundle`, `mcp.tools`, `langchain.tools` |
 | memory | `arpa.memory.mnemolink`, `mem0` |
 | soma | `arpa.soma.process`, `arpa.soma.vm`, `arpa.soma.device` |
