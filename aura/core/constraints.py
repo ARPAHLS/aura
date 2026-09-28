@@ -202,6 +202,47 @@ def _rule_capability_scope(ctx: ConstraintContext, rule: dict[str, Any]) -> Cons
     return evaluate_capability_scope(ctx, rule)
 
 
+def _rule_schema_check(ctx: ConstraintContext, rule: dict[str, Any]) -> ConstraintResult | None:
+    from aura.core.schema_validation import (
+        payload_subject,
+        resolve_schema,
+        rule_applies_to_event,
+        validate_payload,
+    )
+
+    if not rule_applies_to_event(rule, ctx.event_kind, ctx.payload):
+        return None
+
+    schema = resolve_schema(rule, ctx.session_state)
+    if not schema:
+        ref = rule.get("ref")
+        return ConstraintResult(
+            passed=False,
+            rule=rule,
+            message=f"Schema ref not found or invalid: {ref or '(inline schema missing)'}",
+            blocked=True,
+        )
+
+    subject = payload_subject(ctx.payload, ctx.event_kind)
+    errors = validate_payload(schema, subject)
+    if errors:
+        tool = ctx.payload.get("tool") or ctx.payload.get("skill_id") or "unknown"
+        detail = "; ".join(errors[:3])
+        if len(errors) > 3:
+            detail += f" (+{len(errors) - 3} more)"
+        return ConstraintResult(
+            passed=False,
+            rule=rule,
+            message=f"Schema validation failed for {tool} on {ctx.event_kind}: {detail}",
+            blocked=True,
+        )
+    return ConstraintResult(
+        passed=True,
+        rule=rule,
+        message=f"Schema valid for {ctx.event_kind}",
+    )
+
+
 def _rule_escalation_pause(ctx: ConstraintContext, rule: dict[str, Any]) -> ConstraintResult | None:
     if ctx.event_kind not in ("tool.call", "action.request"):
         return None
@@ -231,4 +272,5 @@ _BUILTIN: dict[str, Any] = {
     "sequencer_required": _rule_sequencer_required,
     "escalation_pause": _rule_escalation_pause,
     "capability_scope": _rule_capability_scope,
+    "schema_check": _rule_schema_check,
 }

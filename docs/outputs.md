@@ -28,6 +28,8 @@ CLI: `aura report show <session_id>`, `aura report show <session_id> --json`, `a
 
 **Spine events (capabilities):** When `profile.capabilities[]` is set, `session.open` spectrum summary includes a capabilities block (`count`, `ids`, `gated_tools`, `secret_refs`, broker kind). Scope misses emit `constraint.violated` (with `audit_only` at spectrum `low`). `constraint.passed` lists only rules that passed. Successful inject emits `capability.injected` (capability id + secret **ref**, never the value). Secret-like payload keys (`token`, `api_key`, …) are redacted on every emit, including sessions without capabilities. Findings: `CAPABILITY_DENIED`, `CAPABILITY_AUDIT`, `SECRET_BROKER_ERROR`. See [capabilities.md](capabilities.md).
 
+**Spine events (schema):** When `variables.schema_refs` or `schema_check` rules are active, `session.open` spectrum summary includes a `schema` block (`refs`, `active_rules`, `auto_enforced`). Malformed `tool.call` args or `tool.result` payloads emit `constraint.violated`. Audit finding: **`SCHEMA_VIOLATION`**. Conformance includes a `schema` check on close. See [aura-levels.md](aura-levels.md#profile-spec).
+
 ---
 
 ## Audit report (summary JSON)
@@ -50,7 +52,7 @@ Use `aura report show` for a human-readable audit report from the session summar
 
 ## Conformance
 
-Binary pass/fail plus violations list — declared rules and sequencer step order vs observed spine.
+Binary pass/fail plus violations list — declared rules, sequencer step order, goal/SLO drift, and schema rule violations vs observed spine.
 
 ---
 

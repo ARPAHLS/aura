@@ -59,6 +59,11 @@
           "type": "boolean",
           "description": "Require verified operator identity at session open (high/full default true when set)"
         },
+        "schema_enforcement": {
+          "type": "boolean",
+          "default": true,
+          "description": "When true (default), high/full auto-wires schema_check rules from profile variables.schema_refs"
+        },
         "output": {
           "type": "array",
           "items": { "type": "string" }

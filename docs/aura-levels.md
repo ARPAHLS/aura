@@ -62,14 +62,30 @@ spectrum:
     limit:
       max_tool_calls_per_minute: 30
   strict_services: false   # true → observer.alert on unknown service names
+  schema_enforcement: true   # false → do not auto-wire variables.schema_refs at high/full
+
+variables:
+  schema_refs:
+    sql_write:
+      tool: sql.append
+      on: call   # call | result | both
+      schema:
+        type: object
+        properties:
+          amount: { type: number, maximum: 50 }
+        required: [amount]
 ```
+
+Explicit `schema_check` rules in `profile.rules` apply at any level. **`variables.schema_refs`** auto-wire at **high** / **full** only (unless `schema_enforcement: false`). Mid profiles need explicit rules.
+
+Finding code on violation: **`SCHEMA_VIOLATION`** in the audit report.
 
 | Level | Coat | Enforcement | Default services (when `services` omitted) |
 |---|---|---|---|
 | **low** | Loose | Audit only — explicit profile `rules` still apply; off-scope tools pass; capability misses are recorded (`audit_only`) and the call still runs without inject | none |
 | **mid** | Tight | Explicit profile rules only (default when unset); capability misses **block** | none |
-| **high** | Tight | Auto `allow_tools` from profile `skills` (+ sequencer refs + capability tools) | `monitor` | verified operator **required** (opt out) |
-| **full** | Tailored | High bind + `tool.call` must include `step_id` (sequencer bind) | `monitor`, `break` | verified operator **required** (opt out) |
+| **high** | Tight | Auto `allow_tools` from profile `skills` (+ sequencer refs + capability tools); auto `schema_check` from `variables.schema_refs` when present | `monitor` | verified operator **required** (opt out) |
+| **full** | Tailored | High bind + `tool.call` must include `step_id` (sequencer bind); schema refs same as high | `monitor`, `break` | verified operator **required** (opt out) |
 
 **Verified identity** — lite `aura_id` / `agent_ref` always exist for audit trails. **Verified** operator identity comes from your IdP adapter (OIDC, Auth0, mock). When `identity_required` is true (explicitly or by high/full default), session open **fails** if no verified operator resolves — not warn-only. Opt out per profile with `spectrum.identity_required: false`, or override a single run with `aura run --require-identity`.
 

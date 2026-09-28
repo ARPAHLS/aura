@@ -63,7 +63,13 @@ class AuditReportBuilder:
                     1
                     for e in tool_denied
                     if (e.payload.get("rule") or {}).get("type")
-                    in ("deny_tools", "allow_tools", "capability_scope")
+                    in ("deny_tools", "allow_tools", "capability_scope", "schema_check")
+                    and not e.payload.get("audit_only")
+                ),
+                "schema_violations": sum(
+                    1
+                    for e in tool_denied
+                    if (e.payload.get("rule") or {}).get("type") == "schema_check"
                     and not e.payload.get("audit_only")
                 ),
                 "capability_audit": sum(
@@ -112,6 +118,22 @@ class AuditReportBuilder:
                         "Capability scope denied the tool call — use a declared capability_id "
                         "whose allowed fields match the request, or update profile.capabilities."
                     )
+                continue
+            if rtype == "schema_check":
+                findings.append(
+                    {
+                        "severity": "high",
+                        "code": "SCHEMA_VIOLATION",
+                        "message": event.payload.get("message", "Schema validation failed"),
+                        "rule_type": rtype,
+                        "rule_ref": (rule.get("ref")),
+                        "event_id": event.event_id,
+                    }
+                )
+                recommendations.append(
+                    "Tool args or result did not match the declared JSON Schema — "
+                    "fix the payload or update variables.schema_refs / schema_check rules."
+                )
                 continue
             findings.append(
                 {

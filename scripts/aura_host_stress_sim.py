@@ -449,6 +449,45 @@ def scenario_spectrum_low_off_scope() -> ScenarioResult:
     )
 
 
+def scenario_schema_high_bind() -> ScenarioResult:
+    """Spectrum high + schema_refs — malformed tool.call args blocked."""
+    schema_refs = {
+        "write_cap": {
+            "tool": "sql.append",
+            "on": "call",
+            "schema": {
+                "type": "object",
+                "properties": {"amount": {"type": "number", "maximum": 50}},
+                "required": ["amount"],
+            },
+        }
+    }
+    ag = agent(
+        "stress-schema-high",
+        skills=["sql.append"],
+        spectrum={"level": "high", "identity_required": False},
+        variables={"schema_refs": schema_refs},
+    )
+    blocked = False
+    with ag.session(mode="script", export=False) as run:
+        try:
+            run.emit("tool.call", {"tool": "sql.append", "args": {"amount": 99}})
+        except ConstraintViolation:
+            blocked = True
+    _assert(blocked, "high bind schema must block malformed args")
+    with ag.session(mode="script", export=False) as run2:
+        run2.emit("tool.call", {"tool": "sql.append", "args": {"amount": 10}})
+    kinds = _kinds(run2._session)
+    _assert("tool.call" in kinds, "valid schema args should pass")
+    return ScenarioResult(
+        name="schema_high_bind",
+        coat="tight",
+        skillware_mode="none",
+        passed=True,
+        metrics={"blocked_bad_args": blocked},
+    )
+
+
 def scenario_spectrum_high_bind() -> ScenarioResult:
     """Spectrum high — skill allowlist blocks off-scope; declared skill passes via host."""
     ag = agent("stress-spec-high", skills=[FIREWALL], spectrum={"level": "high"})
@@ -1082,6 +1121,7 @@ SCENARIOS: list[tuple[str, Callable[[], ScenarioResult], bool]] = [
     ("skillcontext + host", scenario_skillcontext_metadata_only, True),
     ("spectrum low off-scope", scenario_spectrum_low_off_scope, False),
     ("spectrum mid off-scope", scenario_spectrum_mid_off_scope, False),
+    ("schema high bind", scenario_schema_high_bind, False),
     ("spectrum high bind", scenario_spectrum_high_bind, True),
     ("spectrum full host block", scenario_spectrum_full_host_block, True),
     ("spectrum services no block", scenario_spectrum_services_no_block, False),

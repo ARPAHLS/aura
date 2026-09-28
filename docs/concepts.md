@@ -63,7 +63,9 @@ Rules, guardrails, and constraints the run must obey — on the agent profile, i
 
 A constraint checked when relevant events are emitted.
 
-Built-in types: `max_tokens_per_step`, `confirm_before`, `allow_tools`, `deny_tools`, `sequencer_required`, `escalation_pause`, `capability_scope`.
+Built-in types: `max_tokens_per_step`, `confirm_before`, `allow_tools`, `deny_tools`, `sequencer_required`, `escalation_pause`, `capability_scope`, `schema_check`.
+
+Profile `variables.schema_refs` holds named JSON Schema specs; at spectrum **high** / **full** they auto-wire as `schema_check` rules unless `spectrum.schema_enforcement: false`. Mid profiles use explicit `schema_check` rules only.
 
 ## Conformance
 

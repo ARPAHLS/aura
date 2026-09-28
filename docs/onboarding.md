@@ -66,7 +66,8 @@ aura agent create research-bot \
 | **`aura_id`** | Internal ULID (auto unless you set `--aura-id`) |
 | **`policy_version`** | Tie runs to a policy snapshot (profile or per-session) |
 | **`purpose`** | Declared intent — appears in profile and spine |
-| **`rules`** | Constitution — `confirm_before`, `allow_tools`, `deny_tools`, token limits, `capability_scope` |
+| **`rules`** | Constitution — `confirm_before`, `allow_tools`, `deny_tools`, token limits, `capability_scope`, `schema_check` |
+| **`variables.schema_refs`** | Named JSON Schema specs per tool — auto-wired at spectrum high/full ([#78](https://github.com/ARPAHLS/aura/issues/78)) |
 | **`capabilities[]`** | Named intents + secret **refs** (broker injects at egress; never store values) — [capabilities.md](capabilities.md) |
 | **`ids`** | Your external IDs (company, vendor assistant id) — AURA does not replace them |
 | **`ids.operator`** (optional) | Human/service principal when using an identity adapter — see [integrations/identity](../integrations/identity/README.md) |

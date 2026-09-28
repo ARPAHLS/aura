@@ -135,7 +135,7 @@ Applied on **every** `session.emit` (JSONL, then summary and OTel inherit it):
 ## Limits (not in this change)
 
 - **One secret per capability** (`inject_as` is a single args key). AWS-style key+secret pairs need two capabilities or a callable broker that returns a composite the host unpacks.
-- **Exact / list / wildcard equality** on `allowed` — not ranges (`amount <= 50`), regex, or JSON Schema. Broader constitution/schema checks remain on the roadmap.
+- **Exact / list / wildcard equality** on `allowed` — not ranges or regex. Use **`variables.schema_refs`** or **`schema_check`** rules for JSON Schema on tool args/results ([#78](https://github.com/ARPAHLS/aura/issues/78)).
 - **Allowed values are labels**, not credentials. Strict parse rejects secret-like **keys** (`token`, `api_key`, …) and values that look like live tokens (`sk-…`, `tok_…`, `ghp_…`, …). Ordinary long strings (`acme/private-ledger`, `organic whole milk`) are valid.
 - **Inject runs only on `guarded_tool_call` / ToolHost execute.** Direct `run.emit("tool.call", …)` still enforces scope but does not inject (there is no execute).
 - **Not** rewind, retry-N, or Skillware `SecretProvider` types.

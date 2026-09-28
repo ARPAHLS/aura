@@ -147,6 +147,25 @@ class AgentHandle:
             _finalize_session_run(run, session, do_export=do_export)
 
 
+def merged_profile_rules(
+    profile: AgentProfile,
+    *,
+    session_rules: list[dict[str, Any]] | None = None,
+) -> list[dict[str, Any]]:
+    """Profile rules + spectrum enforcement + capability + schema merge."""
+    from aura.core.capabilities import merge_capability_rules
+    from aura.core.schema_validation import merge_schema_rules
+    from aura.core.spectrum_enforcement import enforcement_rules
+
+    merged = list(profile.rules or [])
+    merged.extend(enforcement_rules(profile))
+    merged = merge_capability_rules(profile, merged)
+    merged = merge_schema_rules(profile, merged)
+    if session_rules:
+        merged.extend(session_rules)
+    return merged
+
+
 def _build_session(
     agent: AgentHandle,
     mode: str | None,
@@ -158,15 +177,7 @@ def _build_session(
         session_mode = SessionMode(mode_str)
     except ValueError:
         session_mode = SessionMode.SCRIPT
-    merged_rules = list(agent.profile.rules)
-    from aura.core.spectrum_enforcement import enforcement_rules
-
-    merged_rules.extend(enforcement_rules(agent.profile))
-    from aura.core.capabilities import merge_capability_rules
-
-    merged_rules = merge_capability_rules(agent.profile, merged_rules)
-    if rules:
-        merged_rules.extend(rules)
+    merged_rules = merged_profile_rules(agent.profile, session_rules=rules)
     from aura.sequencer.spec import merge_sequencer_spec
 
     seq_spec = merge_sequencer_spec(agent.profile.sequencer, sequencer)

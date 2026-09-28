@@ -120,12 +120,14 @@ class Session:
         self._open = True
         self._attach_profile_observers()
         from aura.core.capabilities import attach_capability_state
+        from aura.core.schema_validation import attach_schema_state
         from aura.core.escalations import attach_escalation_engine, escalation_summary
         from aura.core.spectrum_enforcement import effective_spectrum, enforcement_rules
         from aura.core.spectrum_identity import resolve_verified_identity_required
         from aura.core.spectrum_services import attach_spectrum_services
 
         services_activation = attach_spectrum_services(self)
+        attach_schema_state(self)
         spectrum = effective_spectrum(self.profile)
         spectrum_meta = spectrum.summary()
         spectrum_meta["enforcement_rule_count"] = len(enforcement_rules(self.profile))
@@ -142,6 +144,18 @@ class Session:
         capability_meta = attach_capability_state(self, secret_broker)
         if capability_meta.get("count"):
             spectrum_meta["capabilities"] = capability_meta
+        from aura.core.schema_validation import parse_schema_refs, schema_enforcement_enabled
+
+        schema_refs = parse_schema_refs(self.profile.variables)
+        schema_rules = sum(
+            1 for rule in self.rules if (rule.get("type") or rule.get("kind")) == "schema_check"
+        )
+        if schema_refs or schema_rules:
+            spectrum_meta["schema"] = {
+                "refs": len(schema_refs),
+                "active_rules": schema_rules,
+                "auto_enforced": schema_enforcement_enabled(self.profile),
+            }
         self.emit(
             "membrane.ingress",
             ingress_event_payload(self.profile, self.mode.value, self.snapshot_hash),

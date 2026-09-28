@@ -67,6 +67,14 @@ class ConformanceEngine:
                 for item in goal_slo_check.get("violations", []):
                     violations.append(item)
 
+        schema_check = self._check_schema(spine, declared_rules)
+        if schema_check:
+            checks.append(schema_check)
+            if not schema_check.get("passed", True):
+                passed = False
+                for item in schema_check.get("violations", []):
+                    violations.append(item)
+
         return ConformanceReport(
             passed=passed,
             violations=violations,
@@ -141,3 +149,45 @@ class ConformanceEngine:
             "miss_count": len(misses),
             "violations": violations,
         }
+
+    def _check_schema(
+        self,
+        spine: AuditSpine,
+        declared_rules: list[dict[str, Any]],
+    ) -> dict[str, Any] | None:
+        schema_rules = [
+            r for r in declared_rules if (r.get("type") or r.get("kind")) == "schema_check"
+        ]
+        if not schema_rules:
+            return None
+
+        schema_violations = [
+            e
+            for e in spine.stream()
+            if e.kind == "constraint.violated"
+            and (e.payload.get("rule") or {}).get("type") == "schema_check"
+            and not e.payload.get("audit_only")
+        ]
+        tool_calls = [e for e in spine.stream() if e.kind == "tool.call"]
+        tool_results = [e for e in spine.stream() if e.kind == "tool.result"]
+
+        passed = not schema_violations
+        result: dict[str, Any] = {
+            "type": "schema",
+            "declared_schema_rules": len(schema_rules),
+            "tool_calls": len(tool_calls),
+            "tool_results": len(tool_results),
+            "schema_violations": len(schema_violations),
+            "passed": passed,
+        }
+        if not passed:
+            result["violations"] = [
+                {
+                    "kind": "schema.violation",
+                    "message": evt.payload.get("message", "Schema validation failed"),
+                    "event_id": evt.event_id,
+                    "rule_ref": (evt.payload.get("rule") or {}).get("ref"),
+                }
+                for evt in schema_violations
+            ]
+        return result
