@@ -98,8 +98,10 @@ def cmd_agent_show(name: str, *, console: Console | None = None) -> int:
         else:
             console.print(message, style="bold #FF9AA2")
         return 1
+    from aura.api import merged_profile_rules
     from aura.core.capabilities import capabilities_summary, parse_capabilities
     from aura.core.escalations import escalation_summary
+    from aura.core.schema_validation import parse_schema_refs, schema_enforcement_enabled
     from aura.core.spectrum_enforcement import effective_spectrum, enforcement_rules
     from aura.core.spectrum_identity import identity_policy_summary
 
@@ -108,6 +110,17 @@ def cmd_agent_show(name: str, *, console: Console | None = None) -> int:
     payload["effective_spectrum"] = spec.summary()
     payload["effective_spectrum"].update(identity_policy_summary(profile))
     payload["effective_spectrum"]["enforcement_rules"] = enforcement_rules(profile)
+    effective_rules = merged_profile_rules(profile)
+    schema_rules = [
+        r for r in effective_rules if (r.get("type") or r.get("kind")) == "schema_check"
+    ]
+    schema_refs = parse_schema_refs(profile.variables)
+    if schema_refs or schema_rules:
+        payload["effective_spectrum"]["schema"] = {
+            "refs": len(schema_refs),
+            "active_rules": len(schema_rules),
+            "auto_enforced": schema_enforcement_enabled(profile),
+        }
     payload["escalations"] = escalation_summary(profile)
     caps = parse_capabilities(profile.capabilities, strict=False)
     payload["capabilities_summary"] = capabilities_summary(caps)

@@ -42,6 +42,7 @@ classifiers = [
     "Topic :: System :: Monitoring",
 ]
 dependencies = [
+    "jsonschema>=4.21",
     "pyyaml>=6.0",
     "rich>=13.0",
 ]

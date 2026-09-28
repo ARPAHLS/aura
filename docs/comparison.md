@@ -225,7 +225,8 @@ Honest scope — reference ToolHost coat, membrane presets, spectrum bind, opera
 | **Sequencer** — linear steps, gates, retries, **`when`** skip | |
 | **Observers** — Monitor + Break + Limit + goal drift + schedule SLO presets ([#77](https://github.com/ARPAHLS/aura/issues/77)) | Webhooks |
 | **Escalation playbooks** — `escalations[]` on drift / SLO miss / alerts / `constraint.violated` ([#47](https://github.com/ARPAHLS/aura/issues/47)) | Real email/webhook delivery via coat ops ([#49](https://github.com/ARPAHLS/aura/issues/49)) |
-| **Spectrum** — `spectrum.level` bind + `spectrum.services[]` runtime activation at session open ([#27](https://github.com/ARPAHLS/aura/issues/27), [#77](https://github.com/ARPAHLS/aura/issues/77)) | Constitution schema validation at high bind |
+| **Spectrum** — `spectrum.level` bind + `spectrum.services[]` runtime activation ([#27](https://github.com/ARPAHLS/aura/issues/27), [#77](https://github.com/ARPAHLS/aura/issues/77)) | — |
+| **Schema at egress** — `variables.schema_refs` + `schema_check` at high/full ([#78](https://github.com/ARPAHLS/aura/issues/78)) | — |
 | **Skill manifest merge** at bind | Capability broker |
 | **OTel exporter** + promoted span attributes (incl. operator) | HTTP fleet API |
 | **CLI** — `report show`, `agent set`, config/paths, `identity show`, onboarding guide | |

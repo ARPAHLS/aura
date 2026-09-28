@@ -157,7 +157,7 @@ Pure internal refactors with no user-visible effect may omit CHANGELOG; ask on t
 | `spectrum.level` / enforcement rules | `aura/core/spectrum_enforcement.py`, `docs/aura-levels.md`, `docs/comparison.md`, `docs/ROADMAP.md`, `tests/test_spectrum_enforcement.py`, stress sim / flow report scripts, CHANGELOG |
 | `spectrum.services[]` / field-service wiring | `aura/core/spectrum_services.py`, `aura/observers/presets/limit.py`, `spec/manifest.schema.json`, `docs/observers.md`, `docs/field-services.md`, `docs/using-aura.md`, `tests/test_spectrum_services.py`, stress sim / flow report scripts, CHANGELOG |
 | `escalations[]` playbooks | `aura/core/escalations.py`, `aura/core/constraints.py` (`escalation_pause`), `aura/agents/profile.py`, `docs/observers.md`, `docs/outputs.md`, `examples/12-escalation-playbooks/`, `tests/test_escalations.py`, `tests/test_example_12_escalation_playbooks.py`, stress sim, CHANGELOG |
-| Constraint rule types | `docs/concepts.md`, `docs/capabilities.md` (for `capability_scope`), `aura/core/constraints.py` tests, CHANGELOG |
+| Constraint rule types | `docs/concepts.md`, `docs/capabilities.md` (for `capability_scope`), `docs/aura-levels.md` (for `schema_check`), `aura/core/constraints.py`, `aura/core/schema_validation.py`, `tests/test_schema_checks.py`, stress sim, CHANGELOG |
 | Sequencer step model | `spec/sequencer.schema.json`, `docs/sequencer.md`, `tests/test_v02.py`, CHANGELOG |
 | Skillware host / egress | `integrations/skillware/` (when shipped), `docs/skillware-integration.md` redirect, CHANGELOG |
 | Integration example (Ollama, API, framework) | `integrations/<stack>/`, `docs/integrations/README.md`, `.env.example`, CHANGELOG |

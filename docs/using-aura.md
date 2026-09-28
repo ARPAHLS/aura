@@ -33,6 +33,8 @@ When the profile has a `spectrum` block but omits `services`, level defaults wir
 
 **Capabilities ([#48](https://github.com/ARPAHLS/aura/issues/48)):** `profile.capabilities[]` names intents and **secret refs** (not values). Egress `capability_scope` checks `capability_id` + allowed fields; a SecretBroker injects the live token only after allow. Spectrum `low` records misses without blocking; `mid`+ blocks. See [capabilities.md](capabilities.md).
 
+**Schema at egress ([#78](https://github.com/ARPAHLS/aura/issues/78)):** `variables.schema_refs` holds named JSON Schema specs per tool (`on`: `call`, `result`, or `both`). At spectrum **high** / **full**, refs auto-wire as `schema_check` rules unless `spectrum.schema_enforcement: false`. **Mid** profiles need explicit `schema_check` rules in `profile.rules`. Violations block egress and emit audit finding `SCHEMA_VIOLATION`. Requires `jsonschema` (core dependency).
+
 See [aura-levels.md](aura-levels.md) for the level table. Debug a full session receipt: `python scripts/aura_coat_flow_report.py --json`.
 
 AURA is the **harness (coat)**, not the runtime. Your **body** owns the loop; AURA wraps it with **membrane** boundaries and an **audit trail**.

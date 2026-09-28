@@ -21,7 +21,7 @@ Shipped work stays in [CHANGELOG.md](../CHANGELOG.md). This file lists what is *
 
 | Item | Why |
 |---|---|
-| **Constitution / schema checks at high bind** | Skill allowlist and capability scope shipped; broader manifest schema validation at egress still open |
+| ~~Constitution / schema checks at high bind~~ | Shipped ([#78](https://github.com/ARPAHLS/aura/issues/78)) — `variables.schema_refs`, `schema_check` rules, spectrum auto-wire at high/full |
 | Brain / memory adapters | Plug models and retention without core changes |
 | Middleware ops | PII mask, compress — schema exists |
 | Signed audit packs | WORM / external sink hooks |

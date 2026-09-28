@@ -73,7 +73,7 @@ Each step emits telemetry on the audit spine: `sequencer.step.start`, `sequencer
 | Gate | When |
 |---|---|
 | `human_confirm` | Raises approval; resume with `run.approve(request_id)` |
-| `constitution` | Emits gate event; rules enforced on egress |
+| `constitution` | Emits gate event; rules enforced on egress (including `schema_check` when declared) |
 | `budget` | Emits gate event; token rules apply on tool events |
 
 ### Conditional steps (`when`)
