@@ -32,7 +32,13 @@ class SkillwareRegistrySkill:
                 manifest.get("constitution"),
             )
 
-    def execute(self, tool: str, args: dict[str, Any] | None = None) -> Any:
+    def execute(
+        self,
+        tool: str,
+        args: dict[str, Any] | None = None,
+        *,
+        headers: dict[str, Any] | None = None,
+    ) -> Any:
         params = dict(args or {})
         execute_fn = self._instance.execute
         try:
@@ -44,13 +50,21 @@ class SkillwareRegistrySkill:
         if not params_list:
             return execute_fn()
 
+        has_headers = "headers" in sig.parameters
+
         first = params_list[0]
         if first.name in ("params", "parameters", "payload") or len(params_list) == 1:
+            if has_headers:
+                return execute_fn(params, headers=headers)
             return execute_fn(params)
 
         # MockSkill-style: execute(tool, args)
         if len(params_list) >= 2:
+            if has_headers:
+                return execute_fn(tool, params, headers=headers)
             return execute_fn(tool, params)
+        if has_headers:
+            return execute_fn(params, headers=headers)
         return execute_fn(params)
 
 

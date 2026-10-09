@@ -44,6 +44,21 @@ class CapabilityConfigError(SecretConfigError):
 
 
 @dataclass(frozen=True)
+class InjectTarget:
+    """One credential inject target into live execution args or headers."""
+
+    ref: str
+    as_: str = "token"
+    prefix: str | None = None
+
+    def public_dict(self) -> dict[str, Any]:
+        data: dict[str, Any] = {"ref": self.ref, "as": self.as_}
+        if self.prefix:
+            data["prefix"] = self.prefix
+        return data
+
+
+@dataclass(frozen=True)
 class Capability:
     """One named intent the agent may request. Secret is a ref only."""
 
@@ -53,8 +68,22 @@ class Capability:
     allowed: dict[str, Any] = field(default_factory=dict)
     secret_ref: str | None = None
     inject_as: str = "token"
+    inject: tuple[InjectTarget, ...] = field(default_factory=tuple)
     strict_args: bool = False
     description: str | None = None
+    declared_via_inject: bool = False
+
+    def __post_init__(self) -> None:
+        if self.inject and not self.secret_ref:
+            object.__setattr__(self, "secret_ref", self.inject[0].ref)
+            if self.inject_as == "token" and self.inject[0].as_ != "token":
+                object.__setattr__(self, "inject_as", self.inject[0].as_)
+        elif self.secret_ref and not self.inject:
+            object.__setattr__(
+                self,
+                "inject",
+                (InjectTarget(ref=self.secret_ref, as_=self.inject_as or "token"),),
+            )
 
     def public_dict(self) -> dict[str, Any]:
         data: dict[str, Any] = {"id": self.id}
@@ -64,10 +93,20 @@ class Capability:
             data["skill_id"] = self.skill_id
         if self.allowed:
             data["allowed"] = dict(self.allowed)
-        if self.secret_ref:
+        if self.declared_via_inject or len(self.inject) > 1:
+            data["inject"] = [t.public_dict() for t in self.inject]
+        elif self.inject:
+            t = self.inject[0]
+            if t.prefix:
+                data["inject"] = [t.public_dict()]
+            else:
+                data["secret"] = {"ref": t.ref}
+                if t.as_ and t.as_ != "token":
+                    data["inject_as"] = t.as_
+        elif self.secret_ref:
             data["secret"] = {"ref": self.secret_ref}
-        if self.inject_as and self.inject_as != "token":
-            data["inject_as"] = self.inject_as
+            if self.inject_as and self.inject_as != "token":
+                data["inject_as"] = self.inject_as
         if self.strict_args:
             data["strict_args"] = True
         if self.description:
@@ -136,6 +175,48 @@ def secret_like_allowed_value(key: str, value: Any) -> bool:
     return _looks_like_secret_value(value)
 
 
+def _parse_inject_target(raw: Any, *, strict: bool, cap_id: str) -> InjectTarget:
+    if raw is None:
+        raise CapabilityConfigError(f"capability {cap_id!r} inject target cannot be null")
+    if isinstance(raw, str):
+        ref = normalize_secret_ref(raw)
+        if _looks_like_secret_value(ref) and strict:
+            raise CapabilityConfigError(
+                f"capability {cap_id!r} inject target ref looks like a live token; "
+                "store references only (e.g. env:KEY)"
+            )
+        return InjectTarget(ref=ref, as_="token")
+    if not isinstance(raw, dict):
+        raise CapabilityConfigError(
+            f"capability {cap_id!r} inject target must be an object or ref string"
+        )
+    leaked = [key for key in raw if str(key).lower() in FORBIDDEN_SECRET_KEYS]
+    if leaked:
+        message = (
+            f"capability {cap_id!r} inject target must be a ref only "
+            f"(forbidden keys: {', '.join(sorted(leaked))})"
+        )
+        if strict:
+            raise CapabilityConfigError(message)
+    resolved_ref = _secret_ref_from_block(raw, strict=strict, cap_id=cap_id)
+    if not resolved_ref:
+        raise CapabilityConfigError(
+            f"capability {cap_id!r} inject target requires a valid secret ref"
+        )
+    if _looks_like_secret_value(resolved_ref) and strict:
+        raise CapabilityConfigError(
+            f"capability {cap_id!r} inject target ref looks like a live token; "
+            "store references only (e.g. env:KEY)"
+        )
+    as_target = (
+        str(raw.get("as") or raw.get("inject_as") or raw.get("target") or "token").strip()
+        or "token"
+    )
+    prefix = raw.get("prefix")
+    prefix_str = str(prefix) if prefix is not None else None
+    return InjectTarget(ref=resolved_ref, as_=as_target, prefix=prefix_str)
+
+
 def parse_capability(raw: Any, *, strict: bool = True) -> Capability | None:
     if not isinstance(raw, dict):
         if strict:
@@ -152,19 +233,57 @@ def parse_capability(raw: Any, *, strict: bool = True) -> Capability | None:
     if raw.get("scope") and not allowed_raw:
         scope = raw.get("scope")
         allowed_raw = dict(scope) if isinstance(scope, dict) else {}
-    secret_block = raw.get("secret") if isinstance(raw.get("secret"), dict) else {}
-    inject_as = (
-        str(
-            raw.get("inject_as")
-            or secret_block.get("as")
-            or secret_block.get("inject_as")
+
+    raw_inject = raw.get("inject")
+    raw_secret = raw.get("secret")
+    raw_secret_ref = raw.get("secret_ref")
+
+    if (raw_secret is not None or raw_secret_ref is not None) and raw_inject is not None:
+        if strict:
+            raise CapabilityConfigError(
+                f"capability {cap_id!r} cannot declare both 'secret' and 'inject'"
+            )
+
+    declared_via_inject = False
+    targets: list[InjectTarget] = []
+
+    if raw_inject is not None:
+        declared_via_inject = True
+        if not isinstance(raw_inject, list):
+            raise CapabilityConfigError(
+                f"capability {cap_id!r} 'inject' must be a list of target objects"
+            )
+        seen_targets: set[str] = set()
+        for item in raw_inject:
+            t = _parse_inject_target(item, strict=strict, cap_id=cap_id)
+            if t.as_ in seen_targets and strict:
+                raise CapabilityConfigError(
+                    f"capability {cap_id!r} duplicate inject target: {t.as_!r}"
+                )
+            seen_targets.add(t.as_)
+            targets.append(t)
+    elif raw_secret is not None or raw_secret_ref is not None:
+        secret_block = raw.get("secret") if isinstance(raw.get("secret"), dict) else {}
+        inject_as = (
+            str(
+                raw.get("inject_as")
+                or secret_block.get("as")
+                or secret_block.get("inject_as")
+                or "token"
+            ).strip()
             or "token"
-        ).strip()
-        or "token"
-    )
-    secret_ref = _secret_ref_from_block(raw.get("secret"), strict=strict, cap_id=cap_id)
-    if secret_ref is None and isinstance(raw.get("secret_ref"), str):
-        secret_ref = normalize_secret_ref(raw["secret_ref"])
+        )
+        secret_ref = _secret_ref_from_block(raw.get("secret"), strict=strict, cap_id=cap_id)
+        if secret_ref is None and isinstance(raw.get("secret_ref"), str):
+            secret_ref = normalize_secret_ref(raw["secret_ref"])
+        if secret_ref and _looks_like_secret_value(secret_ref) and strict:
+            raise CapabilityConfigError(
+                f"capability {cap_id!r} secret ref looks like a live token; "
+                "store references only (e.g. env:KEY)"
+            )
+        if secret_ref:
+            targets.append(InjectTarget(ref=secret_ref, as_=inject_as))
+
     description = raw.get("description")
     strict_args = bool(raw.get("strict_args") or raw.get("strict"))
     for key, value in allowed_raw.items():
@@ -173,15 +292,21 @@ def parse_capability(raw: Any, *, strict: bool = True) -> Capability | None:
                 f"capability {cap_id!r} allowed.{key} looks like a plaintext secret; "
                 "store labels only (e.g. card: Y) and put credentials in secret.ref"
             )
+
+    primary_ref = targets[0].ref if targets else None
+    primary_as = targets[0].as_ if targets else "token"
+
     return Capability(
         id=cap_id,
         tool=str(tool).strip() if tool else None,
         skill_id=str(skill_id).strip() if skill_id else None,
         allowed=dict(allowed_raw),
-        secret_ref=secret_ref,
-        inject_as=inject_as,
+        secret_ref=primary_ref,
+        inject_as=primary_as,
+        inject=tuple(targets),
         strict_args=strict_args,
         description=str(description) if description else None,
+        declared_via_inject=declared_via_inject,
     )
 
 
@@ -217,11 +342,16 @@ def normalize_capabilities_for_store(raw: Any) -> list[dict[str, Any]]:
 def capabilities_summary(caps: list[Capability] | None) -> dict[str, Any]:
     items = list(caps or [])
     gated = gated_tool_ids(items)
+    secret_refs: list[str] = []
+    for cap in items:
+        for t in cap.inject:
+            if t.ref and t.ref not in secret_refs:
+                secret_refs.append(t.ref)
     return {
         "count": len(items),
         "ids": [cap.id for cap in items],
         "gated_tools": sorted(gated) if gated is not None else ["*"],
-        "secret_refs": [cap.secret_ref for cap in items if cap.secret_ref],
+        "secret_refs": secret_refs,
     }
 
 
@@ -437,12 +567,16 @@ def evaluate_capability_scope(
             "capability",
             "capability_id",
             "args",
+            "headers",
             "step_id",
             "tokens",
             "token_count",
             "request_id",
             cap.inject_as,
         }
+        for t in cap.inject:
+            reserved.add(t.as_)
+            reserved.add(t.as_.split(".")[0])
         extra = [
             key
             for key in args.keys()
@@ -476,6 +610,16 @@ def matching_capability(session: Any, payload: dict[str, Any]) -> Capability | N
     return lookup_capability(caps, cap_id)
 
 
+def _inject_value_at_path(target_dict: dict[str, Any], path: str, value: Any) -> None:
+    parts = path.split(".")
+    current = target_dict
+    for part in parts[:-1]:
+        if part not in current or not isinstance(current[part], dict):
+            current[part] = {}
+        current = current[part]
+    current[parts[-1]] = value
+
+
 def prepare_live_args(
     session: Any,
     payload: dict[str, Any],
@@ -483,25 +627,42 @@ def prepare_live_args(
     constraint_results: list[ConstraintResult] | None = None,
 ) -> dict[str, Any]:
     """
-    Copy args for host execute: strip agent-supplied secrets, inject broker token
+    Copy args for host execute: strip agent-supplied secrets, inject broker token(s)
     only when capability_scope passed.
     """
     args = payload.get("args") if isinstance(payload.get("args"), dict) else {}
     live = strip_secret_like_keys(dict(args))
+
+    if "headers" in payload and isinstance(payload["headers"], dict):
+        live_headers = strip_secret_like_keys(dict(payload["headers"]))
+        if "headers" not in live:
+            live["headers"] = live_headers
+        elif isinstance(live.get("headers"), dict):
+            live["headers"] = {**live_headers, **live["headers"]}
+
     cap = matching_capability(session, payload)
     scope = last_capability_result(constraint_results)
     allowed = cap is not None and scope is not None and scope.passed
-    if not allowed or cap is None or not cap.secret_ref:
+    if not allowed or cap is None or not cap.inject:
         return live
+
     broker: SecretBroker | None = getattr(session, "_secret_broker", None) or session.state.get(
         STATE_SECRET_BROKER
     )
-    if broker is None:
-        raise SecretNotFoundError(cap.secret_ref)
-    value = broker.resolve(cap.secret_ref)
-    live[cap.inject_as] = value
     injected: set[str] = session.state.setdefault(STATE_INJECTED_SECRETS, set())
-    injected.add(value)
+
+    for target in cap.inject:
+        if not target.ref:
+            continue
+        if broker is None:
+            raise SecretNotFoundError(target.ref)
+        raw_val = broker.resolve(target.ref)
+        injected.add(raw_val)
+        final_val = f"{target.prefix}{raw_val}" if target.prefix else raw_val
+        if len(final_val) >= 8:
+            injected.add(final_val)
+        _inject_value_at_path(live, target.as_, final_val)
+
     return live
 
 

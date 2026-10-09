@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import inspect
 from typing import Any
 
 from aura.hosts.bind import record_skill_bind
@@ -49,13 +50,23 @@ class SkillwareHost:
         tool: str,
         args: dict[str, Any] | None = None,
         *,
+        headers: dict[str, Any] | None = None,
         step_id: str | None = None,
     ) -> Any:
         skill = self._skills.get(skill_id)
         if skill is None:
             raise KeyError(f"Skill not registered: {skill_id}")
 
-        def run(live_args: dict[str, Any]) -> Any:
+        def run(live_args: dict[str, Any], headers: dict[str, Any] | None = None) -> Any:
+            effective_headers = headers or (
+                live_args.get("headers") if isinstance(live_args.get("headers"), dict) else None
+            )
+            try:
+                sig = inspect.signature(skill.execute)
+                if "headers" in sig.parameters:
+                    return skill.execute(tool, live_args, headers=effective_headers)
+            except (TypeError, ValueError):
+                pass
             return skill.execute(tool, live_args)
 
         audit_tool = tool or skill_id
@@ -64,6 +75,7 @@ class SkillwareHost:
             tool=audit_tool,
             skill_id=skill_id,
             args=args,
+            headers=headers,
             execute=run,
             step_id=step_id,
         )
@@ -115,13 +127,19 @@ def _wrap_skillware_instance(skill_id: str, skill: Any) -> SkillExecutor:
             self._skill = skill
             self.manifest: dict[str, Any] = {}
 
-        def execute(self, tool: str, args: dict[str, Any] | None = None) -> Any:
+        def execute(
+            self,
+            tool: str,
+            args: dict[str, Any] | None = None,
+            *,
+            headers: dict[str, Any] | None = None,
+        ) -> Any:
             adapter = SkillwareRegistrySkill(
                 self.skill_id,
                 self._skill,
                 self.manifest,
             )
-            return adapter.execute(tool, args)
+            return adapter.execute(tool, args, headers=headers)
 
     return _Wrapped()
 

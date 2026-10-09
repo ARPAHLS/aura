@@ -494,6 +494,99 @@ def scenario_empty_capabilities_compat() -> ScenarioResult:
     return ScenarioResult("capability_empty_compat", "tight", True)
 
 
+def scenario_multi_secret_dual_credentials() -> ScenarioResult:
+    key_val = "AKIA_STRESS_ACCESS_KEY_001"
+    secret_val = "stress_secret_key_val_999"
+    broker = MapSecretBroker(
+        {
+            "env:AWS_ACCESS_KEY_ID": key_val,
+            "env:AWS_SECRET_ACCESS_KEY": secret_val,
+        }
+    )
+    captured: dict[str, Any] = {}
+
+    def s3_op(args: dict[str, Any]) -> dict[str, Any]:
+        captured.update(args)
+        return {"fetched": True}
+
+    cap = {
+        "id": "s3-multi",
+        "tool": "s3",
+        "allowed": {"bucket": "cold-vault"},
+        "inject": [
+            {"ref": "env:AWS_ACCESS_KEY_ID", "as": "aws_access_key_id"},
+            {"ref": "env:AWS_SECRET_ACCESS_KEY", "as": "aws_secret_access_key"},
+        ],
+    }
+    ag = agent(
+        "stress-s3-multi", capabilities=[cap], spectrum={"level": "mid", "services": ["audit"]}
+    )
+    with ag.session(export=True, secret_broker=broker) as run:
+        host = SkillwareHost(run._session)
+        host.register(MockSkill("s3", {"s3": s3_op}))
+        host.execute("s3", "s3", {"capability_id": "s3-multi", "bucket": "cold-vault"})
+
+    _assert(captured.get("aws_access_key_id") == key_val, "access key not injected")
+    _assert(captured.get("aws_secret_access_key") == secret_val, "secret key not injected")
+    jsonl = Path(run.exports["jsonl"]).read_text(encoding="utf-8")
+    summary = Path(run.exports["summary"]).read_text(encoding="utf-8")
+    _assert(key_val not in jsonl, "key leaked in jsonl")
+    _assert(secret_val not in jsonl, "secret leaked in jsonl")
+    _assert(key_val not in summary, "key leaked in summary")
+    _assert(secret_val not in summary, "secret leaked in summary")
+    return ScenarioResult("capability_multi_secret_dual", "tight", True)
+
+
+def scenario_header_authorization_inject() -> ScenarioResult:
+    token_val = "tok_stress_live_api_token_555"
+    broker = MapSecretBroker({"env:API_TOKEN": token_val})
+    captured_args: dict[str, Any] = {}
+
+    def http_op(args: dict[str, Any], headers: dict[str, Any] | None = None) -> dict[str, Any]:
+        captured_args.update(args)
+        return {"echo": f"received {args.get('headers', {}).get('Authorization')}"}
+
+    cap = {
+        "id": "http-headers",
+        "tool": "http_get",
+        "allowed": {"url": "https://api.cloud.corp"},
+        "inject": [
+            {"ref": "env:API_TOKEN", "as": "headers.Authorization", "prefix": "Bearer "},
+        ],
+    }
+    ag = agent(
+        "stress-http-headers", capabilities=[cap], spectrum={"level": "mid", "services": ["audit"]}
+    )
+    with ag.session(export=True, secret_broker=broker) as run:
+        host = SkillwareHost(run._session)
+        host.register(MockSkill("http", {"http_get": http_op}))
+        host.execute(
+            "http",
+            "http_get",
+            {
+                "capability_id": "http-headers",
+                "url": "https://api.cloud.corp",
+                "headers": {
+                    "Authorization": "spoofed_attacker_token",
+                    "X-Request-Id": "req-123",
+                },
+            },
+        )
+
+    expected_auth = f"Bearer {token_val}"
+    _assert(
+        captured_args.get("headers", {}).get("Authorization") == expected_auth,
+        "auth header mismatch",
+    )
+    _assert(captured_args.get("headers", {}).get("X-Request-Id") == "req-123", "custom header lost")
+    jsonl = Path(run.exports["jsonl"]).read_text(encoding="utf-8")
+    summary = Path(run.exports["summary"]).read_text(encoding="utf-8")
+    _assert(token_val not in jsonl, "token leaked in jsonl")
+    _assert(expected_auth not in jsonl, "bearer header leaked in jsonl")
+    _assert(token_val not in summary, "token leaked in summary")
+    return ScenarioResult("capability_header_authorization", "tight", True)
+
+
 SCENARIOS: list[tuple[str, Callable[[], ScenarioResult]]] = [
     ("allow inject", scenario_allow_inject),
     ("generic github scope", scenario_generic_github_scope),
@@ -511,6 +604,8 @@ SCENARIOS: list[tuple[str, Callable[[], ScenarioResult]]] = [
     ("escalation on deny", scenario_escalation_on_deny),
     ("result leak", scenario_result_leak),
     ("empty compat", scenario_empty_capabilities_compat),
+    ("multi secret dual", scenario_multi_secret_dual_credentials),
+    ("header authorization", scenario_header_authorization_inject),
 ]
 
 

@@ -28,6 +28,7 @@ If a card number or API key lives on the agent JSON, the model can echo it, the 
 spectrum:
   level: mid          # low = audit-only miss; mid+ = block
 capabilities:
+  # Single secret (token):
   - id: shop-x-milk
     tool: payment
     allowed:
@@ -36,6 +37,24 @@ capabilities:
       card: Y          # label, not a PAN
     secret:
       ref: env:AURA_CAP_SHOP_X_CARD_Y
+
+  # Multi-secret / HTTP headers (#86):
+  - id: s3-reader
+    tool: s3_fetch
+    allowed: { bucket: "reports" }
+    inject:
+      - ref: env:AWS_ACCESS_KEY_ID
+        as: aws_access_key_id
+      - ref: env:AWS_SECRET_ACCESS_KEY
+        as: aws_secret_access_key
+
+  - id: github-api
+    tool: http_request
+    allowed: { host: "api.github.com" }
+    inject:
+      - ref: env:GITHUB_TOKEN
+        as: headers.Authorization
+        prefix: "Bearer "
 ```
 
 | Field | Role |
@@ -44,8 +63,9 @@ capabilities:
 | `tool` / `skill_id` | Optional bind. If set, that tool/skill is **gated** (id required). If omitted, every `tool.call` is gated. |
 | `allowed` | Required subset of args. `"*"` = any value; a list = allowlist; dotted keys (`merchant.name`) walk nested dicts. Numbers and digit-strings compare equal (`3` / `"3"`). |
 | `strict_args` | When true, extra arg keys are denied. Default false so hosts may pass metadata. |
-| `secret.ref` | Credential locator only (`env:VAR`, or a ref your callable broker understands). **No `value` / `token` / plaintext.** |
-| `inject_as` | Live args key for the injected secret (default `token`). |
+| `secret.ref` | Single credential locator (`env:VAR`, or a ref your callable broker understands). **No `value` / `token` / plaintext.** |
+| `inject_as` | Live args key for single secret inject (default `token`). |
+| `inject[]` | List of multi-target injects (`#86`). Each item declares `ref`, `as` (e.g. `aws_access_key_id` or `headers.Authorization`), and optional `prefix` (e.g. `"Bearer "`). |
 
 CLI:
 
@@ -110,8 +130,8 @@ Escalations already subscribed to `constraint.violated` (`nudge`, `pause`, …) 
 1. `tool.intent` (redacted)
 2. `tool.call` → `capability_scope` (+ other rules)
 3. Strip agent-supplied secret-like keys (`token`, `api_key`, …)
-4. If scope passed and `secret.ref` is set → broker resolve → inject → `capability.injected` (ref only)
-5. Execute with live args
+4. If scope passed and `inject` / `secret.ref` is set → broker resolve → inject (args, dotted paths, headers) → `capability.injected` (refs only)
+5. Execute with live args (and HTTP headers if accepted)
 6. `tool.result` / `tool.error` (redacted; live secret substrings of length ≥ 8 are scrubbed)
 
 Direct `run.emit("tool.call", …)` still enforces scope. There is no execute, so nothing is injected — that is expected for emit-only coats.
@@ -134,10 +154,10 @@ Applied on **every** `session.emit` (JSONL, then summary and OTel inherit it):
 
 ## Limits (not in this change)
 
-- **One secret per capability** (`inject_as` is a single args key). AWS-style key+secret pairs need two capabilities or a callable broker that returns a composite the host unpacks.
 - **Exact / list / wildcard equality** on `allowed` — not ranges or regex. Use **`variables.schema_refs`** or **`schema_check`** rules for JSON Schema on tool args/results ([#78](https://github.com/ARPAHLS/aura/issues/78)).
 - **Allowed values are labels**, not credentials. Strict parse rejects secret-like **keys** (`token`, `api_key`, …) and values that look like live tokens (`sk-…`, `tok_…`, `ghp_…`, …). Ordinary long strings (`acme/private-ledger`, `organic whole milk`) are valid.
 - **Inject runs only on `guarded_tool_call` / ToolHost execute.** Direct `run.emit("tool.call", …)` still enforces scope but does not inject (there is no execute).
+- **Multiple targets and HTTP headers** supported via `inject: [{ref, as, prefix}]` ([#86](https://github.com/ARPAHLS/aura/issues/86)).
 - **Not** rewind, retry-N, or Skillware `SecretProvider` types.
 
 Runnable demo: [examples/14-capability-broker](../examples/14-capability-broker/). Stress: `python scripts/aura_capability_stress_sim.py`.

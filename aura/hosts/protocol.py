@@ -10,7 +10,13 @@ class SkillExecutor(Protocol):
 
     skill_id: str
 
-    def execute(self, tool: str, args: dict[str, Any] | None = None) -> Any: ...
+    def execute(
+        self,
+        tool: str,
+        args: dict[str, Any] | None = None,
+        *,
+        headers: dict[str, Any] | None = None,
+    ) -> Any: ...
 
 
 class ToolHost(Protocol):
@@ -27,5 +33,6 @@ class ToolHost(Protocol):
         tool: str,
         args: dict[str, Any] | None = None,
         *,
+        headers: dict[str, Any] | None = None,
         step_id: str | None = None,
     ) -> Any: ...

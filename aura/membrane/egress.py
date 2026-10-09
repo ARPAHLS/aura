@@ -15,6 +15,10 @@ def _invoke_execute(execute: Callable[..., Any], live_args: dict[str, Any]) -> A
         signature = inspect.signature(execute)
     except (TypeError, ValueError):
         return execute()
+
+    headers = live_args.get("headers") if isinstance(live_args.get("headers"), dict) else None
+    accepts_headers = "headers" in signature.parameters
+
     required = [
         param
         for param in signature.parameters.values()
@@ -22,6 +26,10 @@ def _invoke_execute(execute: Callable[..., Any], live_args: dict[str, Any]) -> A
         in (inspect.Parameter.POSITIONAL_ONLY, inspect.Parameter.POSITIONAL_OR_KEYWORD)
         and param.default is inspect.Parameter.empty
     ]
+    if accepts_headers and headers is not None:
+        if required:
+            return execute(live_args, headers=headers)
+        return execute(headers=headers)
     if required:
         return execute(live_args)
     for param in signature.parameters.values():
@@ -36,6 +44,7 @@ def guarded_tool_call(
     tool: str,
     skill_id: str | None = None,
     args: dict[str, Any] | None = None,
+    headers: dict[str, Any] | None = None,
     execute: Callable[..., Any],
     step_id: str | None = None,
 ) -> Any:
@@ -46,6 +55,8 @@ def guarded_tool_call(
     execute args. Spine events are redacted by ``session.emit``.
     """
     payload_base = {"tool": tool, "skill_id": skill_id, "args": dict(args or {})}
+    if headers:
+        payload_base["headers"] = dict(headers)
     if step_id:
         payload_base["step_id"] = step_id
     cap_id = (args or {}).get("capability_id") or (args or {}).get("capability")
@@ -83,19 +94,25 @@ def guarded_tool_call(
         raise
 
     cap = matching_capability(session, payload_base)
-    injected = bool(cap and cap.secret_ref and cap.inject_as in live_args)
-    if injected and cap is not None:
-        session.emit(
-            "capability.injected",
-            {
-                "capability_id": cap.id,
-                "tool": tool,
-                "skill_id": skill_id,
-                "secret_ref": cap.secret_ref,
-                "inject_as": cap.inject_as,
-            },
-            step_id=step_id,
-        )
+    if cap is not None and cap.inject:
+        injected_records = [
+            {"secret_ref": target.ref, "inject_as": target.as_}
+            for target in cap.inject
+            if target.ref
+        ]
+        if injected_records:
+            session.emit(
+                "capability.injected",
+                {
+                    "capability_id": cap.id,
+                    "tool": tool,
+                    "skill_id": skill_id,
+                    "secret_ref": cap.secret_ref,
+                    "inject_as": cap.inject_as,
+                    "injected": injected_records,
+                },
+                step_id=step_id,
+            )
 
     try:
         result = _invoke_execute(execute, live_args)

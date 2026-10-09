@@ -32,9 +32,12 @@ python examples/14-capability-broker/main.py
 | `deny_wrong_card` | `card=Z` blocked at mid; finding `CAPABILITY_DENIED` |
 | `low_audit` | Same miss at `spectrum.level: low` still runs, no inject |
 | `missing_id` | Gated tool without `capability_id` is denied |
+| `multi_inject` | Dual secrets (AWS access key + secret) and `headers.Authorization` with `Bearer ` prefix ([#86](https://github.com/ARPAHLS/aura/issues/86)) |
 | `all` | Every row (default) |
 
 ## Profile sketch
+
+Single secret (legacy or compact):
 
 ```yaml
 spectrum:
@@ -48,6 +51,24 @@ capabilities:
       card: Y
     secret:
       ref: env:AURA_CAP_SHOP_X_CARD_Y
+```
+
+Multiple secrets & HTTP headers ([#86](https://github.com/ARPAHLS/aura/issues/86)):
+
+```yaml
+spectrum:
+  level: mid
+capabilities:
+  - id: s3-dual
+    tool: s3_read
+    allowed:
+      bucket: ledger
+    inject:
+      - ref: env:AWS_ACCESS_KEY_ID
+        as: aws_access_key_id
+      - ref: env:AWS_SECRET_ACCESS_KEY
+        as: headers.Authorization
+        prefix: "Bearer "
 ```
 
 Never put `secret.value`. Bind a broker at session open (`MapSecretBroker` in this demo; `EnvSecretBroker` in production).

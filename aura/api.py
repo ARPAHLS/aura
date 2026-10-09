@@ -23,7 +23,7 @@ from aura.core.secrets import (
     SecretConfigError,
     SecretNotFoundError,
 )
-from aura.core.capabilities import CapabilityConfigError
+from aura.core.capabilities import Capability, CapabilityConfigError, InjectTarget
 from aura.core.session import Session, SessionMode
 from aura.exporters.jsonl import build_session_summary, export_session
 from aura.identity.bind import IdentityOptions
@@ -240,7 +240,9 @@ __all__ = [
     "OperatorIdentityAdapter",
     "IdentityRequiredError",
     "IdentityVerificationError",
+    "Capability",
     "CapabilityConfigError",
+    "InjectTarget",
     "SecretBrokerError",
     "SecretConfigError",
     "SecretNotFoundError",
