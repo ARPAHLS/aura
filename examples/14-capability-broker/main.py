@@ -168,11 +168,63 @@ def scenario_missing_id() -> dict[str, Any]:
     }
 
 
+def scenario_multi_inject() -> dict[str, Any]:
+    captured: dict[str, Any] = {}
+
+    def fetch(args: dict[str, Any], headers: dict[str, Any] | None = None) -> dict[str, Any]:
+        captured.update(args)
+        return {"records": 10, "auth_header": headers.get("Authorization") if headers else None}
+
+    cap = {
+        "id": "s3-dual",
+        "tool": "s3_read",
+        "allowed": {"bucket": "ledger"},
+        "inject": [
+            {"ref": "env:AWS_ACCESS_KEY_ID", "as": "aws_access_key_id"},
+            {
+                "ref": "env:AWS_SECRET_ACCESS_KEY",
+                "as": "headers.Authorization",
+                "prefix": "Bearer ",
+            },
+        ],
+    }
+    broker = MapSecretBroker(
+        {
+            "env:AWS_ACCESS_KEY_ID": "AKIA_DEMO_KEY",
+            "env:AWS_SECRET_ACCESS_KEY": "demo_secret_xyz",
+        }
+    )
+    ag = agent(
+        "cap-demo-dual-credentials",
+        capabilities=[cap],
+        spectrum={"level": "mid", "services": ["audit"]},
+    )
+    # Ensure capabilities match if agent already existed in local store
+    ag.profile.capabilities = [cap]
+    with ag.session(secret_broker=broker) as run:
+        host = SkillwareHost(run._session)
+        host.register(MockSkill("s3", {"s3_read": fetch}))
+        result = host.execute(
+            "s3",
+            "s3_read",
+            {"capability_id": "s3-dual", "bucket": "ledger"},
+        )
+    summary = _report(run._session)
+    return {
+        "scenario": "multi_inject",
+        "session_id": run.session_id,
+        "result": result,
+        "injected_args_key": "aws_access_key_id" in captured,
+        **summary,
+    }
+
+
 SCENARIOS: dict[str, ScenarioFn] = {
     "allow_inject": scenario_allow_inject,
     "deny_wrong_card": scenario_deny_wrong_card,
     "low_audit": scenario_low_audit,
     "missing_id": scenario_missing_id,
+    "multi_inject": scenario_multi_inject,
 }
 
 

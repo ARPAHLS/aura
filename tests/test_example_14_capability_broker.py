@@ -33,6 +33,7 @@ def example_14():
         ("deny_wrong_card", "blocked", True),
         ("low_audit", "executed", 1),
         ("missing_id", "blocked", True),
+        ("multi_inject", "injected_args_key", True),
     ],
 )
 def test_example_14_scenarios(aura_home, example_14, name, expect_key, expect_value):

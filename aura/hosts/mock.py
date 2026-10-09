@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import inspect
 from typing import Any, Callable
 
 
@@ -11,7 +12,7 @@ class MockSkill:
     def __init__(
         self,
         skill_id: str,
-        handlers: dict[str, Callable[[dict[str, Any]], Any]] | None = None,
+        handlers: dict[str, Callable[..., Any]] | None = None,
         *,
         manifest: dict[str, Any] | None = None,
     ) -> None:
@@ -19,13 +20,26 @@ class MockSkill:
         self._handlers = dict(handlers or {})
         self.manifest = dict(manifest or {})
 
-    def register(self, tool: str, handler: Callable[[dict[str, Any]], Any]) -> None:
+    def register(self, tool: str, handler: Callable[..., Any]) -> None:
         self._handlers[tool] = handler
 
-    def execute(self, tool: str, args: dict[str, Any] | None = None) -> Any:
+    def execute(
+        self,
+        tool: str,
+        args: dict[str, Any] | None = None,
+        *,
+        headers: dict[str, Any] | None = None,
+    ) -> Any:
         if tool not in self._handlers:
             raise KeyError(f"Unknown tool: {tool}")
-        return self._handlers[tool](args or {})
+        handler = self._handlers[tool]
+        try:
+            sig = inspect.signature(handler)
+            if "headers" in sig.parameters:
+                return handler(args or {}, headers=headers)
+        except (TypeError, ValueError):
+            pass
+        return handler(args or {})
 
 
 class MockSkillRegistry:

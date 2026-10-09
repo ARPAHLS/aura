@@ -663,3 +663,329 @@ def test_session_open_capability_summary(aura_home: Path):
     assert caps.get("count") == 1
     assert caps.get("ids") == ["shop-x-milk"]
     assert "MapSecretBroker" in str(caps.get("broker"))
+
+
+def test_multi_secret_allow_path_dual_inject(aura_home: Path):
+    key_val = "AKIA_MOCK_ACCESS_KEY_123"
+    secret_val = "mock_secret_key_abc_999"
+    broker = MapSecretBroker(
+        {
+            "env:AWS_ACCESS_KEY_ID": key_val,
+            "env:AWS_SECRET_ACCESS_KEY": secret_val,
+        }
+    )
+    captured: dict = {}
+
+    def fetch_s3(args):
+        captured.update(args)
+        return {"records": 42}
+
+    cap_s3 = {
+        "id": "s3-audit-reports",
+        "tool": "s3_fetch",
+        "allowed": {"bucket": "compliance-reports", "prefix": "q3/"},
+        "inject": [
+            {"ref": "env:AWS_ACCESS_KEY_ID", "as": "aws_access_key_id"},
+            {"ref": "env:AWS_SECRET_ACCESS_KEY", "as": "aws_secret_access_key"},
+        ],
+    }
+    ag = agent("s3-agent", capabilities=[cap_s3], spectrum={"level": "mid", "services": ["audit"]})
+
+    with ag.session(export=True, secret_broker=broker) as run:
+        host = SkillwareHost(run._session)
+        host.register(MockSkill("s3", {"s3_fetch": fetch_s3}))
+        res = host.execute(
+            "s3",
+            "s3_fetch",
+            {
+                "capability_id": "s3-audit-reports",
+                "bucket": "compliance-reports",
+                "prefix": "q3/",
+            },
+        )
+    assert res == {"records": 42}
+    assert captured["aws_access_key_id"] == key_val
+    assert captured["aws_secret_access_key"] == secret_val
+
+    spine_text = _spine_text(run)
+    assert key_val not in spine_text
+    assert secret_val not in spine_text
+
+    injected_evts = [e for e in run._session.spine.stream() if e.kind == "capability.injected"]
+    assert len(injected_evts) == 1
+    p = injected_evts[0].payload
+    assert p["capability_id"] == "s3-audit-reports"
+    assert len(p["injected"]) == 2
+    assert p["injected"][0] == {
+        "secret_ref": "env:AWS_ACCESS_KEY_ID",
+        "inject_as": "aws_access_key_id",
+    }
+    assert p["injected"][1] == {
+        "secret_ref": "env:AWS_SECRET_ACCESS_KEY",
+        "inject_as": "aws_secret_access_key",
+    }
+
+
+def test_header_inject_authorization_with_prefix(aura_home: Path):
+    token_val = "ghp_mock_live_github_token_xyz"
+    broker = MapSecretBroker({"env:GITHUB_TOKEN": token_val})
+    captured_args: dict = {}
+    captured_headers: dict = {}
+
+    def call_gh(args, headers=None):
+        captured_args.update(args)
+        if headers:
+            captured_headers.update(headers)
+        return {"login": "octocat"}
+
+    cap_gh = {
+        "id": "github-read",
+        "tool": "gh_api",
+        "allowed": {"endpoint": "/user"},
+        "inject": [
+            {
+                "ref": "env:GITHUB_TOKEN",
+                "as": "headers.Authorization",
+                "prefix": "Bearer ",
+            }
+        ],
+    }
+    ag = agent("gh-agent", capabilities=[cap_gh], spectrum={"level": "mid", "services": ["audit"]})
+
+    with ag.session(export=True, secret_broker=broker) as run:
+        host = SkillwareHost(run._session)
+        host.register(MockSkill("gh", {"gh_api": call_gh}))
+        res = host.execute(
+            "gh",
+            "gh_api",
+            {
+                "capability_id": "github-read",
+                "endpoint": "/user",
+            },
+        )
+    assert res == {"login": "octocat"}
+    assert captured_args["headers"]["Authorization"] == f"Bearer {token_val}"
+    assert captured_headers["Authorization"] == f"Bearer {token_val}"
+
+    spine_text = _spine_text(run)
+    assert token_val not in spine_text
+    assert f"Bearer {token_val}" not in spine_text
+
+
+def test_agent_supplied_headers_and_secrets_stripped(aura_home: Path):
+    token_val = "live_authorized_token_12345"
+    broker = MapSecretBroker({"env:AUTH_TOKEN": token_val})
+    captured_args: dict = {}
+
+    def fetch(args):
+        captured_args.update(args)
+        return {"status": 200}
+
+    cap = {
+        "id": "api-call",
+        "tool": "http",
+        "allowed": {"url": "https://api.internal/data"},
+        "inject": [
+            {
+                "ref": "env:AUTH_TOKEN",
+                "as": "headers.Authorization",
+                "prefix": "Bearer ",
+            }
+        ],
+    }
+    ag = agent("strip-agent", capabilities=[cap], spectrum={"level": "mid", "services": ["audit"]})
+
+    with ag.session(export=True, secret_broker=broker) as run:
+        host = SkillwareHost(run._session)
+        host.register(MockSkill("http", {"http": fetch}))
+        host.execute(
+            "http",
+            "http",
+            {
+                "capability_id": "api-call",
+                "url": "https://api.internal/data",
+                "token": "agent_supplied_token_to_strip",
+                "headers": {
+                    "Authorization": "Bearer agent_spoofed_stolen_token",
+                    "X-Custom": "legitimate_custom_header",
+                },
+            },
+        )
+    assert captured_args["headers"]["Authorization"] == f"Bearer {token_val}"
+    assert captured_args["headers"]["X-Custom"] == "legitimate_custom_header"
+    assert "token" not in captured_args
+
+
+def test_leak_scrub_on_multi_secret_and_headers_in_tool_result(aura_home: Path):
+    key_val = "AKIA_SECRET_TO_SCRUB_999"
+    token_val = "tok_live_bearer_secret_888"
+    broker = MapSecretBroker(
+        {
+            "env:KEY": key_val,
+            "env:TOKEN": token_val,
+        }
+    )
+
+    def echoing_tool(args):
+        return {
+            "echo_key": f"key={args.get('key')}",
+            "echo_header": f"header={args.get('headers', {}).get('Authorization')}",
+            "safe": "unaffected_value",
+        }
+
+    cap = {
+        "id": "echo-test",
+        "tool": "echo",
+        "allowed": {"action": "ping"},
+        "inject": [
+            {"ref": "env:KEY", "as": "key"},
+            {"ref": "env:TOKEN", "as": "headers.Authorization", "prefix": "Bearer "},
+        ],
+    }
+    ag = agent("echo-agent", capabilities=[cap], spectrum={"level": "mid", "services": ["audit"]})
+
+    with ag.session(export=True, secret_broker=broker) as run:
+        host = SkillwareHost(run._session)
+        host.register(MockSkill("echo", {"echo": echoing_tool}))
+        host.execute("echo", "echo", {"capability_id": "echo-test", "action": "ping"})
+
+    result_evt = next(e for e in run._session.spine.stream() if e.kind == "tool.result")
+    payload = result_evt.payload["result"]
+    assert key_val not in str(payload)
+    assert token_val not in str(payload)
+    assert REDACTED in payload["echo_key"]
+    assert REDACTED in payload["echo_header"]
+    assert payload["safe"] == "unaffected_value"
+
+
+def test_multi_secret_unresolved_second_secret(aura_home: Path):
+    broker = MapSecretBroker({"env:FIRST_KEY": "exists_live_123"})
+    cap = {
+        "id": "two-keys",
+        "tool": "dual",
+        "allowed": {"op": "run"},
+        "inject": [
+            {"ref": "env:FIRST_KEY", "as": "k1"},
+            {"ref": "env:SECOND_MISSING", "as": "k2"},
+        ],
+    }
+    ag = agent(
+        "missing-secret-agent",
+        capabilities=[cap],
+        spectrum={"level": "mid", "services": ["audit"]},
+    )
+
+    with pytest.raises(SecretNotFoundError, match="env:SECOND_MISSING"):
+        with ag.session(export=False, secret_broker=broker) as run:
+            host = SkillwareHost(run._session)
+            host.register(MockSkill("dual", {"dual": lambda args: args}))
+            host.execute("dual", "dual", {"capability_id": "two-keys", "op": "run"})
+
+    kinds = [e.kind for e in run._session.spine.stream()]
+    assert "tool.error" in kinds
+    err_evt = next(e for e in run._session.spine.stream() if e.kind == "tool.error")
+    assert err_evt.payload.get("error") == "secret_broker_unresolved"
+    assert err_evt.payload.get("secret_ref") == "env:SECOND_MISSING"
+
+
+def test_parse_rejects_duplicate_inject_as():
+    with pytest.raises(CapabilityConfigError, match="duplicate inject target"):
+        parse_capabilities(
+            [
+                {
+                    "id": "dup",
+                    "tool": "op",
+                    "inject": [
+                        {"ref": "env:K1", "as": "token"},
+                        {"ref": "env:K2", "as": "token"},
+                    ],
+                }
+            ],
+            strict=True,
+        )
+
+
+def test_parse_rejects_both_secret_and_inject():
+    with pytest.raises(CapabilityConfigError, match="cannot declare both"):
+        parse_capabilities(
+            [
+                {
+                    "id": "both",
+                    "tool": "op",
+                    "secret": {"ref": "env:K1"},
+                    "inject": [{"ref": "env:K2", "as": "k2"}],
+                }
+            ],
+            strict=True,
+        )
+
+
+def test_strict_args_with_multi_inject():
+    broker = MapSecretBroker({"env:K1": "live_val_1", "env:K2": "live_val_2"})
+    cap = {
+        "id": "strict-multi",
+        "tool": "strict_tool",
+        "allowed": {"mode": "fast"},
+        "strict_args": True,
+        "inject": [
+            {"ref": "env:K1", "as": "k1"},
+            {"ref": "env:K2", "as": "headers.Auth"},
+        ],
+    }
+    ag = agent("strict-agent", capabilities=[cap], spectrum={"level": "mid", "services": ["audit"]})
+
+    with ag.session(export=False, secret_broker=broker) as run:
+        host = SkillwareHost(run._session)
+        host.register(MockSkill("strict", {"strict_tool": lambda args: {"ok": True}}))
+        res = host.execute(
+            "strict",
+            "strict_tool",
+            {"capability_id": "strict-multi", "mode": "fast", "headers": {}},
+        )
+        assert res == {"ok": True}
+
+        with pytest.raises(ConstraintViolation, match="rejects extra args"):
+            host.execute(
+                "strict",
+                "strict_tool",
+                {"capability_id": "strict-multi", "mode": "fast", "unwanted": "boom"},
+            )
+
+
+def test_cli_agent_set_multi_inject(run_aura):
+    create = run_aura("agent", "create", "multi-cli", "--ref", "acme/multi-cli")
+    assert create.returncode == 0
+
+    caps_json = json.dumps(
+        [
+            {
+                "id": "aws-s3",
+                "tool": "s3_fetch",
+                "allowed": {"bucket": "finance"},
+                "inject": [
+                    {"ref": "env:AWS_KEY", "as": "aws_access_key_id"},
+                    {"ref": "env:AWS_SECRET", "as": "aws_secret_access_key"},
+                ],
+            }
+        ]
+    )
+    result = run_aura(
+        "agent",
+        "set",
+        "multi-cli",
+        "--capabilities-json",
+        caps_json,
+    )
+    assert result.returncode == 0
+    profile = json.loads(result.stdout)
+    assert profile["capabilities"][0]["id"] == "aws-s3"
+    assert len(profile["capabilities"][0]["inject"]) == 2
+    assert profile["capabilities"][0]["inject"][0]["ref"] == "env:AWS_KEY"
+    assert profile["capabilities"][0]["inject"][1]["ref"] == "env:AWS_SECRET"
+
+    show = run_aura("agent", "show", "multi-cli")
+    assert show.returncode == 0
+    shown = json.loads(show.stdout)
+    assert shown["capabilities_summary"]["count"] == 1
+    assert "env:AWS_KEY" in shown["capabilities_summary"]["secret_refs"]
+    assert "env:AWS_SECRET" in shown["capabilities_summary"]["secret_refs"]
