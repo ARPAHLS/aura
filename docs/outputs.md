@@ -30,6 +30,8 @@ CLI: `aura report show <session_id>`, `aura report show <session_id> --json`, `a
 
 **Spine events (schema):** When `variables.schema_refs` or `schema_check` rules are active, `session.open` spectrum summary includes a `schema` block (`refs`, `active_rules`, `auto_enforced`). Malformed `tool.call` args or `tool.result` payloads emit `constraint.violated`. Audit finding: **`SCHEMA_VIOLATION`**. Conformance includes a `schema` check on close. See [aura-levels.md](aura-levels.md#profile-spec).
 
+**Spine events (middleware & PII masking):** When sequencer steps or boundaries execute middleware (e.g. `middleware.pii_mask` [#58](https://github.com/ARPAHLS/aura/issues/58)), the session emits `middleware.applied` containing detection counts (`entities_detected`), total redactions, strategy (`redact`, `mask`, `pseudonymize`), and modified fields. Raw PII is strictly forbidden from the spine. Audit scorecard records `scorecard.middleware = {"applied": count, "pii_redactions": count}` and surfaces finding **`PII_MASKED`** (`severity: info`). See [sequencer.md](sequencer.md#middleware-pii-masking).
+
 ---
 
 ## Audit report (summary JSON)

@@ -108,17 +108,93 @@ Override spec per session: `agent.session(sequencer={...})`.
 
 ---
 
-## Middleware stack (roadmap)
+## Middleware & PII Masking
 
-Ordered operations applied per step or per model request — schema exists; handlers are stubs:
+The sequencer middleware stack supports ordered operations applied at step boundaries or invoked as explicit pipeline steps ([#58](https://github.com/ARPAHLS/aura/issues/58)).
+
+### Two-Tier Architecture
+
+1. **Tier 1 (Built-in, Zero Dependencies):**
+   - High-throughput regex + algorithmic validation.
+   - **Credit Card Luhn Validation:** Eliminates false positives by verifying card checksums algorithmically before masking.
+   - **Global Phone Coverage:** Detects E.164 international notation (`+44 7911 123456`), compact E.164 (`+447911123456`), national formats with trunk prefixes (`07911 123456`, `+49 (0)30 1234567`), EU/UK/Greek/Japanese/Indian patterns, and North American NANP 10-digit and 7-digit numbers without false matches on dates or serial IDs.
+   - **Supported Entity Detectors:** RFC 5322 Email, E.164 / International / NANP Phone, Credit Card, SSN, IPv4 / IPv6, API Keys / JWTs / UUIDs, and IBAN.
+2. **Tier 2 (Pluggable NER Provider Protocol & Callables):**
+   - Implements `PiiMaskerProvider` or simple Python callables for contextual NLP/NER models (e.g. Skillware NER, ARPA `micro-f1-mask` 270M, Microsoft Presidio).
+   - Register named providers via `register_pii_provider("micro-f1-mask", model_or_fn)` and reference them in YAML configs via `provider: micro-f1-mask`.
+   - **Fault-Tolerant Fallback (`on_error`):** Configurable error handling (`fallback`, `fail`, `pass`). In `fallback` mode (default), if an external ML model or service times out, the engine automatically falls back to Tier 1 native regex masking to ensure zero data leakage.
+
+### Masking Strategies
+
+| Strategy | Description | Example Output |
+|---|---|---|
+| `redact` (default) | Complete redaction with entity type tag | `[EMAIL]`, `[CREDIT_CARD]` |
+| `mask` | Partial obfuscation preserving operational format and international country prefix | `a***e@domain.com`, `+44***-***-3456` |
+| `pseudonymize` / `tokenize` | Deterministic, session-scoped pseudonym tokens preserving entity equivalence across agent reasoning | `<EMAIL_REF_a1b2c3>` |
+
+### Usage Patterns
+
+#### A. Step Boundary Middleware (Automatic Inbound / Outbound Sanitization)
+
+Attach middleware policies via `MiddlewarePolicy` to automatically sanitize step inputs and outputs:
 
 ```yaml
 middleware:
   scope: per_step
   order:
-    - op: firewall
-    - op: pii_mask
+    - op: middleware.pii_mask
+      config:
+        strategy: redact
+        entities: [all]
+        allowlist: ["support@company.com"]
 ```
+
+#### B. Discrete Pipeline Step Op
+
+Execute explicit PII sanitization in the pipeline DAG:
+
+```yaml
+steps:
+  - id: ingest_untrusted_data
+    type: skill
+    ref: db_query
+  - id: sanitize_customer_pii
+    type: op
+    ref: middleware.pii_mask
+    config:
+      source_step: ingest_untrusted_data
+      strategy: pseudonymize
+  - id: summarize_public
+    type: prompt
+    ref: public_summary
+```
+
+### Strict Mode & Spectrum Containment
+
+Setting `strict: true` configures the middleware to raise `ConstraintViolation` when sensitive PII is encountered, immediately halting unapproved data flows at high spectrum postures.
+
+### Audit Spine Telemetry & Zero Leakage Guarantee
+
+When masking occurs, the session emits `middleware.applied` on the audit spine. The audit spine **never** records raw secret or PII values:
+
+```json
+{
+  "op": "middleware.pii_mask",
+  "step_id": "sanitize_customer_pii",
+  "scope": "per_step",
+  "direction": "outbound",
+  "strategy": "redact",
+  "entities_detected": {
+    "email": 2,
+    "phone": 1,
+    "credit_card": 1
+  },
+  "total_redactions": 4,
+  "fields_modified": ["customer.email", "billing.card"]
+}
+```
+
+The session audit report captures `scorecard.middleware = {"applied": count, "pii_redactions": count}` and surfaces the **`PII_MASKED`** finding (`severity: info`).
 
 See [middleware-policy.schema.json](../spec/middleware-policy.schema.json).
 

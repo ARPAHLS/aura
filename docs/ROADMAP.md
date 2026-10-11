@@ -13,7 +13,7 @@ Shipped work stays in [CHANGELOG.md](../CHANGELOG.md). This file lists what is *
 | **v0.3** | ULID + `agent_ref`, audit report, hash chain, OTel export (+ promoted attrs), compare CLI, ToolHost reference coat |
 | **v0.3.4** | Onboarding guide, `report show`, flat core examples, Monitor/Break presets, capstone + examples 05–08 |
 | **v0.3.5** | Verified operator identity, session invariants, integrations index + Ollama loop, spectrum enforcement, goal/SLO observers, audit pipeline example, docs sweep, comparison refresh |
-| **Unreleased** | See [CHANGELOG `#unreleased`](../CHANGELOG.md#unreleased): escalation playbooks ([#47](https://github.com/ARPAHLS/aura/issues/47)), verified identity via spectrum ([#73](https://github.com/ARPAHLS/aura/issues/73)), `spectrum.services[]` + Limit preset ([#77](https://github.com/ARPAHLS/aura/issues/77)), capability broker ([#48](https://github.com/ARPAHLS/aura/issues/48)) |
+| **Unreleased** | See [CHANGELOG `#unreleased`](../CHANGELOG.md#unreleased): escalation playbooks ([#47](https://github.com/ARPAHLS/aura/issues/47)), verified identity via spectrum ([#73](https://github.com/ARPAHLS/aura/issues/73)), `spectrum.services[]` + Limit preset ([#77](https://github.com/ARPAHLS/aura/issues/77)), capability broker ([#48](https://github.com/ARPAHLS/aura/issues/48)), capability inject multiple secrets and headers ([#86](https://github.com/ARPAHLS/aura/issues/86)), sequencer middleware and PII masking ([#58](https://github.com/ARPAHLS/aura/issues/58)) |
 
 ---
 
@@ -23,7 +23,8 @@ Shipped work stays in [CHANGELOG.md](../CHANGELOG.md). This file lists what is *
 |---|---|
 | ~~Constitution / schema checks at high bind~~ | Shipped ([#78](https://github.com/ARPAHLS/aura/issues/78)) — `variables.schema_refs`, `schema_check` rules, spectrum auto-wire at high/full |
 | Brain / memory adapters | Plug models and retention without core changes |
-| Middleware ops | PII mask, compress — schema exists |
+| ~~Middleware ops (PII mask)~~ | Shipped ([#58](https://github.com/ARPAHLS/aura/issues/58)) — Sequencer `middleware.pii_mask` op, step boundary middleware, two-tier regex/NER, pseudonymization |
+| Middleware ops (other) | compress, transform — schema exists |
 | Signed audit packs | WORM / external sink hooks |
 | HTTP fleet API | Remote session management |
 | DID / VC operator adapter | Decentralized identity enrichment (follow-up to #55) |

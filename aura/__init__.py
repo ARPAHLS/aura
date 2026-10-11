@@ -26,6 +26,12 @@ from aura.api import (
     MapSecretBroker,
     CallableSecretBroker,
     ChainSecretBroker,
+    MiddlewarePolicy,
+    MiddlewareStack,
+    PiiMasker,
+    CallablePiiMasker,
+    PiiMaskConfig,
+    PiiMaskResult,
 )
 
 __version__ = "0.3.5"
@@ -57,4 +63,10 @@ __all__ = [
     "MapSecretBroker",
     "CallableSecretBroker",
     "ChainSecretBroker",
+    "MiddlewarePolicy",
+    "MiddlewareStack",
+    "PiiMasker",
+    "CallablePiiMasker",
+    "PiiMaskConfig",
+    "PiiMaskResult",
 ]

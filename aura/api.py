@@ -29,6 +29,13 @@ from aura.exporters.jsonl import build_session_summary, export_session
 from aura.identity.bind import IdentityOptions
 from aura.identity.errors import IdentityRequiredError, IdentityVerificationError
 from aura.identity.protocol import OperatorIdentityAdapter
+from aura.sequencer.middleware import MiddlewarePolicy, MiddlewareStack
+from aura.sequencer.pii_mask import (
+    CallablePiiMasker,
+    PiiMaskConfig,
+    PiiMaskResult,
+    PiiMasker,
+)
 
 
 @dataclass
@@ -57,6 +64,17 @@ class SessionRun:
         self, kind: str, payload: dict[str, Any] | None = None, *, step_id: str | None = None
     ) -> dict[str, Any]:
         return self._session.emit(kind, payload, step_id=step_id)
+
+    @property
+    def state(self) -> dict[str, Any]:
+        return self._session.state
+
+    @property
+    def spine(self) -> Any:
+        return self._session.spine
+
+    def get_events(self) -> list[Any]:
+        return self._session.spine.stream() if self._session.spine else []
 
     def approve(self, request_id: str, *, principal: str | None = None) -> None:
         self._session.approve(request_id, principal=principal)
@@ -250,4 +268,10 @@ __all__ = [
     "MapSecretBroker",
     "CallableSecretBroker",
     "ChainSecretBroker",
+    "MiddlewarePolicy",
+    "MiddlewareStack",
+    "PiiMasker",
+    "CallablePiiMasker",
+    "PiiMaskConfig",
+    "PiiMaskResult",
 ]

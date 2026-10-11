@@ -9,20 +9,25 @@ from aura.sequencer.step import SequencerStep
 
 def load_steps(spec: dict[str, Any] | None) -> list[SequencerStep]:
     raw = (spec or {}).get("steps") or []
-    return [
-        SequencerStep(
-            id=s["id"],
-            step_type=s["type"],
-            ref=s.get("ref"),
-            version=s.get("version"),
-            depends_on=list(s.get("depends_on") or []),
-            retry=dict(s.get("retry") or {}),
-            gates=list(s.get("gates") or []),
-            when=dict(s.get("when") or {}),
-            config=dict(s.get("config") or {}),
-        )
-        for s in raw
-    ]
+    out = []
+    for s in raw:
+        if isinstance(s, SequencerStep):
+            out.append(s)
+        else:
+            out.append(
+                SequencerStep(
+                    id=s["id"],
+                    step_type=s["type"],
+                    ref=s.get("ref"),
+                    version=s.get("version"),
+                    depends_on=list(s.get("depends_on") or []),
+                    retry=dict(s.get("retry") or {}),
+                    gates=list(s.get("gates") or []),
+                    when=dict(s.get("when") or {}),
+                    config=dict(s.get("config") or {}),
+                )
+            )
+    return out
 
 
 def merge_sequencer_spec(
