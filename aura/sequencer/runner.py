@@ -31,7 +31,66 @@ class DefaultStepBackend:
         return {"status": "declared", "ref": step.ref, "type": "skill"}
 
     def run_op(self, step: SequencerStep) -> Any:
-        op = step.ref or step.config.get("op", "noop")
+        raw_op = step.ref or step.config.get("op") or "noop"
+        op: str = str(raw_op).strip()
+        clean_op: str = op.lower()
+        if clean_op == "echo":
+            self.session.emit(
+                "sequencer.op",
+                {"op": op, "config": step.config},
+                step_id=step.id,
+            )
+            return dict(step.config)
+
+        if clean_op in ("middleware.pii_mask", "pii_mask"):
+            from aura.core.constraints import ConstraintViolation
+            from aura.sequencer.pii_mask import PiiMasker
+
+            config = dict(step.config)
+            source_step = config.get("source_step")
+            seq_state = self.session.state.get("sequencer") or {}
+            raw_data = None
+            if source_step:
+                if source_step in seq_state:
+                    raw_data = seq_state[source_step]
+                elif source_step in self.session.state.get("steps", {}):
+                    raw_data = self.session.state["steps"][source_step].get("result")
+            elif "data" in config:
+                raw_data = config["data"]
+            elif "args" in config:
+                raw_data = config["args"]
+            elif seq_state:
+                last_step_id = list(seq_state.keys())[-1]
+                raw_data = seq_state[last_step_id]
+
+            masker = PiiMasker()
+            res = masker.mask(raw_data, config, session_state=self.session.state)
+
+            self.session.emit(
+                "sequencer.op",
+                {"op": op, "config": step.config},
+                step_id=step.id,
+            )
+            self.session.emit(
+                "middleware.applied",
+                {
+                    "op": "middleware.pii_mask",
+                    "middleware": "middleware.pii_mask",
+                    "step_id": step.id,
+                    "scope": "step_op",
+                    "direction": "step",
+                    "strategy": config.get("strategy", "redact"),
+                    "entities_detected": res.entities_detected,
+                    "total_redactions": res.total_redactions,
+                    "redacted_count": res.total_redactions,
+                    "fields_modified": res.fields_modified,
+                },
+                step_id=step.id,
+            )
+            if config.get("strict") and res.total_redactions > 0:
+                raise ConstraintViolation(f"PII detected by {op} ({res.total_redactions} entities)")
+            return res.data
+
         self.session.emit(
             "sequencer.op",
             {"op": op, "config": step.config},
@@ -77,32 +136,89 @@ class SequencerRunner:
 
     def __init__(
         self,
-        session: Session,
+        session: Any = None,
         backend: StepBackend | None = None,
         spec: dict[str, Any] | None = None,
+        *,
+        steps: list[SequencerStep] | None = None,
+        middleware_stack: Any | None = None,
     ) -> None:
-        self.session = session
-        self.backend = backend or DefaultStepBackend(session)
-        self.spec = spec or {}
+        real_session = getattr(session, "_session", session)
+        self.session = real_session
+        self.backend = backend or (DefaultStepBackend(real_session) if real_session else None)
+        default_spec = (
+            getattr(real_session, "sequencer_spec", None)
+            or getattr(getattr(real_session, "profile", None), "sequencer", None)
+            or {}
+        )
+        self.spec = dict(spec or default_spec)
+        if steps is not None:
+            self.spec["steps"] = steps
+        self._custom_middleware_stack = middleware_stack
 
-    def run(self, spec: dict[str, Any] | None = None) -> dict[str, Any]:
-        steps = load_steps(spec or self.spec)
+    def run(
+        self,
+        spec_or_session: Any = None,
+        spec: dict[str, Any] | None = None,
+    ) -> dict[str, Any]:
+        target_spec = spec
+        if hasattr(spec_or_session, "_session"):
+            self.session = spec_or_session._session
+            if self.backend is None:
+                self.backend = DefaultStepBackend(self.session)
+        elif isinstance(spec_or_session, Session):
+            self.session = spec_or_session
+            if self.backend is None:
+                self.backend = DefaultStepBackend(self.session)
+        elif isinstance(spec_or_session, dict):
+            target_spec = spec_or_session
+
+        merged_spec = target_spec or self.spec
+        steps = load_steps(merged_spec)
         if not steps:
-            return {"completed": [], "steps": 0}
+            return {"completed": [], "steps": 0, "success": True}
+
+        from aura.sequencer.middleware import MiddlewarePolicy, MiddlewareStack
+
+        middleware_policy = (
+            MiddlewarePolicy.from_manifest(merged_spec)
+            or MiddlewarePolicy.from_manifest(getattr(self.session, "manifest", None) or {})
+            or (
+                MiddlewarePolicy.from_manifest(self.session.profile.sequencer)
+                if self.session
+                and getattr(self.session, "profile", None)
+                and getattr(self.session.profile, "sequencer", None)
+                else None
+            )
+        )
+        middleware_stack = self._custom_middleware_stack or (
+            MiddlewareStack(middleware_policy) if middleware_policy else None
+        )
 
         completed: list[str] = []
-        for step in steps:
-            self._validate_dependencies(step, completed)
-            skip_reason = self._skip_reason(step)
-            if skip_reason:
-                result = self._skip_step(step, skip_reason)
-            else:
-                result = self._run_step(step)
-            self.session.state.setdefault("sequencer", {})[step.id] = result
-            completed.append(step.id)
+        try:
+            for step in steps:
+                self._validate_dependencies(step, completed)
+                skip_reason = self._skip_reason(step)
+                if skip_reason:
+                    result = self._skip_step(step, skip_reason)
+                else:
+                    result = self._run_step(step, middleware_stack=middleware_stack)
+                self.session.state.setdefault("sequencer", {})[step.id] = result
+                self.session.state.setdefault("steps", {})[step.id] = {"result": result}
+                completed.append(step.id)
 
-        self.session.emit("sequencer.complete", {"steps": completed})
-        return {"completed": completed, "steps": len(completed)}
+            self.session.emit("sequencer.complete", {"steps": completed})
+            return {"completed": completed, "steps": len(completed), "success": True}
+        except ApprovalRequired:
+            raise
+        except Exception as exc:
+            return {
+                "completed": completed,
+                "steps": len(completed),
+                "success": False,
+                "error": str(exc),
+            }
 
     def _skip_reason(self, step: SequencerStep) -> str | None:
         when = step.when
@@ -143,9 +259,12 @@ class SequencerRunner:
         if missing:
             raise RuntimeError(f"Step {step.id} depends on incomplete steps: {missing}")
 
-    def _run_step(self, step: SequencerStep) -> Any:
+    def _run_step(self, step: SequencerStep, *, middleware_stack: Any | None = None) -> Any:
         for gate in step.gates:
             self._apply_gate(gate, step)
+
+        if middleware_stack is not None and step.config:
+            step.config = middleware_stack.run_inbound(step.config, session=self.session, step=step)
 
         max_attempts = int(step.retry.get("max", 0)) + 1
         backoff = step.retry.get("backoff", "none")
@@ -159,6 +278,8 @@ class SequencerRunner:
             )
             try:
                 result = self._execute_step(step)
+                if middleware_stack is not None:
+                    result = middleware_stack.run_outbound(result, session=self.session, step=step)
                 self.session.emit(
                     "sequencer.step.end",
                     {"status": "ok", "attempt": attempt + 1},

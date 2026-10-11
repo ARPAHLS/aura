@@ -10,10 +10,15 @@ RuleHandler = Callable[["ConstraintContext"], "ConstraintResult | None"]
 
 
 class ConstraintViolation(Exception):
-    def __init__(self, message: str, rule: dict[str, Any], event: dict[str, Any]) -> None:
+    def __init__(
+        self,
+        message: str,
+        rule: dict[str, Any] | None = None,
+        event: dict[str, Any] | None = None,
+    ) -> None:
         super().__init__(message)
-        self.rule = rule
-        self.event = event
+        self.rule = rule or {}
+        self.event = event or {}
 
 
 class ApprovalRequired(Exception):

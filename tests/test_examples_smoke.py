@@ -26,6 +26,7 @@ EXPECTED_EXAMPLE_DIRS = (
     "12-escalation-playbooks",
     "13-operator-identity",
     "14-capability-broker",
+    "15-sequencer-pii-mask",
 )
 
 

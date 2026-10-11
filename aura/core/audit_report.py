@@ -30,15 +30,18 @@ class AuditReport:
 class AuditReportBuilder:
     """Rule-based narrative report from spine + conformance."""
 
+    @classmethod
     def build(
-        self,
+        cls,
         spine: AuditSpine,
-        conformance: ConformanceReport,
+        conformance: ConformanceReport | None = None,
         *,
         agent_ref: str | None = None,
         policy_version: str | None = None,
     ) -> AuditReport:
         events = spine.stream()
+        if conformance is None:
+            conformance = ConformanceReport(passed=True, event_count=len(events))
         tool_calls = [e for e in events if e.kind == "tool.call"]
         tool_denied = [e for e in events if e.kind == "constraint.violated"]
         approvals = [e for e in events if e.kind == "constraint.approved"]
@@ -82,6 +85,15 @@ class AuditReportBuilder:
             "sequencer": {
                 "steps_started": len(seq_starts),
                 "step_errors": len(seq_errors),
+            },
+            "middleware": {
+                "applied": sum(1 for e in events if e.kind == "middleware.applied"),
+                "pii_redactions": sum(
+                    int((e.payload or {}).get("redacted_count", 0))
+                    for e in events
+                    if e.kind == "middleware.applied"
+                    and (e.payload or {}).get("middleware") in ("middleware.pii_mask", "pii_mask")
+                ),
             },
             "goal_slo": {
                 "goal_drifts": sum(1 for e in events if e.kind == "conformance.drift"),
@@ -310,6 +322,32 @@ class AuditReportBuilder:
                             "labels are acceptable."
                         )
 
+        pii_events = [
+            e
+            for e in events
+            if e.kind == "middleware.applied"
+            and (e.payload or {}).get("middleware") in ("middleware.pii_mask", "pii_mask")
+        ]
+        total_pii_redactions = sum(
+            int((e.payload or {}).get("redacted_count", 0)) for e in pii_events
+        )
+        if total_pii_redactions > 0:
+            findings.append(
+                {
+                    "severity": "info",
+                    "code": "PII_MASKED",
+                    "message": (
+                        f"Sanitized {total_pii_redactions} PII occurrence(s) across sequencer steps"
+                    ),
+                    "redactions": total_pii_redactions,
+                    "applied_count": len(pii_events),
+                }
+            )
+            recommendations.append(
+                "Sequencer sanitized sensitive data via middleware.pii_mask. "
+                "Verify upstream data sources to avoid transmitting unmasked PII."
+            )
+
         chain_ok = verify_hash_chain(spine)
         if chain_ok is False:
             findings.append(
@@ -323,9 +361,10 @@ class AuditReportBuilder:
                 "Treat this session log as tampered or corrupted; re-run the session."
             )
 
-        if conformance.passed and not findings:
+        non_info_findings = [f for f in findings if f.get("severity") != "info"]
+        if conformance.passed and not non_info_findings:
             verdict = "pass"
-        elif conformance.passed and findings:
+        elif conformance.passed and non_info_findings:
             verdict = "warn"
         else:
             verdict = "fail"

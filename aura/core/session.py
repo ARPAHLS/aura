@@ -403,6 +403,9 @@ class Session:
         self._goal_reached = True
         self.emit("task.complete", result or {})
 
+    def get_events(self) -> list[Any]:
+        return self.spine.stream() if self.spine else []
+
     @property
     def log_path(self) -> Path | None:
         return self._log_path
