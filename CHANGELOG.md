@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.6] - 2026-10-16
+
 ### Fixed
 
 - **Stale agent name aliases** — renaming or archiving an agent now removes previous name aliases from the registry.
@@ -221,7 +223,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - v0.1 is a **runnable kernel**, not the full manifesto stack.
 - Type plugin registry (`aura/core/registry.py`) retained for future adapters; not required to run basic sessions.
 
-[Unreleased]: https://github.com/ARPAHLS/aura/compare/v0.3.5...HEAD
+[Unreleased]: https://github.com/ARPAHLS/aura/compare/v0.3.6...HEAD
+[0.3.6]: https://github.com/ARPAHLS/aura/compare/v0.3.5...v0.3.6
 [0.3.5]: https://github.com/ARPAHLS/aura/compare/v0.3.4...v0.3.5
 [0.3.4]: https://github.com/ARPAHLS/aura/compare/v0.3.3...v0.3.4
 [0.3.3]: https://github.com/ARPAHLS/aura/compare/v0.3.2...v0.3.3
