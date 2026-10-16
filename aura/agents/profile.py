@@ -14,6 +14,17 @@ def _capabilities_from_dict(raw: Any) -> list[dict[str, Any]]:
     return capabilities_to_public(caps)
 
 
+def _sanitize_for_json(obj: Any) -> Any:
+    """Recursively convert un-serializable callables into safe descriptors."""
+    if callable(obj):
+        return f"<callable {getattr(obj, '__name__', 'unnamed')}>"
+    if isinstance(obj, dict):
+        return {k: _sanitize_for_json(v) for k, v in obj.items()}
+    if isinstance(obj, list):
+        return [_sanitize_for_json(v) for v in obj]
+    return obj
+
+
 @dataclass
 class AgentProfile:
     """Persistent agent record."""
@@ -48,7 +59,7 @@ class AgentProfile:
             "rules": self.rules,
             "skills": self.skills,
             "sequencer": self.sequencer,
-            "observers": self.observers,
+            "observers": _sanitize_for_json(self.observers),
             "escalations": self.escalations,
             "spectrum": self.spectrum,
             "capabilities": self.capabilities,
