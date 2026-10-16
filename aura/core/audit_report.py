@@ -99,6 +99,14 @@ class AuditReportBuilder:
                 "goal_drifts": sum(1 for e in events if e.kind == "conformance.drift"),
                 "schedule_misses": sum(1 for e in events if e.kind == "slo.missed"),
             },
+            "observers": {
+                "alerts": sum(1 for e in events if e.kind == "observer.alert"),
+                "loop_cycles": sum(
+                    1
+                    for e in events
+                    if e.kind == "observer.alert" and (e.payload or {}).get("pattern")
+                ),
+            },
             "events": conformance.event_count,
         }
 
@@ -275,6 +283,27 @@ class AuditReportBuilder:
                         "event_id": event.event_id,
                     }
                 )
+            if event.kind == "observer.alert":
+                payload = event.payload or {}
+                pattern = payload.get("pattern")
+                if pattern:
+                    findings.append(
+                        {
+                            "severity": "warn",
+                            "code": "COGNITIVE_CYCLE_DETECTED",
+                            "message": payload.get("remedial_directive")
+                            or f"Observer loop cycle detected: {pattern}",
+                            "tool": payload.get("tool"),
+                            "pattern": pattern,
+                            "signature": payload.get("signature"),
+                            "cycle_entry_hash": payload.get("cycle_entry_hash"),
+                            "cycle_recurrence_hash": payload.get("cycle_recurrence_hash"),
+                            "event_id": event.event_id,
+                        }
+                    )
+                    directive = payload.get("remedial_directive")
+                    if directive and directive not in recommendations:
+                        recommendations.append(directive)
 
         open_evt = next((e for e in events if e.kind == "session.open"), None)
         spectrum = (open_evt.payload or {}).get("spectrum") if open_evt else None

@@ -138,11 +138,30 @@ config:
 
 ### break
 
+Detects runaway loops, multi-step action cycles, and cognitive deadlocks within a sliding window.
+
 ```yaml
 config:
-  max_identical_intents: 5
-  window_seconds: 60
+  window_size: 8                     # rolling trajectory window (default 8)
+  max_identical_actions: 3           # 1-cycle: consecutive identical tool + normalized args
+  max_oscillation_cycles: 2          # 2-cycle: alternating oscillation (A <-> B <-> A <-> B)
+  max_choreography_cycles: 2         # 3-cycle: execution choreography (A -> B -> C -> A -> B -> C)
+  max_error_churn: 3                 # consecutive identical error code / fingerprint churn
+  thought_similarity_threshold: 0.85 # reasoning text similarity threshold across turns
+  max_thought_inertia: 3             # consecutive turns with high thought similarity
+  burn_velocity_guard: true          # FinOps guard: track token churn during cycles
+  max_cycle_token_waste: 2000        # token threshold tripping burn rate alert
+  max_identical_intents: 5           # legacy global threshold (0 = disabled)
+  action: alert_only                 # alert_only (default) | pause | circuit_break
+  mode: default                      # default | watchdog (Tier 2 model/heuristic hook)
 ```
+
+**Spine output:** `observer.alert` (`type: loop_cycle_detected` or `repeated_tool_intent`), enriched with:
+- `pattern`: `ACTION_FIXATION`, `OSCILLATION_CYCLE`, `CHOREOGRAPHY_CYCLE`, `ERROR_STATUS_CHURN`, `REASONING_INERTIA`
+- `remedial_directive`: Actionable prompt-steering recommendation to break the deadlock
+- `cycle_entry_hash` & `cycle_recurrence_hash`: Immutable SHA-256 spine hashes providing non-repudiable audit proofs of algorithmic deadlock (EU AI Act Art. 14)
+- `churn_tokens_estimate` & `burn_rate_spike`: FinOps cost indicators
+
 
 ### limit
 

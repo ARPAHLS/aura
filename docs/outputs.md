@@ -32,6 +32,9 @@ CLI: `aura report show <session_id>`, `aura report show <session_id> --json`, `a
 
 **Spine events (middleware & PII masking):** When sequencer steps or boundaries execute middleware (e.g. `middleware.pii_mask` [#58](https://github.com/ARPAHLS/aura/issues/58)), the session emits `middleware.applied` containing detection counts (`entities_detected`), total redactions, strategy (`redact`, `mask`, `pseudonymize`), and modified fields. Raw PII is strictly forbidden from the spine. Audit scorecard records `scorecard.middleware = {"applied": count, "pii_redactions": count}` and surfaces finding **`PII_MASKED`** (`severity: info`). See [sequencer.md](sequencer.md#middleware-pii-masking).
 
+**Spine events (break preset & observer alerts):** When observer presets (such as `break` [#93](https://github.com/ARPAHLS/aura/issues/93)) detect runaway cycles or repetition, the session emits `observer.alert` containing pattern (`ACTION_FIXATION`, `OSCILLATION_CYCLE`, `CHOREOGRAPHY_CYCLE`, `ERROR_STATUS_CHURN`, `REASONING_INERTIA`), structured `remedial_directive`, and non-repudiable cryptographic hashes (`cycle_entry_hash`, `cycle_recurrence_hash`). Audit scorecard records `scorecard.observers = {"alerts": count, "loop_cycles": count}` and surfaces finding **`COGNITIVE_CYCLE_DETECTED`** (`severity: warn`). See [observers.md](observers.md#break).
+
+
 ---
 
 ## Audit report (summary JSON)
