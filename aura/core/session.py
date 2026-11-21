@@ -100,6 +100,7 @@ class Session:
         identity_options: IdentityOptions | None = None,
         escalation_handler: Any | None = None,
         secret_broker: Any | None = None,
+        coat_ops: Any | None = None,
     ) -> None:
         if self._closed:
             raise SessionClosedError(self.session_id)
@@ -138,7 +139,7 @@ class Session:
         spectrum_meta["verified_identity_required"] = policy.required
         spectrum_meta["verified_identity_required_source"] = policy.source
         escalation_meta = escalation_summary(self.profile)
-        attach_escalation_engine(self, custom_handler=escalation_handler)
+        attach_escalation_engine(self, custom_handler=escalation_handler, coat_ops=coat_ops)
         if escalation_meta.get("rule_count"):
             spectrum_meta["escalations"] = escalation_meta
         capability_meta = attach_capability_state(self, secret_broker)

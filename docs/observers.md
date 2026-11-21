@@ -112,11 +112,27 @@ escalations:
 | `alert` / `alert:msg` | `observer.note` (`type: escalation_alert`) | lightweight in-session signal |
 | `nudge` / `nudge:msg` | `membrane.nudge` | host/brain may consume message |
 | `pause` | `escalation.fired` + `escalation_pause` rule | requires spectrum ≥ mid; unblock via `approve()` |
-| `email:addr` | `escalation.email` | stub delivery — coat op [#49](https://github.com/ARPAHLS/aura/issues/49) |
-| `wake` | `escalation.wake` | field-service stub |
+| `email:addr` | `escalation.email` | delivers via `coat_ops` (webhook/SMTP/callable) or records `delivery: "stub"` ([#49](https://github.com/ARPAHLS/aura/issues/49)) |
+| `wake` | `escalation.wake` | delivers via `coat_ops` (webhook/callable) or records `delivery: "stub"` ([#49](https://github.com/ARPA/aura/issues/49)) |
 | `custom` | via `session(escalation_handler=...)` | programmatic hook |
 
 `session.open` includes `spectrum.escalations` (rule summary) and `spectrum.services_activation` (`activated`, `skipped_explicit`, `unknown`) when configured. Audit report finding `ESCALATION_FIRED` when `escalation.fired` is on the spine. See [outputs.md](outputs.md), [aura-levels.md](aura-levels.md).
+
+#### Coat ops delivery & membrane scan ([#49](https://github.com/ARPAHLS/aura/issues/49))
+
+By default, `email` and `wake` emit `delivery: "stub"`. Configure live delivery per session (`ag.session(coat_ops=...)`), on `profile.variables.coat_ops`, or via `AURA_COAT_WEBHOOK_URL` (+ optional `AURA_COAT_WEBHOOK_SECRET` for HMAC-SHA256 `X-AURA-Signature`):
+
+```python
+from aura import CoatOpRunner, WebhookCoatOp, agent
+
+with ag.session(
+    coat_ops={"webhook": WebhookCoatOp("https://hooks.example.com/aura", hmac_secret="whsec-...")}
+) as run:
+    # Optional membrane-level pre-egress scan on any body (plain Python, LangGraph, Skillware)
+    scan = CoatOpRunner(run._session).scan_input(user_text)
+```
+
+Delivery failures record `delivery: "failed"` and `delivery_error` on the spine without crashing the session. See [example 17](../examples/17-coat-ops-delivery/).
 
 CLI merge (does not drop existing `services` / `service_config`):
 
