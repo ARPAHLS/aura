@@ -4,9 +4,9 @@
 
 <br>
 
-**AURA Harness - A runtime coat for agent loops — audit, policy, and compliance export.**
+**AURA — A verifiable runtime coat and attestation spine for AI agents.**
 
-Run your agent on your env with your tools, AURA proves what happened and stops what shouldn't, without owning your loop or your credentials.
+Run your agent in your environment with your tools. AURA mediates every egress with policy gates, secret/PII redaction, and cost circuit breakers—recording a tamper-evident, offline-verifiable execution record without owning your loop or your credentials.
 
 <br>
 
