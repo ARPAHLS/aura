@@ -13,6 +13,7 @@ Identity fields on export: [trust-paths.md](trust-paths.md). Session-close workf
 | **Audit trail** | `{session_id}.jsonl` | Append-only AuraEvents with causal ids + hash chain |
 | **Summary** | `{session_id}.summary.json` | Metadata, conformance, audit report |
 | **OTel JSONL** | `{session_id}.otel.jsonl` | Span-style records mapped from events; written on close by default and refreshed by `aura export-otel` |
+| **Signed pack** (opt-in) | `{session_id}.pack.json` | Detached HMAC-SHA256 / Ed25519 signature over `chain_root` and artifact SHA-256 digests ([#50](https://github.com/ARPAHLS/aura/issues/50)); verify via `aura verify pack <path>` |
 
 CLI: `aura report show <session_id>`, `aura report show <session_id> --json`, `aura export`, `aura export-otel`, `aura compare`, `aura verify chain <path>`.
 

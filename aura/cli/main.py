@@ -157,6 +157,13 @@ def build_parser() -> argparse.ArgumentParser:
         default=None,
         help="Optional Skillware audit JSONL path for dual-ledger cross-verification",
     )
+    pack_p = verify_sub.add_parser("pack", help="Verify a signed audit pack (.pack.json)")
+    pack_p.add_argument("path", help="Path to a .pack.json manifest file")
+    pack_p.add_argument(
+        "--key",
+        default=None,
+        help="Signing key or SecretBroker ref (defaults to AURA_SIGNING_KEY)",
+    )
 
     return parser
 
@@ -208,7 +215,9 @@ def dispatch(args: argparse.Namespace) -> int:
     if args.command == "verify":
         if args.verify_command == "chain":
             return commands.cmd_verify_chain(args.path, skillware_log=args.skillware_log)
-        print("usage: aura verify chain <path>", file=sys.stderr)
+        if args.verify_command == "pack":
+            return commands.cmd_verify_pack(args.path, key=args.key)
+        print("usage: aura verify chain|pack <path>", file=sys.stderr)
         return 1
     if args.command is None:
         if args.help:

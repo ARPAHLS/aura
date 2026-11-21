@@ -38,6 +38,8 @@ from aura.api import (
     CoatOpRunner,
     SmtpCoatOp,
     WebhookCoatOp,
+    SignedPackError,
+    verify_audit_pack,
 )
 
 __version__ = "0.3.6"
@@ -81,4 +83,6 @@ __all__ = [
     "CoatOpRunner",
     "SmtpCoatOp",
     "WebhookCoatOp",
+    "SignedPackError",
+    "verify_audit_pack",
 ]

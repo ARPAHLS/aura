@@ -119,6 +119,8 @@ Integration tests **fail** (not skip) if Ollama or Skillware is missing — that
 | `test_skillware_06_stress_sim.py` | `scripts/aura_skillware_06_stress_sim.py` gate (12 scenarios) |
 | `test_coat_ops.py` | AURA-native coat ops: webhook/SMTP/callable delivery and `CoatOpRunner` ([#49](https://github.com/ARPAHLS/aura/issues/49)) |
 | `test_coat_ops_stress_sim.py` | `scripts/aura_coat_ops_stress_sim.py` gate (6 scenarios) |
+| `test_signed_pack.py` | Signed audit pack export (HMAC-SHA256, Ed25519) and `aura verify pack` ([#50](https://github.com/ARPAHLS/aura/issues/50)) |
+| `test_signed_pack_stress_sim.py` | `scripts/aura_signed_pack_stress_sim.py` gate |
 
 ## What we test
 
