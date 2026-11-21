@@ -299,13 +299,8 @@ def test_unified_secret_pattern_redaction_and_depth_guard(aura_home):
 
     tool_call = [e for e in events if e.kind == "tool.call"][0]
     assert tool_call.payload["args"]["prompt_tokens"] == 250
-    assert (
-        "The bearer of bad news discussed bearer token concepts and bearer responsibilities."
-        in (tool_call.payload["args"]["note"])
-    )
-    assert "The bearer of bad news discussed bearer token concepts and bearer responsibilities." in (
-        tool_call.payload["args"]["note"]
-    )
+    prose = "The bearer of bad news discussed bearer token concepts and bearer responsibilities."
+    assert prose in tool_call.payload["args"]["note"]
     tool_err = [e for e in events if e.kind == "tool.error"][0]
     assert tool_err.payload["error_type"] == "RuntimeError"
 
