@@ -56,9 +56,17 @@ def skill_registered_payload(
     rule_count: int,
     session_snapshot_hash: str | None = None,
     bound_skill_ids: list[str] | None = None,
+    taxonomy: dict[str, Any] | None = None,
+    skill_version: str | None = None,
+    root_tier: str | None = None,
+    deprecated: bool = False,
+    deprecation_notice: str | None = None,
+    physical_target: bool = False,
+    hardware_execution_acknowledged: bool = False,
+    manifest_validation: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Normalized bind-time context when a host registers a skill."""
-    return {
+    payload: dict[str, Any] = {
         "membrane": "ingress",
         "bind": "skill",
         "skill_id": skill_id,
@@ -70,3 +78,19 @@ def skill_registered_payload(
         "constitution_rule_count": rule_count,
         "context": build_ingress_context(profile),
     }
+    if taxonomy is not None:
+        payload["taxonomy"] = dict(taxonomy)
+    if skill_version is not None:
+        payload["skill_version"] = skill_version
+    if root_tier is not None:
+        payload["root_tier"] = root_tier
+    if deprecated:
+        payload["deprecated"] = True
+        if deprecation_notice:
+            payload["deprecation_notice"] = deprecation_notice
+    if physical_target:
+        payload["physical_target"] = True
+        payload["hardware_execution_acknowledged"] = bool(hardware_execution_acknowledged)
+    if manifest_validation is not None:
+        payload["manifest_validation"] = dict(manifest_validation)
+    return payload

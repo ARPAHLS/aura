@@ -259,6 +259,8 @@ class Session:
         payload: dict[str, Any] | None = None,
         *,
         step_id: str | None = None,
+        span_id: str | None = None,
+        telemetry: dict[str, Any] | None = None,
     ) -> dict[str, Any]:
         self._ensure_active()
         raw_payload = dict(payload or {})
@@ -267,6 +269,9 @@ class Session:
 
         secrets = injected_secret_values(self)
         safe_payload = redact_payload(raw_payload, secret_values=secrets)
+        safe_telemetry = (
+            redact_payload(dict(telemetry), secret_values=secrets) if telemetry else None
+        )
         ctx = ConstraintContext(
             event_kind=kind,
             payload=raw_payload,
@@ -334,6 +339,8 @@ class Session:
             agent_ids=self.agent_ids_trailer(),
             task_id=self.task_id,
             step_id=step_id,
+            span_id=span_id,
+            telemetry=safe_telemetry,
         )
         if constraint_results:
             passed_only = [item for item in constraint_results if item.get("passed")]

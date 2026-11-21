@@ -191,7 +191,10 @@ Run in order from repo root after `pip install -e .`:
 | 10 | [10-observer-metrics-snapshot](../examples/10-observer-metrics-snapshot/) | Tailored coat — observer metrics snapshot |
 | 11 | [11-scheduled-agent-slo](../examples/11-scheduled-agent-slo/) | Goal drift + schedule SLO — nickel cron north star |
 | 12 | [12-escalation-playbooks](../examples/12-escalation-playbooks/) | Escalation playbooks — triggers + nudge/pause/email/custom |
+| 13 | [13-operator-identity](../examples/13-operator-identity/) | Verified operator trailer (mock adapter) |
 | 14 | [14-capability-broker](../examples/14-capability-broker/) | Named intents, secret refs, egress inject ([#48](https://github.com/ARPAHLS/aura/issues/48)) |
+| 15 | [15-sequencer-pii-mask](../examples/15-sequencer-pii-mask/) | Sequencer middleware & PII masking step op ([#58](https://github.com/ARPAHLS/aura/issues/58)) |
+| 16 | [16-skillware-audit-bridge](../examples/16-skillware-audit-bridge/) | Skillware 0.6.2+ audit bridge, FinOps, Manifest v2 safety gate, async |
 
 Capstone checklist: [reference-tool-host-capstone.md](guides/reference-tool-host-capstone.md).
 

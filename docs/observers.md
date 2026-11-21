@@ -169,8 +169,11 @@ config:
 config:
   max_tool_calls_per_minute: 30   # 0 = disabled
   max_tokens_per_step: 8000
-  warn_ratio: 0.8                 # emit note from this fraction of max_tokens_per_step
+  max_cost_usd: 0.25              # 0 = disabled; tracks cumulative session USD spend
+  warn_ratio: 0.8                 # emit note from this fraction of token or cost threshold
 ```
+
+Tracks cumulative session USD spend from `estimated_cost_usd` (or `model` + `prompt_tokens` + `completion_tokens`) across `tool.result`, `tool.error`, `skill.dispatch`, `model.call`, and `turn.end` (deduplicated by `span_id`), emitting `cost_budget_warning` (`observer.note`) and `cost_budget_exceeded` (`observer.alert`).
 
 ### goal_drift / schedule_slo
 

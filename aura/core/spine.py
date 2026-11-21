@@ -8,6 +8,7 @@ from hashlib import sha256
 from pathlib import Path
 from typing import Any, Iterator
 import json
+import threading
 import uuid
 
 
@@ -70,6 +71,7 @@ class AuditSpine:
         self._events: list[AuraEvent] = []
         self._last_event_id: str | None = None
         self._last_content_hash: str | None = None
+        self._lock = threading.RLock()
         self.trace_id = uuid.uuid4().hex
         if log_path:
             log_path.parent.mkdir(parents=True, exist_ok=True)
@@ -83,35 +85,39 @@ class AuditSpine:
         parent_id: str | None = None,
         step_id: str | None = None,
         task_id: str | None = None,
+        span_id: str | None = None,
         telemetry: dict[str, Any] | None = None,
     ) -> AuraEvent:
-        event = AuraEvent(
-            kind=kind,
-            session_id=self.session_id,
-            aura_id=self.aura_id,
-            payload=dict(payload or {}),
-            parent_id=parent_id or self._last_event_id,
-            trace_id=self.trace_id,
-            step_id=step_id,
-            task_id=task_id,
-            agent_ids=dict(agent_ids or {}),
-            telemetry=dict(telemetry or {}),
-        )
-        event.prev_hash = self._last_content_hash
-        event.content_hash = compute_content_hash(event, self._last_content_hash)
-        self._events.append(event)
-        self._last_event_id = event.event_id
-        self._last_content_hash = event.content_hash
-        if self.log_path:
-            with self.log_path.open("a", encoding="utf-8") as f:
-                f.write(json.dumps(event.to_dict(), ensure_ascii=False) + "\n")
-        return event
+        with self._lock:
+            event = AuraEvent(
+                kind=kind,
+                session_id=self.session_id,
+                aura_id=self.aura_id,
+                payload=dict(payload or {}),
+                parent_id=parent_id or self._last_event_id,
+                trace_id=self.trace_id,
+                span_id=span_id,
+                step_id=step_id,
+                task_id=task_id,
+                agent_ids=dict(agent_ids or {}),
+                telemetry=dict(telemetry or {}),
+            )
+            event.prev_hash = self._last_content_hash
+            event.content_hash = compute_content_hash(event, self._last_content_hash)
+            self._events.append(event)
+            self._last_event_id = event.event_id
+            self._last_content_hash = event.content_hash
+            if self.log_path:
+                with self.log_path.open("a", encoding="utf-8") as f:
+                    f.write(json.dumps(event.to_dict(), ensure_ascii=False) + "\n")
+            return event
 
     def stream(self) -> list[AuraEvent]:
-        return list(self._events)
+        with self._lock:
+            return list(self._events)
 
     def iter_dicts(self) -> Iterator[dict[str, Any]]:
-        for event in self._events:
+        for event in self.stream():
             yield event.to_dict()
 
     @classmethod

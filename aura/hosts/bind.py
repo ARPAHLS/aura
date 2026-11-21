@@ -13,6 +13,14 @@ def record_skill_bind(
     skill_id: str,
     manifest_snapshot_hash: str,
     host_kind: str = "toolhost",
+    taxonomy: dict[str, Any] | None = None,
+    skill_version: str | None = None,
+    root_tier: str | None = None,
+    deprecated: bool = False,
+    deprecation_notice: str | None = None,
+    physical_target: bool = False,
+    hardware_execution_acknowledged: bool = False,
+    manifest_validation: dict[str, Any] | None = None,
 ) -> None:
     """Emit skill.registered and optional first-time host.bind on the audit spine."""
     host_state = session.state.setdefault("host", {"kind": host_kind, "bound_skills": []})
@@ -30,6 +38,14 @@ def record_skill_bind(
             rule_count=len(session.rules),
             session_snapshot_hash=session.snapshot_hash,
             bound_skill_ids=list(bound),
+            taxonomy=taxonomy,
+            skill_version=skill_version,
+            root_tier=root_tier,
+            deprecated=deprecated,
+            deprecation_notice=deprecation_notice,
+            physical_target=physical_target,
+            hardware_execution_acknowledged=hardware_execution_acknowledged,
+            manifest_validation=manifest_validation,
         ),
     )
 

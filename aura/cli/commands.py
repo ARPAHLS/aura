@@ -338,7 +338,12 @@ def cmd_compare(session_a: str, session_b: str, *, console: Console | None = Non
     return 0
 
 
-def cmd_verify_chain(path: str, *, console: Console | None = None) -> int:
+def cmd_verify_chain(
+    path: str,
+    *,
+    skillware_log: str | None = None,
+    console: Console | None = None,
+) -> int:
     log_path = Path(path)
     if not log_path.is_file():
         message = f"not found: {log_path}"
@@ -347,6 +352,25 @@ def cmd_verify_chain(path: str, *, console: Console | None = None) -> int:
         else:
             console.print(message, style="bold #FF9AA2")
         return 1
+
+    if skillware_log is not None:
+        sw_path = Path(skillware_log)
+        if not sw_path.is_file():
+            message = f"not found: {sw_path}"
+            if console is None:
+                print(message, file=sys.stderr)
+            else:
+                console.print(message, style="bold #FF9AA2")
+            return 1
+        from aura.hosts.skillware_audit import verify_dual_audit_chain
+
+        dual = verify_dual_audit_chain(log_path, sw_path)
+        payload = json.dumps({"hash_chain_valid": dual.valid, "dual_ledger": dual.to_dict()})
+        if console is None:
+            print(payload)
+        else:
+            console.print(payload, style="dim")
+        return 0 if dual.valid else 1
 
     spine = AuditSpine.from_jsonl(log_path)
     valid = verify_hash_chain(spine) is True

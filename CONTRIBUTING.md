@@ -159,7 +159,7 @@ Pure internal refactors with no user-visible effect may omit CHANGELOG; ask on t
 | `escalations[]` playbooks | `aura/core/escalations.py`, `aura/core/constraints.py` (`escalation_pause`), `aura/agents/profile.py`, `docs/observers.md`, `docs/outputs.md`, `examples/12-escalation-playbooks/`, `tests/test_escalations.py`, `tests/test_example_12_escalation_playbooks.py`, stress sim, CHANGELOG |
 | Constraint rule types | `docs/concepts.md`, `docs/capabilities.md` (for `capability_scope`), `docs/aura-levels.md` (for `schema_check`), `aura/core/constraints.py`, `aura/core/schema_validation.py`, `tests/test_schema_checks.py`, stress sim, CHANGELOG |
 | Sequencer step model | `spec/sequencer.schema.json`, `docs/sequencer.md`, `tests/test_v02.py`, CHANGELOG |
-| Skillware host / egress | `integrations/skillware/` (when shipped), `docs/skillware-integration.md` redirect, CHANGELOG |
+| Skillware host / egress | `aura/hosts/skillware.py`, `aura/hosts/skillware_audit.py`, `aura/hosts/manifest.py`, `aura/core/finops.py`, `integrations/skillware/`, `examples/16-skillware-audit-bridge/`, `scripts/aura_skillware_06_stress_sim.py`, `docs/skillware-integration.md`, CHANGELOG |
 | Integration example (Ollama, API, framework) | `integrations/<stack>/`, `docs/integrations/README.md`, `.env.example`, CHANGELOG |
 | CLI commands or flags | `docs/getting-started.md`, `README.md` quick start line, `docs/outputs.md` (export/compare shapes), CHANGELOG |
 | New core example | Numbered folder `examples/NN-short-name/` with `main.py` + `README.md`, `examples/README.md`, onboarding learning path if applicable |

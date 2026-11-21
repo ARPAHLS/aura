@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import asyncio
 import inspect
 from typing import Any, Callable
 
@@ -40,6 +41,29 @@ class MockSkill:
         except (TypeError, ValueError):
             pass
         return handler(args or {})
+
+    async def aexecute(
+        self,
+        tool: str,
+        args: dict[str, Any] | None = None,
+        *,
+        headers: dict[str, Any] | None = None,
+    ) -> Any:
+        if tool not in self._handlers:
+            raise KeyError(f"Unknown tool: {tool}")
+        handler = self._handlers[tool]
+        if inspect.iscoroutinefunction(handler):
+            try:
+                sig = inspect.signature(handler)
+                if "headers" in sig.parameters:
+                    return await handler(args or {}, headers=headers)
+            except (TypeError, ValueError):
+                pass
+            return await handler(args or {})
+        result = await asyncio.to_thread(self.execute, tool, args, headers=headers)
+        if inspect.isawaitable(result):
+            return await result
+        return result
 
 
 class MockSkillRegistry:

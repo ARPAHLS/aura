@@ -34,6 +34,8 @@ CLI: `aura report show <session_id>`, `aura report show <session_id> --json`, `a
 
 **Spine events (break preset & observer alerts):** When observer presets (such as `break` [#93](https://github.com/ARPAHLS/aura/issues/93)) detect runaway cycles or repetition, the session emits `observer.alert` containing pattern (`ACTION_FIXATION`, `OSCILLATION_CYCLE`, `CHOREOGRAPHY_CYCLE`, `ERROR_STATUS_CHURN`, `REASONING_INERTIA`), structured `remedial_directive`, and non-repudiable cryptographic hashes (`cycle_entry_hash`, `cycle_recurrence_hash`). Audit scorecard records `scorecard.observers = {"alerts": count, "loop_cycles": count}` and surfaces finding **`COGNITIVE_CYCLE_DETECTED`** (`severity: warn`). See [observers.md](observers.md#break).
 
+**Spine events (Skillware 0.6.2+ dispatch bridge, FinOps & Manifest v2):** `guarded_tool_call` and `guarded_tool_call_async` attach structured `telemetry` (`latency_ms`, `skill_id`, `skill_version`, `model`, `prompt_tokens`, `completion_tokens`, `estimated_cost_usd`, `provenance_hash`, `skillware_event_hash`) and `span_id` on `tool.result` and `tool.error` (plus `error_type`). Bridged `SkillContext` dispatches emit `skill.dispatch` with `egress_guarded: true|false`; out-of-band calls bypassing egress also emit `skill.egress_bypass` and surface **`UNGUARDED_SKILL_DISPATCH`** (`severity: high`). Manifest v2 binding records `taxonomy`, `manifest_validation`, `deprecated`, and `physical_target` on `skill.registered` (or `skill.manifest_invalid` in strict mode), surfacing findings **`MANIFEST_SCHEMA_INVALID`**, **`SKILL_DEPRECATED`**, and **`PHYSICAL_TARGET_REGISTERED`**. Audit scorecard includes `scorecard.finops` (prompt/completion tokens, total USD spend, cost by model and skill, latency stats) and `scorecard.skillware`. Dual-ledger logs (AURA JSONL + Skillware JSONL) can be cross-verified offline via `verify_dual_audit_chain(aura_jsonl, skillware_jsonl)`. See [skillware-integration.md](skillware-integration.md).
+
 
 ---
 
@@ -65,7 +67,7 @@ Binary pass/fail plus violations list — declared rules, sequencer step order, 
 
 Each event includes `prev_hash` and `content_hash` (SHA-256). Tampering or corruption breaks verification in the audit report.
 
-Use `aura verify chain <path>` to validate an exported JSONL audit trail directly. It prints a JSON object with `hash_chain_valid`; when the chain is broken, the object also identifies the first affected `event_id` and the command exits with status 1.
+Use `aura verify chain <path>` to validate an exported JSONL audit trail directly. Pass `--skillware-log <skillware_audit.jsonl>` to run optional dual-ledger cross-verification against a Skillware hash-chained log. It prints a JSON object with `hash_chain_valid`; when the chain is broken, the object also identifies the first affected `event_id` (or dual-ledger mismatch details) and the command exits with status 1.
 
 ---
 
@@ -80,6 +82,10 @@ Summary includes `agent_ref`, `aura_id`, `policy_version`, `snapshot_hash`, and 
 - `aura.agent_ref`, `aura.policy_version` — session identity
 - `aura.principal` — approver on gated calls
 - `aura.operator.subject`, `aura.operator.method`, `aura.operator.verified` — session operator when identity adapter bound
-- `aura.skill_id` — skill on tool and registration events
+- `aura.skill_id`, `aura.skill_shape`, `aura.skill_tier`, `aura.skill_target` — skill identity and Manifest v2 taxonomy on registration/tool events
+- `aura.latency_ms`, `aura.model`, `aura.estimated_cost_usd` — FinOps and execution latency telemetry
+- `gen_ai.request.model`, `gen_ai.usage.input_tokens`, `gen_ai.usage.output_tokens`, `gen_ai.tool.name`, `error.type` — OpenTelemetry GenAI semantic conventions alongside `aura.*`
+- `aura.provenance_hash`, `aura.skillware_event_hash`, `aura.egress_guarded`, `aura.error_type` — Skillware provenance, dual-ledger anchor, and egress/error metadata
+- `status.code` (`ERROR` on `tool.error`, `constraint.violated`, `skill.egress_bypass`, `skill.manifest_invalid`; `OK` otherwise) and ISO-8601 `start_time_unix_nano`
 
 → [trust-paths.md](trust-paths.md) · [aura-event.schema.json](../spec/aura-event.schema.json) · [reference-tool-host-capstone.md](guides/reference-tool-host-capstone.md)

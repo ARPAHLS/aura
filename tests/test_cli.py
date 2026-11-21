@@ -131,6 +131,46 @@ def test_cli_verify_chain(run_aura, tmp_path: Path):
     assert payload["event_id"] == rows[1]["event_id"]
 
 
+def test_cli_verify_chain_with_skillware_log(run_aura, tmp_path: Path):
+    from aura.hosts.skillware_audit import _canonical_skillware_json, SKILLWARE_GENESIS_HASH
+    import hashlib
+
+    aura_path = tmp_path / "aura.jsonl"
+    sw_path = tmp_path / "skillware.jsonl"
+
+    sw_body = {
+        "timestamp": "2026-11-21T12:00:00+00:00",
+        "trace_id": "t1",
+        "span_id": "s1",
+        "skill_id": "optimization/prompt_rewriter",
+        "action": "execute",
+        "status": "ok",
+        "duration_ms": 1.2,
+        "context_mode": "brief",
+        "args": {"raw_text": "hi"},
+        "prev_hash": SKILLWARE_GENESIS_HASH,
+    }
+    sw_hash = hashlib.sha256(_canonical_skillware_json(sw_body).encode("utf-8")).hexdigest()
+    sw_rec = {**sw_body, "event_hash": sw_hash}
+    sw_path.write_text(json.dumps(sw_rec) + "\n", encoding="utf-8")
+
+    spine = AuditSpine("session", "aura-id", aura_path)
+    spine.append(
+        "skill.dispatch",
+        {
+            "skill_id": "optimization/prompt_rewriter",
+            "skillware_event_hash": sw_hash,
+            "skillware_prev_hash": SKILLWARE_GENESIS_HASH,
+        },
+    )
+
+    res = run_aura("verify", "chain", str(aura_path), "--skillware-log", str(sw_path))
+    assert res.returncode == 0
+    out = json.loads(res.stdout)
+    assert out["hash_chain_valid"] is True
+    assert out["dual_ledger"]["anchored_count"] == 1
+
+
 def test_cli_run_requires_script(run_aura):
     result = run_aura("run", "agent-only")
     assert result.returncode == 1
