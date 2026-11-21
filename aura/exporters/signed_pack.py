@@ -267,4 +267,3 @@ def verify_audit_pack(
         "chain_root": pack.get("chain_root"),
         "errors": errors,
     }
-
