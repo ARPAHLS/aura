@@ -129,7 +129,7 @@ print(run.exports)
 | `aura export-otel` | OTel-style JSONL beside session |
 | `aura verify chain` | Validate exported JSONL hash chain |
 
-→ [getting-started.md](docs/getting-started.md) · [onboarding.md](docs/onboarding.md) · [examples/README.md](examples/README.md) (01→14)
+→ [getting-started.md](docs/getting-started.md) · [onboarding.md](docs/onboarding.md) · [examples/README.md](examples/README.md) (01→16)
 
 ---
 

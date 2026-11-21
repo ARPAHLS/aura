@@ -62,4 +62,4 @@ jobs:
 
       - name: pytest skillware
         if: inputs.skillware == true
-        run: pytest tests/test_skillware_integration.py tests/test_host_stress_sim.py -v
+        run: pytest tests/test_skillware_integration.py tests/test_skillware_06_integration.py tests/test_host_stress_sim.py tests/test_skillware_06_stress_sim.py -v

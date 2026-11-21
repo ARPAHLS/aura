@@ -33,7 +33,13 @@
         "latency_ms": { "type": "number" },
         "attempt": { "type": "integer" },
         "skill_id": { "type": "string" },
-        "skill_version": { "type": "string" }
+        "skill_version": { "type": "string" },
+        "model": { "type": "string" },
+        "prompt_tokens": { "type": "integer" },
+        "completion_tokens": { "type": "integer" },
+        "estimated_cost_usd": { "type": "number" },
+        "provenance_hash": { "type": "string" },
+        "skillware_event_hash": { "type": "string" }
       }
     }
   }

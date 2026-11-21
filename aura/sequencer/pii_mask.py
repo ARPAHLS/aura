@@ -52,8 +52,10 @@ _RE_IPV6 = re.compile(
 
 # API Keys, Tokens, and high-entropy secrets
 _RE_API_KEY = re.compile(
-    r"\b(?:sk|pk|ghp|gho|glpat|xoxb|xoxp|live|test)[-_][A-Za-z0-9_-]{16,}\b"
+    r"\b(?:sk|pk|ghp|gho|ghu|ghs|ghr|glpat|xoxb|xoxp|live|test)[-_][A-Za-z0-9_-]{16,}\b"
+    r"|\bAIza[0-9A-Za-z\-_]{20,}\b"
     r"|\bAKIA[0-9A-Z]{16}\b"
+    r"|-----BEGIN [A-Z ]*PRIVATE KEY-----[\s\S]*?-----END [A-Z ]*PRIVATE KEY-----"
     r"|\beyJ[A-Za-z0-9_-]{10,}\.eyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\b"  # JWT
     r"|\b[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}\b"  # UUID
 )

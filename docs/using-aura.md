@@ -238,7 +238,7 @@ Schema: [sequencer.schema.json](../spec/sequencer.schema.json)
 pip install "aura-harness[skillware]"
 ```
 
-Skillware ≥ 0.5.4 (see [skillware-integration.md](skillware-integration.md#version-compatibility)) runs inside the body; AURA wraps `execute()` at egress.
+Skillware >= 0.6.2 (see [skillware-integration.md](skillware-integration.md#version-compatibility)) runs inside the body; AURA wraps `execute()` / `aexecute()` at egress and bridges `SkillContext` audit hooks into the spine.
 
 ---
 

@@ -62,7 +62,7 @@
         "schema_enforcement": {
           "type": "boolean",
           "default": true,
-          "description": "When true (default), high/full auto-wires schema_check rules from profile variables.schema_refs"
+          "description": "When true (default), high/full auto-wires schema_check rules from profile variables.schema_refs and bound Skillware manifest parameters"
         },
         "output": {
           "type": "array",

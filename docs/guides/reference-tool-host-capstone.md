@@ -33,9 +33,10 @@ Open `.aura/sessions/<id>.jsonl` and confirm:
 | 1 | `membrane.ingress` | Session context bound |
 | 2 | `session.open` | `agent_ref`, `policy_version`, mode |
 | 3 | `host.bind` | First capability registered on host |
-| 4 | `skill.registered` | Per-skill manifest snapshot + `bound_skill_ids` |
+| 4 | `skill.registered` | Per-skill manifest snapshot, Manifest v2 `taxonomy`, validation, and `bound_skill_ids` |
 | 5 | `sequencer.step.*` | Declared pipeline order (if using sequencer) |
-| 6 | `tool.intent` / `tool.call` / `tool.result` | Egress audit per capability; `capability.injected` when a secret ref resolves |
+| 6 | `tool.intent` / `tool.call` / `tool.result` | Egress audit per capability + FinOps telemetry; `capability.injected` when a secret ref resolves |
+| — | `skill.dispatch` / `skill.egress_bypass` | Optional `SkillContext` dispatch bridge + unguarded bypass alert |
 | 7 | `pipeline.verdict` or host logic | Host decision before body LLM (recommended) |
 | 8 | `observer.note` / `observer.alert` | Optional after-call analytics |
 | 9 | `sequencer.step.skipped` | Conditional steps when prior result fails `when` |
@@ -63,12 +64,13 @@ Swap Skillware for your runtime — keep `ToolHost.execute()` through egress.
 ## ToolHost contract
 
 ```python
-from aura.hosts import ToolHost, SkillwareHost  # SkillwareHost is one implementation
+from aura.hosts import AsyncToolHost, ToolHost, SkillwareHost  # SkillwareHost implements both
 
 with agent("demo", skills=[...]).session() as run:
-    host: ToolHost = SkillwareHost(run._session)  # or your adapter
+    host: AsyncToolHost = SkillwareHost(run._session)  # or your adapter
     host.register(capability)
     host.execute(skill_id, tool_label, args, step_id=optional)
+    # or: await host.aexecute(skill_id, tool_label, args, timeout=10.0)
 ```
 
 See `aura/hosts/protocol.py`.

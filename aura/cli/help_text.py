@@ -34,7 +34,7 @@ HELP_GROUPS: List[Tuple[str, List[Tuple[str, str]], str]] = [
             ("aura report show <id> --json", "print the audit report for CI"),
             ("aura export-otel <session_id>", "write OTel-style JSONL beside session"),
             ("aura compare <a> <b>", "diff two session summaries"),
-            ("aura verify chain <path>", "validate an exported JSONL hash chain"),
+            ("aura verify chain <path>", "validate an exported JSONL hash chain (--skillware-log)"),
         ],
         _DOCS_CLI,
     ),

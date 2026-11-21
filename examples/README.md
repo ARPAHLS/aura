@@ -37,8 +37,9 @@ Run in order — [onboarding.md](../docs/onboarding.md#examples-learning-path):
 | **13** | [13-operator-identity](13-operator-identity/) | Verified operator trailer (mock adapter) |
 | **14** | [14-capability-broker](14-capability-broker/) | Named intents, secret refs, egress inject ([#48](https://github.com/ARPAHLS/aura/issues/48)) |
 | **15** | [15-sequencer-pii-mask](15-sequencer-pii-mask/) | Sequencer middleware & PII masking step op ([#58](https://github.com/ARPAHLS/aura/issues/58)) |
+| **16** | [16-skillware-audit-bridge](16-skillware-audit-bridge/) | Skillware 0.6.2+ dispatch audit bridge, dual-ledger verify, FinOps, Manifest v2 safety gate, async `aexecute` |
 
-Live registry skills (examples **05–06**): `$env:SKILLWARE_LIVE="1"` (PowerShell).
+Live registry skills (examples **05–06**, **16**): `$env:SKILLWARE_LIVE="1"` (PowerShell).
 
 → Capstone checklist: [docs/guides/reference-tool-host-capstone.md](../docs/guides/reference-tool-host-capstone.md)
 

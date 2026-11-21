@@ -6,6 +6,7 @@ from dataclasses import dataclass, field
 from typing import Any
 
 from aura.core.conformance import ConformanceReport
+from aura.core.finops import summarize_session_finops
 from aura.core.spine import AuditSpine, verify_hash_chain
 
 
@@ -105,6 +106,26 @@ class AuditReportBuilder:
                     1
                     for e in events
                     if e.kind == "observer.alert" and (e.payload or {}).get("pattern")
+                ),
+            },
+            "finops": summarize_session_finops(events),
+            "skillware": {
+                "dispatches": sum(1 for e in events if e.kind == "skill.dispatch"),
+                "unguarded_bypasses": sum(1 for e in events if e.kind == "skill.egress_bypass"),
+                "deprecated_skills": sum(
+                    1
+                    for e in events
+                    if e.kind == "skill.registered" and (e.payload or {}).get("deprecated")
+                ),
+                "physical_targets": sum(
+                    1
+                    for e in events
+                    if e.kind == "skill.registered" and (e.payload or {}).get("physical_target")
+                ),
+                "manifest_validation_errors": sum(
+                    len(((e.payload or {}).get("manifest_validation") or {}).get("errors") or [])
+                    for e in events
+                    if e.kind in {"skill.registered", "skill.manifest_invalid"}
                 ),
             },
             "events": conformance.event_count,
@@ -376,6 +397,93 @@ class AuditReportBuilder:
                 "Sequencer sanitized sensitive data via middleware.pii_mask. "
                 "Verify upstream data sources to avoid transmitting unmasked PII."
             )
+
+        for event in events:
+            payload = event.payload or {}
+            if event.kind == "skill.egress_bypass":
+                findings.append(
+                    {
+                        "severity": "high",
+                        "code": "UNGUARDED_SKILL_DISPATCH",
+                        "message": payload.get(
+                            "reason",
+                            "Skillware SkillContext dispatch fired outside AURA membrane egress",
+                        ),
+                        "skill_id": payload.get("skill_id"),
+                        "action": payload.get("action"),
+                        "skillware_event_hash": payload.get("skillware_event_hash"),
+                        "event_id": event.event_id,
+                    }
+                )
+                rec = (
+                    "Route all Skillware calls through SkillwareHost.execute() or aexecute() "
+                    "instead of invoking SkillContext.execute() directly."
+                )
+                if rec not in recommendations:
+                    recommendations.append(rec)
+            elif event.kind == "skill.registered":
+                mv = payload.get("manifest_validation")
+                if isinstance(mv, dict) and mv.get("valid") is False and mv.get("errors"):
+                    findings.append(
+                        {
+                            "severity": "medium",
+                            "code": "MANIFEST_SCHEMA_INVALID",
+                            "message": (
+                                f"Bound skill '{payload.get('skill_id')}' failed Manifest v2 "
+                                f"validation ({len(mv['errors'])} error(s))"
+                            ),
+                            "skill_id": payload.get("skill_id"),
+                            "errors": list(mv["errors"]),
+                            "event_id": event.event_id,
+                        }
+                    )
+                    rec = (
+                        "Fix invalid Manifest v2 fields (shape, tier, target, tags, required "
+                        "keys) or enable strict manifest validation on SkillwareHost."
+                    )
+                    if rec not in recommendations:
+                        recommendations.append(rec)
+                if payload.get("deprecated"):
+                    findings.append(
+                        {
+                            "severity": "info",
+                            "code": "SKILL_DEPRECATED",
+                            "message": payload.get("deprecation_notice")
+                            or f"Skill '{payload.get('skill_id')}' is marked deprecated",
+                            "skill_id": payload.get("skill_id"),
+                            "event_id": event.event_id,
+                        }
+                    )
+                if payload.get("physical_target"):
+                    acknowledged = bool(payload.get("hardware_execution_acknowledged"))
+                    findings.append(
+                        {
+                            "severity": "info",
+                            "code": "PHYSICAL_TARGET_REGISTERED",
+                            "message": (
+                                f"Skill '{payload.get('skill_id')}' targets physical substrate "
+                                f"{(payload.get('taxonomy') or {}).get('target')} "
+                                f"({'operator acknowledged' if acknowledged else 'approval-gated'})"
+                            ),
+                            "skill_id": payload.get("skill_id"),
+                            "hardware_execution_acknowledged": acknowledged,
+                            "event_id": event.event_id,
+                        }
+                    )
+            elif event.kind == "skill.manifest_invalid":
+                findings.append(
+                    {
+                        "severity": "high",
+                        "code": "MANIFEST_SCHEMA_INVALID",
+                        "message": (
+                            f"Rejected skill '{payload.get('skill_id')}' due to Manifest v2 "
+                            "schema errors"
+                        ),
+                        "skill_id": payload.get("skill_id"),
+                        "errors": list(payload.get("errors") or []),
+                        "event_id": event.event_id,
+                    }
+                )
 
         chain_ok = verify_hash_chain(spine)
         if chain_ok is False:

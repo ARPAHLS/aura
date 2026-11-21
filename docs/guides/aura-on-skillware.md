@@ -173,7 +173,7 @@ Each script demonstrates the same architecture: **LLM body + Skillware egress un
 
 For fixed SOPs (scan → transform → budget check), declare steps instead of imperative calls.
 
-Skillware **0.5.4+** also offers [`run_chain()`](https://github.com/arpahls/skillware/blob/main/docs/usage/skill_chaining.md) and **`SkillContext`** for body-side tool discovery. Prefer **AURA sequencer** when the session receipt must prove step order and policy; use Skillware chains for standalone scripts — always route skill calls through `SkillwareHost`.
+Skillware **0.6.2+** also offers [`run_chain()`](https://github.com/arpahls/skillware/blob/main/docs/usage/skill_chaining.md), **`SkillContext`** (with `on_dispatch` / `audit_log_path` dispatch audit hooks and `aexecute()`), Manifest v2 taxonomy (`shape`, `tier`, `target`, `tags`), and host-injected `secret_provider`. Use `SkillwareHost.create_context()` or `SkillwareHost.from_skill_context()` to wrap `SkillContext` at AURA egress, bridge Skillware's audit events into AURA's spine, and verify dual-ledger logs with `verify_dual_audit_chain()`. Prefer **AURA sequencer** when the session receipt must prove step order and policy. See [example 16](../../examples/16-skillware-audit-bridge/) and [skillware-integration.md](../skillware-integration.md).
 
 ```yaml
 sequencer:
@@ -209,7 +209,10 @@ Add `gates: [human_confirm]` on steps that send email, move funds, or export dat
 
 | Skillware field | AURA behavior at bind |
 |---|---|
-| `name`, `parameters` | Snapshot on `skill.registered` |
+| `name`, `version`, `parameters` | Snapshot on `skill.registered`; `parameters` JSON Schema auto-wires `schema_check` at spectrum `high`/`full` |
+| `shape`, `tier`, `target`, `tags` | Validated against Manifest v2 schema (`warn` / `strict` / `off`) and recorded under `taxonomy` on `skill.registered` |
+| `target: [hardware\|bioware]` | Auto-injects a `confirm_before` approval gate unless `SkillwareHost(..., allow_hardware_execution=True)` is set |
+| `deprecated`, `deprecation_notice` | Recorded on `skill.registered` and surfaced as `SKILL_DEPRECATED` (`severity: info`) in the audit report |
 | `constitution` (text) | Audit metadata — **not** auto-enforced as machine rules |
 | `guardrails` (AURA extension) | Merged into session constraint rules |
 
@@ -255,14 +258,17 @@ python examples/06-skillware-sequencer-chain/main.py
 
 | Path | Purpose |
 |---|---|
-| `aura/hosts/protocol.py` | `ToolHost` protocol (any skill runtime) |
+| `aura/hosts/protocol.py` | `ToolHost` & `AsyncToolHost` protocols (any skill runtime) |
 | `aura/hosts/bind.py` | Bind context for `skill.registered` |
-| `aura/hosts/skillware.py` | `SkillwareHost`, `from_registry()` |
+| `aura/hosts/manifest.py` | Manifest v2 validation, taxonomy, physical gate, schema/rule merge |
+| `aura/hosts/skillware.py` | `SkillwareHost`, `from_registry()`, `create_context()`, `from_skill_context()`, `aexecute()` |
+| `aura/hosts/skillware_audit.py` | `create_dispatch_audit_hook()`, bypass detection, `verify_dual_audit_chain()` |
+| `aura/core/finops.py` | FinOps token pricing and session cost aggregation |
 | `aura/observers/presets/` | Monitor + Break + Limit (+ goal_drift, schedule_slo) — see [observers.md](../observers.md) |
 | `integrations/skillware/` | Ollama + reference scripts |
 | `integrations/openai/`, `anthropic/`, `google/` | Cloud body loops |
 | `examples/04-sequencer-pipeline/` | Sequencer with mocks |
-| `examples/05-*` … `13-*` | ToolHost tour: skills, chain, observers, emit-only, SLO, escalations, identity |
+| `examples/05-*` … `16-*` | ToolHost tour: skills, chain, observers, emit-only, SLO, escalations, identity, broker, PII mask, audit bridge |
 | `docs/skillware-integration.md` | API-focused reference |
 | `docs/guides/reference-tool-host-capstone.md` | AURA-first 360° checklist |
 

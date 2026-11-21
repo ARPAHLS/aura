@@ -78,6 +78,7 @@ The workflow also emits a gate job named **`lint-test`** that succeeds only when
 - **New behavior needs a test** — extend the closest file (`test_core.py`, `test_v02.py`, `test_v03.py`, `test_cli.py`, or `test_core_gaps.py`).
 - Shared fixtures live in **`tests/conftest.py`** — do not duplicate `aura_home` in test modules.
 - Optional Skillware registry tests: `tests/test_skillware_integration.py` (`@pytest.mark.skillware`) — run in CI via the **skillware-live** job when `[skillware]` is installed ([#36](https://github.com/ARPAHLS/aura/issues/36)).
+- **Skillware 0.6.2+ audit bridge stress:** `python scripts/aura_skillware_06_stress_sim.py` — twelve scenarios (egress telemetry & provenance hash, raw credential pattern scrubbing & error scrub, deep-nested payload DoS guard, FinOps USD cost circuit-breaker + escalation, unguarded dispatch bypass detection, Manifest v2 warn/strict enforcement, physical substrate hardware/bioware approval gate, high-spectrum manifest `parameters` schema auto-wiring, SecretBroker `credential_fn` isolation, 100-task async concurrency hash-chain stress, plus live Skillware dual-ledger cross-anchoring & tamper detection and live multi-skill async execution). CI: `tests/test_skillware_06_stress_sim.py` (default gate + `skillware-live`).
 - **Host stress simulation:** `python scripts/aura_host_stress_sim.py` — thirty-four scenarios (loose/tight/tailored coats, spectrum low/mid/high/full bind, schema high bind, verified-identity gate edge cases, escalation SLO playbook, capability broker allow/deny/low-audit/bypass/high/escalation, single/multi/chain Skillware paths, sequencer, observers, export compare). CI: `tests/test_host_stress_sim.py` (`@pytest.mark.skillware`).
 - **Capability broker stress:** `python scripts/aura_capability_stress_sim.py` — sixteen scenarios (payment + generic GitHub-style scope, inject, redaction, spectrum, bypass, brokers, plaintext reject). CI: `tests/test_capability_stress_sim.py` (default gate, no Skillware extra).
 - **Capability broker:** `tests/test_capability_broker.py` — profile refs-only, allow/deny, low audit-only, inject, leak scrub, CLI ([#48](https://github.com/ARPAHLS/aura/issues/48)); example smoke `tests/test_example_14_capability_broker.py`.
@@ -112,19 +113,23 @@ Integration tests **fail** (not skip) if Ollama or Skillware is missing — that
 | `test_capability_broker.py` | Capabilities, SecretBroker, redaction, CLI ([#48](https://github.com/ARPAHLS/aura/issues/48)) |
 | `test_capability_stress_sim.py` | `scripts/aura_capability_stress_sim.py` gate |
 | `test_example_14_capability_broker.py` | Example 14 scenario assertions |
+| `test_sequencer_pii_mask.py` | Sequencer middleware + PII masking engine ([#58](https://github.com/ARPAHLS/aura/issues/58)) |
+| `test_observer_break_loop.py` | Break observer trajectory cycle detection ([#93](https://github.com/ARPAHLS/aura/issues/93)) |
+| `test_skillware_06_integration.py` | Skillware 0.6.2+ audit bridge, FinOps, Manifest v2, OTel GenAI, and async egress |
+| `test_skillware_06_stress_sim.py` | `scripts/aura_skillware_06_stress_sim.py` gate (12 scenarios) |
 
 ## What we test
 
 | Area | Tests |
 |---|---|
 | Identity | ULID ids, `agent_ref`, custom `aura_id`, resolve lookup, legacy `AURA-000n`, archive; optional operator adapters + export redaction (`test_identity.py`) |
-| Audit | Hash chain (valid + tamper), audit report, approver principal, session export |
+| Audit | Hash chain (valid + tamper), dual-ledger verify, audit report, approver principal, session export |
 | Core | Registry, spine, constraints, conformance, sequencer (`test_core.py`, `test_v02.py`) |
-| CLI | Version, agent CRUD, run, logs, export, export-otel, compare, identity show (`test_cli.py`) |
+| CLI | Version, agent CRUD, run, logs, export, export-otel, compare, verify (`--skillware-log`), identity show (`test_cli.py`) |
 | Config / runtime | YAML merge, `run_script`, middleware, session modes (`test_core_gaps.py`) |
-| Compare / OTel | Summary diff incl. `agent_ref` + `hash_chain_valid`, OTel JSONL export (`test_v03.py`, `test_core_gaps.py`) |
-| Examples | Smoke run all `examples/*/main.py` — 14 numbered folders (`test_examples_smoke.py`) |
-| Skillware | Live registry skills via `test_skillware_integration.py` (CI **skillware-live** job) |
+| Compare / OTel | Summary diff incl. `agent_ref` + `hash_chain_valid`, OTel JSONL export (`gen_ai.*`, error status) (`test_v03.py`, `test_core_gaps.py`) |
+| Examples | Smoke run all `examples/*/main.py` — 16 numbered folders (`test_examples_smoke.py`) |
+| Skillware | Live registry skills via `test_skillware_integration.py` + `test_skillware_06_integration.py` + stress sims (CI **skillware-live** job) |
 | Integration | `tests/integration/` — Ollama + Skillware + example 06 (local only) |
 
 ## Pre-PR checklist

@@ -152,6 +152,11 @@ def build_parser() -> argparse.ArgumentParser:
     verify_sub = verify_p.add_subparsers(dest="verify_command")
     chain_p = verify_sub.add_parser("chain", help="Validate a JSONL audit hash chain")
     chain_p.add_argument("path", help="Path to an exported session JSONL file")
+    chain_p.add_argument(
+        "--skillware-log",
+        default=None,
+        help="Optional Skillware audit JSONL path for dual-ledger cross-verification",
+    )
 
     return parser
 
@@ -202,7 +207,7 @@ def dispatch(args: argparse.Namespace) -> int:
         return 1
     if args.command == "verify":
         if args.verify_command == "chain":
-            return commands.cmd_verify_chain(args.path)
+            return commands.cmd_verify_chain(args.path, skillware_log=args.skillware_log)
         print("usage: aura verify chain <path>", file=sys.stderr)
         return 1
     if args.command is None:

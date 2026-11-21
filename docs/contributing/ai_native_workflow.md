@@ -34,7 +34,7 @@ Written for **autonomous and semi-autonomous agents** working on AURA Harness. H
 | `aura/api.py` | Public SDK (`agent()`, `session()`, `emit()`) |
 | `aura/runtime/` | Script wrap helpers |
 | `tests/` | pytest suite (see below) |
-| `examples/` | Runnable numbered demos (`01-*` … `13-*`, each with `main.py`) |
+| `examples/` | Runnable numbered demos (`01-*` … `16-*`, each with `main.py`) |
 | `docs/` | User and contributor documentation |
 | `spec/` | JSON schemas (contracts) |
 | `.github/` | Issue templates, labels, workflows |
@@ -62,7 +62,9 @@ Written for **autonomous and semi-autonomous agents** working on AURA Harness. H
 | `tests/test_goal_slo_observers.py` | Goal drift + schedule SLO presets, audit findings |
 | `tests/test_examples_smoke.py` | Example script smoke runs |
 
-Run the full suite before opening a PR (`pytest` — currently 140 tests).
+| `tests/test_skillware_06_integration.py` | Skillware 0.6.2+ audit bridge, FinOps, Manifest v2, async egress |
+
+Run the full suite before opening a PR (`pytest` — currently 300+ tests).
 
 ---
 
