@@ -49,7 +49,7 @@ flowchart LR
     Aura --> Audit[Audit Trail]
 ```
 
-Your **host** runs the loop. **AURA** attaches — policy at egress, causal logging. On close, the **audit trail** becomes session export (JSONL, summary, audit report).
+Your **host** runs the loop. **AURA** attaches — policy at egress, causal logging. On close, the **audit trail** becomes session export (JSONL, summary, audit report, and optional signed `.pack.json` attestation).
 
 → [using-aura.md](docs/using-aura.md) · [skillware-integration.md](docs/skillware-integration.md)
 
@@ -128,6 +128,7 @@ print(run.exports)
 | `aura compare` | Diff two session summaries |
 | `aura export-otel` | OTel-style JSONL beside session |
 | `aura verify chain` | Validate exported JSONL hash chain |
+| `aura verify pack` | Verify offline signed `.pack.json` attestation |
 
 → [getting-started.md](docs/getting-started.md) · [onboarding.md](docs/onboarding.md) · [examples/README.md](examples/README.md) (01→17)
 
@@ -138,10 +139,10 @@ print(run.exports)
 | Topic | Links |
 | :--- | :--- |
 | **Index** | [docs/INDEX.md](docs/INDEX.md) — full doc map (Start / Build / Decide) |
-| **Start** | [onboarding.md](docs/onboarding.md) · [getting-started.md](docs/getting-started.md) · [concepts.md](docs/concepts.md) · [using-aura.md](docs/using-aura.md) |
-| **Integration** | [reference-tool-host-capstone.md](docs/guides/reference-tool-host-capstone.md) · [guides/aura-on-skillware.md](docs/guides/aura-on-skillware.md) · [skillware-integration.md](docs/skillware-integration.md) · [sequencer.md](docs/sequencer.md) · [observers.md](docs/observers.md) |
-| **Identity & audit** | [trust-paths.md](docs/trust-paths.md) · [integrations/identity/](integrations/identity/) · [outputs.md](docs/outputs.md) |
-| **Compare & position** | [comparison.md](docs/comparison.md) · [ROADMAP.md](docs/ROADMAP.md) |
+| **Start** | [onboarding.md](docs/onboarding.md) · [getting-started.md](docs/getting-started.md) · [concepts.md](docs/concepts.md) · [using-aura.md](docs/using-aura.md) · [glossary.md](docs/glossary.md) |
+| **Integration** | [reference-tool-host-capstone.md](docs/guides/reference-tool-host-capstone.md) · [guides/aura-on-skillware.md](docs/guides/aura-on-skillware.md) · [skillware-integration.md](docs/skillware-integration.md) · [sequencer.md](docs/sequencer.md) · [observers.md](docs/observers.md) · [coat-ops.md](docs/coat-ops.md) |
+| **Identity & audit** | [trust-paths.md](docs/trust-paths.md) · [capabilities.md](docs/capabilities.md) · [aura-levels.md](docs/aura-levels.md) · [integrations/identity/](integrations/identity/) · [outputs.md](docs/outputs.md) |
+| **Compare & position** | [comparison.md](docs/comparison.md) · [narrative.md](docs/narrative.md) · [ROADMAP.md](docs/ROADMAP.md) |
 | **Contribute** | [CONTRIBUTING.md](CONTRIBUTING.md) · [Agent workflow](docs/contributing/ai_native_workflow.md) · [TESTING.md](docs/TESTING.md) · [PUBLISHING.md](docs/PUBLISHING.md) · [CHANGELOG.md](CHANGELOG.md) |
 
 **Notes**

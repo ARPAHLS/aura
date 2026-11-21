@@ -27,6 +27,7 @@ Single entry point for public docs. **Shipped behavior** lives in Tier 1–2; Ti
 | [stack-position.md](stack-position.md) | Optional — harness-centric input layers vs full ARPA stack |
 | [sequencer.md](sequencer.md) | Prescriptive pipelines, gates, `when`, conformance |
 | [observers.md](observers.md) | Packaged presets, `observers[]` vs `spectrum.services[]` wiring |
+| [coat-ops.md](coat-ops.md) | Escalation delivery (`WebhookCoatOp`, `SmtpCoatOp`) and membrane scans (`CoatOpRunner`) |
 | [capabilities.md](capabilities.md) | Capability broker — named intents, secret refs, egress inject ([#48](https://github.com/ARPAHLS/aura/issues/48)) |
 | [skillware-integration.md](skillware-integration.md) | Skillware reference adapter (optional host) |
 | [guides/aura-on-skillware.md](guides/aura-on-skillware.md) | Deep dive — Skillware as one ToolHost impl |
