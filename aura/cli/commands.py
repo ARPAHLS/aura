@@ -388,6 +388,32 @@ def cmd_verify_chain(
     return 0 if valid else 1
 
 
+def cmd_verify_pack(
+    path: str,
+    *,
+    key: str | None = None,
+    console: Console | None = None,
+) -> int:
+    pack_path = Path(path)
+    if not pack_path.is_file():
+        message = f"not found: {pack_path}"
+        if console is None:
+            print(message, file=sys.stderr)
+        else:
+            console.print(message, style="bold #FF9AA2")
+        return 1
+
+    from aura.exporters.signed_pack import verify_audit_pack
+
+    result = verify_audit_pack(pack_path, key=key)
+    payload = json.dumps(result)
+    if console is None:
+        print(payload)
+    else:
+        console.print(payload, style="dim")
+    return 0 if result.get("valid") else 1
+
+
 def cmd_home(*, console: Console | None = None) -> int:
     """Show resolved paths (alias for paths view)."""
     return cmd_paths(console=console)

@@ -34,6 +34,7 @@ from aura.core.secrets import (
 from aura.core.capabilities import Capability, CapabilityConfigError, InjectTarget
 from aura.core.session import Session, SessionMode
 from aura.exporters.jsonl import build_session_summary, export_session
+from aura.exporters.signed_pack import SignedPackError, verify_audit_pack
 from aura.identity.bind import IdentityOptions
 from aura.identity.errors import IdentityRequiredError, IdentityVerificationError
 from aura.identity.protocol import OperatorIdentityAdapter
@@ -110,7 +111,16 @@ def current_session() -> SessionRun | None:
     return _current_run.get()
 
 
-def _finalize_session_run(run: SessionRun, session: Session, *, do_export: bool) -> None:
+def _finalize_session_run(
+    run: SessionRun,
+    session: Session,
+    *,
+    do_export: bool,
+    signed_pack: bool = False,
+    signing_key: str | bytes | None = None,
+    signing_algorithm: str = "hmac-sha256",
+    key_id: str | None = None,
+) -> None:
     """Build in-memory receipt; optionally commit export artifacts."""
     if not session.spine:
         return
@@ -127,7 +137,15 @@ def _finalize_session_run(run: SessionRun, session: Session, *, do_export: bool)
     run.audit_report = audit if isinstance(audit, dict) else None
 
     if do_export:
-        run.exports = export_session(session, get_config().sessions_dir(), conformance=report)
+        run.exports = export_session(
+            session,
+            get_config().sessions_dir(),
+            conformance=report,
+            signed_pack=signed_pack,
+            signing_key=signing_key,
+            signing_algorithm=signing_algorithm,
+            key_id=key_id,
+        )
 
 
 @dataclass
@@ -149,6 +167,10 @@ class AgentHandle:
         escalation_handler: Any | None = None,
         secret_broker: Any | None = None,
         coat_ops: Any | None = None,
+        signed_pack: bool | None = None,
+        signing_key: str | bytes | None = None,
+        signing_algorithm: str = "hmac-sha256",
+        key_id: str | None = None,
     ) -> Iterator[SessionRun]:
         cfg = get_config()
         session = _build_session(self, mode, rules, sequencer)
@@ -166,13 +188,29 @@ class AgentHandle:
             coat_ops=coat_ops,
         )
         token = _current_run.set(run)
+        use_signed_pack = (
+            signed_pack if signed_pack is not None else bool(cfg.values.get("signed_pack", False))
+        )
         try:
             yield run
         finally:
             _current_run.reset(token)
-            session.close()
             do_export = export if export is not None else cfg.values.get("export_on_close", True)
-            _finalize_session_run(run, session, do_export=do_export)
+            if do_export and use_signed_pack and session.spine:
+                session.emit(
+                    "export.signed_pack",
+                    {"algorithm": signing_algorithm, "key_id": key_id or "default"},
+                )
+            session.close()
+            _finalize_session_run(
+                run,
+                session,
+                do_export=do_export,
+                signed_pack=use_signed_pack,
+                signing_key=signing_key,
+                signing_algorithm=signing_algorithm,
+                key_id=key_id,
+            )
 
 
 def merged_profile_rules(
@@ -290,4 +328,6 @@ __all__ = [
     "CoatOpRunner",
     "SmtpCoatOp",
     "WebhookCoatOp",
+    "SignedPackError",
+    "verify_audit_pack",
 ]

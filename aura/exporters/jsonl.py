@@ -84,6 +84,10 @@ def export_session(
     *,
     conformance: ConformanceReport | None = None,
     include_otel: bool = True,
+    signed_pack: bool = False,
+    signing_key: str | bytes | None = None,
+    signing_algorithm: str = "hmac-sha256",
+    key_id: str | None = None,
 ) -> dict[str, str]:
     """Write summary JSON and OTel JSONL atomically alongside the live JSONL log."""
     summary = build_session_summary(session, conformance=conformance)
@@ -120,4 +124,20 @@ def export_session(
     paths: dict[str, str] = {"summary": str(summary_final), "jsonl": str(session.log_path)}
     if include_otel:
         paths["otel"] = str(otel_final)
+    if signed_pack:
+        from aura.exporters.signed_pack import build_signed_pack, write_signed_pack_atomic
+
+        pack = build_signed_pack(
+            session_id=session.session_id,
+            jsonl_path=session.log_path,
+            summary_path=summary_final,
+            otel_path=otel_final if include_otel else None,
+            signing_key=signing_key,
+            algorithm=signing_algorithm,
+            key_id=key_id,
+            secret_broker=getattr(session, "_secret_broker", None),
+        )
+        pack_final = sessions_dir / f"{session.session_id}.pack.json"
+        write_signed_pack_atomic(pack, pack_final)
+        paths["pack"] = str(pack_final)
     return paths
