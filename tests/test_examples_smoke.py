@@ -28,6 +28,7 @@ EXPECTED_EXAMPLE_DIRS = (
     "14-capability-broker",
     "15-sequencer-pii-mask",
     "16-skillware-audit-bridge",
+    "17-coat-ops-delivery",
 )
 
 

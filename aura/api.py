@@ -11,6 +11,14 @@ from typing import Any, Iterator
 from aura.agents.profile import AgentProfile
 from aura.agents.registry import AgentRegistry
 from aura.config import configure as _configure, get_config
+from aura.core.coat_ops import (
+    CallableCoatOp,
+    CoatOpDeliveryError,
+    CoatOpDispatcher,
+    CoatOpRunner,
+    SmtpCoatOp,
+    WebhookCoatOp,
+)
 from aura.core.conformance import ConformanceEngine, ConformanceReport
 from aura.core.constraints import ApprovalRequired
 from aura.core.errors import ExportError, SessionClosedError, SessionNotOpenError
@@ -140,6 +148,7 @@ class AgentHandle:
         identity: dict[str, Any] | None = None,
         escalation_handler: Any | None = None,
         secret_broker: Any | None = None,
+        coat_ops: Any | None = None,
     ) -> Iterator[SessionRun]:
         cfg = get_config()
         session = _build_session(self, mode, rules, sequencer)
@@ -154,6 +163,7 @@ class AgentHandle:
             identity_options=identity_options,
             escalation_handler=escalation_handler,
             secret_broker=secret_broker,
+            coat_ops=coat_ops,
         )
         token = _current_run.set(run)
         try:
@@ -274,4 +284,10 @@ __all__ = [
     "CallablePiiMasker",
     "PiiMaskConfig",
     "PiiMaskResult",
+    "CallableCoatOp",
+    "CoatOpDeliveryError",
+    "CoatOpDispatcher",
+    "CoatOpRunner",
+    "SmtpCoatOp",
+    "WebhookCoatOp",
 ]

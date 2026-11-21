@@ -117,6 +117,8 @@ Integration tests **fail** (not skip) if Ollama or Skillware is missing — that
 | `test_observer_break_loop.py` | Break observer trajectory cycle detection ([#93](https://github.com/ARPAHLS/aura/issues/93)) |
 | `test_skillware_06_integration.py` | Skillware 0.6.2+ audit bridge, FinOps, Manifest v2, OTel GenAI, and async egress |
 | `test_skillware_06_stress_sim.py` | `scripts/aura_skillware_06_stress_sim.py` gate (12 scenarios) |
+| `test_coat_ops.py` | AURA-native coat ops: webhook/SMTP/callable delivery and `CoatOpRunner` ([#49](https://github.com/ARPAHLS/aura/issues/49)) |
+| `test_coat_ops_stress_sim.py` | `scripts/aura_coat_ops_stress_sim.py` gate (6 scenarios) |
 
 ## What we test
 

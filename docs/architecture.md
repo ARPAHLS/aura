@@ -37,6 +37,7 @@ flowchart LR
 | `aura/core/spectrum_services.py` | `spectrum.services[]` → observer preset wiring at session open |
 | `aura/core/spectrum_identity.py` | `spectrum.identity_required` + level defaults → verified operator gate at session open ([#73](https://github.com/ARPAHLS/aura/issues/73)) |
 | `aura/core/escalations.py` | `escalations[]` playbooks on SLO/drift/alert/constraint triggers ([#47](https://github.com/ARPAHLS/aura/issues/47)) |
+| `aura/core/coat_ops.py` | AURA-native coat ops: webhook/SMTP/callable escalation delivery and `CoatOpRunner` ([#49](https://github.com/ARPAHLS/aura/issues/49)) |
 | `aura/core/capabilities.py` | `capabilities[]` parse, `capability_scope`, last-moment inject ([#48](https://github.com/ARPAHLS/aura/issues/48)) |
 | `aura/core/schema_validation.py` | `variables.schema_refs`, `schema_check` egress validation ([#78](https://github.com/ARPAHLS/aura/issues/78)) |
 | `aura/core/secrets.py` | SecretBroker protocol (env / map / callable / chain) |

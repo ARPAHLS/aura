@@ -32,6 +32,12 @@ from aura.api import (
     CallablePiiMasker,
     PiiMaskConfig,
     PiiMaskResult,
+    CallableCoatOp,
+    CoatOpDeliveryError,
+    CoatOpDispatcher,
+    CoatOpRunner,
+    SmtpCoatOp,
+    WebhookCoatOp,
 )
 
 __version__ = "0.3.6"
@@ -69,4 +75,10 @@ __all__ = [
     "CallablePiiMasker",
     "PiiMaskConfig",
     "PiiMaskResult",
+    "CallableCoatOp",
+    "CoatOpDeliveryError",
+    "CoatOpDispatcher",
+    "CoatOpRunner",
+    "SmtpCoatOp",
+    "WebhookCoatOp",
 ]

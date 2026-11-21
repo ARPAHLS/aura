@@ -38,6 +38,7 @@ Run in order — [onboarding.md](../docs/onboarding.md#examples-learning-path):
 | **14** | [14-capability-broker](14-capability-broker/) | Named intents, secret refs, egress inject ([#48](https://github.com/ARPAHLS/aura/issues/48)) |
 | **15** | [15-sequencer-pii-mask](15-sequencer-pii-mask/) | Sequencer middleware & PII masking step op ([#58](https://github.com/ARPAHLS/aura/issues/58)) |
 | **16** | [16-skillware-audit-bridge](16-skillware-audit-bridge/) | Skillware 0.6.2+ dispatch audit bridge, dual-ledger verify, FinOps, Manifest v2 safety gate, async `aexecute` |
+| **17** | [17-coat-ops-delivery](17-coat-ops-delivery/) | AURA-native coat ops: live escalation delivery and membrane scan ([#49](https://github.com/ARPAHLS/aura/issues/49)) |
 
 Live registry skills (examples **05–06**, **16**): `$env:SKILLWARE_LIVE="1"` (PowerShell).
 

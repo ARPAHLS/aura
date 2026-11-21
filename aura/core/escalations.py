@@ -99,10 +99,12 @@ class EscalationEngine:
         rules: list[EscalationRule],
         *,
         custom_handler: EscalationHandler | None = None,
+        coat_ops: Any | None = None,
     ) -> None:
         self._session = session
         self._rules = rules
         self._custom_handler = custom_handler
+        self._coat_ops = coat_ops
         self._bare_append: Any | None = None
         self._in_dispatch = False
         self._fired: list[dict[str, Any]] = []
@@ -203,30 +205,40 @@ class EscalationEngine:
 
         if name == "email":
             recipient = arg or "ops@example.com"
-            self._append_spine(
-                "escalation.email",
-                {
-                    "to": recipient,
-                    "trigger_kind": trigger_event.get("kind"),
-                    "trigger_event_id": trigger_event.get("event_id"),
-                    "rule_id": rule.id,
+            email_payload: dict[str, Any] = {
+                "to": recipient,
+                "trigger_kind": trigger_event.get("kind"),
+                "trigger_event_id": trigger_event.get("event_id"),
+                "rule_id": rule.id,
+            }
+            if self._coat_ops is not None:
+                delivery_info = self._coat_ops.dispatch("escalation.email", email_payload)
+            else:
+                delivery_info = {
                     "delivery": "stub",
-                    "note": "Coat op / webhook delivery deferred to issue #49",
-                },
-            )
-            return {"action": "email", "status": "ok", "to": recipient}
+                    "note": "Configure coat_ops (webhook/smtp/callable) for live delivery",
+                }
+            email_payload.update(delivery_info)
+            self._append_spine("escalation.email", email_payload)
+            return {"action": "email", "status": "ok", "to": recipient, **delivery_info}
 
         if name == "wake":
-            self._append_spine(
-                "escalation.wake",
-                {
-                    "trigger_kind": trigger_event.get("kind"),
-                    "trigger_event_id": trigger_event.get("event_id"),
-                    "rule_id": rule.id,
-                    "note": "Wake field service stub — re-queue handled by host",
-                },
-            )
-            return {"action": "wake", "status": "ok"}
+            wake_payload: dict[str, Any] = {
+                "target": arg,
+                "trigger_kind": trigger_event.get("kind"),
+                "trigger_event_id": trigger_event.get("event_id"),
+                "rule_id": rule.id,
+            }
+            if self._coat_ops is not None:
+                delivery_info = self._coat_ops.dispatch("escalation.wake", wake_payload)
+            else:
+                delivery_info = {
+                    "delivery": "stub",
+                    "note": "Configure coat_ops (webhook/callable) for live wake delivery",
+                }
+            wake_payload.update(delivery_info)
+            self._append_spine("escalation.wake", wake_payload)
+            return {"action": "wake", "status": "ok", **delivery_info}
 
         if name == "custom":
             if self._custom_handler is None:
@@ -267,6 +279,7 @@ def attach_escalation_engine(
     session: Session,
     *,
     custom_handler: EscalationHandler | None = None,
+    coat_ops: Any | None = None,
 ) -> EscalationEngine | None:
     """Wire escalation playbooks when profile declares ``escalations[]``."""
     rules = parse_escalation_rules(getattr(session.profile, "escalations", None))
@@ -280,7 +293,19 @@ def attach_escalation_engine(
             EscalationRule(on="observer.alert", actions=["custom"]),
         ]
 
-    engine = EscalationEngine(session, rules, custom_handler=custom_handler)
+    from aura.core.coat_ops import CoatOpDispatcher
+
+    dispatcher = CoatOpDispatcher.from_env_and_profile(
+        getattr(session.profile, "variables", None),
+        override=coat_ops,
+        secret_broker=getattr(session, "_secret_broker", None),
+    )
+    engine = EscalationEngine(
+        session,
+        rules,
+        custom_handler=custom_handler,
+        coat_ops=dispatcher,
+    )
     spine = session.spine
     if spine is None:
         return engine
