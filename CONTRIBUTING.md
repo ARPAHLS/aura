@@ -1,6 +1,6 @@
-# Contributing to AURA Harness
+# Contributing to AURA
 
-Welcome. AURA Harness is a **runtime coat** around agent loops — audit, policy, session export — without replacing your host. We welcome contributions from **human developers**, **semi-autonomous assistants**, and **autonomous agents** that follow this guide.
+Welcome. AURA is a **runtime coat** around agent loops — audit, policy, session export — without replacing your host. We welcome contributions from **human developers**, **semi-autonomous assistants**, and **autonomous agents** that follow this guide.
 
 **Agents:** read [Agent Contribution Workflow](docs/contributing/ai_native_workflow.md) first. Human operators supervising agent work should use the same workflow for review.
 

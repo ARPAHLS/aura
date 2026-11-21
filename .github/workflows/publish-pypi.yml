@@ -1,4 +1,4 @@
-# Publish aura-harness to PyPI when a GitHub Release is published (or manual dispatch).
+# Publish machine-aura to PyPI when a GitHub Release is published (or manual dispatch).
 # Do not also trigger on tag push — publishing a Release for a v* tag would run twice
 # and the second upload fails with PyPI "File already exists" (400).
 #
@@ -32,7 +32,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: pypi
-      url: https://pypi.org/project/aura-harness/
+      url: https://pypi.org/project/machine-aura/
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5

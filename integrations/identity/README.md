@@ -32,7 +32,7 @@ identity:
 ```bash
 export AURA_AUTH0_TOKEN="<access_token>"
 # or AURA_OIDC_TOKEN
-pip install "aura-harness[identity]"
+pip install "machine-aura[identity]"
 ```
 
 Signature verification uses JWKS (`pyjwt` + `cryptography`). **Do not use `verify_signature: false` in production** — that mode is for local tests only.

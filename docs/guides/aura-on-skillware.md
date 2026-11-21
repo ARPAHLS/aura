@@ -1,6 +1,6 @@
 # AURA on top of Skillware
 
-How to combine [Skillware](https://github.com/arpahls/skillware) (skills) with AURA Harness (audit, policy, export) — with runnable examples, provider integrations, and best practices.
+How to combine [Skillware](https://github.com/arpahls/skillware) (skills) with AURA (audit, policy, export) — with runnable examples, provider integrations, and best practices.
 
 **Audience:** Teams running Skillware skills behind an LLM host who need provenance, egress policy, or compliance-ready session exports.
 

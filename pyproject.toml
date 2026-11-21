@@ -3,9 +3,9 @@ requires = ["setuptools>=61"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "aura-harness"
-version = "0.3.6"
-description = "Runtime membrane around agent loops — audit, policy, identity, and compliance export."
+name = "machine-aura"
+version = "0.3.7"
+description = "Verifiable runtime coat and attestation spine for AI agents — audit, policy, identity, and signed export."
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "MIT" }

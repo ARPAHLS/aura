@@ -11,13 +11,13 @@ The workflow calls **`reusable-test.yml`** (Python 3.12), builds sdist/wheel, th
 
 ## One-time PyPI setup
 
-1. Create the project on [pypi.org](https://pypi.org/project/aura-harness/) (owner account must match GitHub org/user used below).
-2. **Trusted publishing (recommended):** PyPI → **aura-harness** → **Publishing** → **Add a new pending publisher** → GitHub Actions  
+1. Create the project on [pypi.org](https://pypi.org/project/machine-aura/) (owner account must match GitHub org/user used below).
+2. **Trusted publishing (recommended):** PyPI → **machine-aura** → **Publishing** → **Add a new pending publisher** → GitHub Actions  
    Enter **exactly**:
 
    | Field | Value |
    | :--- | :--- |
-   | **PyPI Project Name** | `aura-harness` |
+   | **PyPI Project Name** | `machine-aura` |
    | **Owner** | `ARPAHLS` |
    | **Repository name** | `aura` |
    | **Workflow name** | `publish-pypi.yml` |
@@ -25,7 +25,7 @@ The workflow calls **`reusable-test.yml`** (Python 3.12), builds sdist/wheel, th
 
    Save. The publisher must exist **before** the workflow publish step runs.
 
-3. **Or** create an API token scoped to `aura-harness` and add `PYPI_API_TOKEN` as a GitHub repo secret; uncomment the `password` line in the workflow.
+3. **Or** create an API token scoped to `machine-aura` and add `PYPI_API_TOKEN` as a GitHub repo secret; uncomment the `password` line in the workflow.
 
 ### Trusted publishing troubleshooting
 
@@ -35,7 +35,7 @@ If publish fails with `invalid-publisher: valid token, but no corresponding publ
 - **Owner** typo — must be `ARPAHLS`, not a personal PyPI username, unless the repo lives under a user account.
 - **Workflow name** — filename only: `publish-pypi.yml` (not the full path).
 - **Environment** — leave empty on PyPI unless you add a GitHub Environment and set the same name on both sides.
-- **Project name** — publisher must be attached to **`aura-harness`**, the PyPI project being uploaded.
+- **Project name** — publisher must be attached to **`machine-aura`**, the PyPI project being uploaded.
 
 Claims from a successful v0.3.0 run (for verification):
 
@@ -68,7 +68,7 @@ Previously, the workflow also ran on tag push; publishing a Release for the same
 3. Commit, push, tag: `git tag v0.3.0 && git push origin v0.3.0`
 4. Create and **publish** a GitHub Release from the tag (this triggers the workflow once).
 5. Confirm the [Publish to PyPI](https://github.com/ARPAHLS/aura/actions/workflows/publish-pypi.yml) workflow succeeded.
-6. Confirm [pypi.org/project/aura-harness](https://pypi.org/project/aura-harness/) shows the new version.
+6. Confirm [pypi.org/project/machine-aura](https://pypi.org/project/machine-aura/) shows the new version.
 
 ## Citation / Zenodo
 

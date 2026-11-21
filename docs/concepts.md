@@ -1,6 +1,6 @@
 # Concepts
 
-Plain-language model for AURA Harness.
+Plain-language model for AURA.
 
 ## Agent
 

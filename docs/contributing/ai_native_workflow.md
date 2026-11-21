@@ -1,6 +1,6 @@
 # Agent contribution workflow
 
-Written for **autonomous and semi-autonomous agents** working on AURA Harness. Human operators should read this before supervising agent work.
+Written for **autonomous and semi-autonomous agents** working on AURA. Human operators should read this before supervising agent work.
 
 ---
 

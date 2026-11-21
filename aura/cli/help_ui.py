@@ -85,7 +85,7 @@ def _print_cli_usage_examples(console: Console) -> None:
 def _print_help_static_topic(console: Console, topic: str) -> None:
     if topic == "install":
         console.print(Text("Install", style=f"bold {TABLE_STYLE}"))
-        console.print("  pip install aura-harness", style=MENU_STYLE)
+        console.print("  pip install machine-aura", style=MENU_STYLE)
         console.print('  pip install -e ".[dev]"  # local development', style="dim")
     elif topic == "docs":
         console.print(Text("Docs", style=f"bold {TABLE_STYLE}"))
@@ -107,7 +107,7 @@ def cmd_help(*, console: Console | None = None, brief: bool = True) -> None:
         _print_help_index(console)
         _print_cli_usage_examples(console)
         console.print(Text("Install", style=f"bold {TABLE_STYLE}"))
-        console.print("  pip install aura-harness", style="dim")
+        console.print("  pip install machine-aura", style="dim")
         console.print()
         console.print(Text("Docs", style=f"bold {TABLE_STYLE}"))
         console.print(f"  {_DOCS_ONBOARDING}", style=f"dim {SPLASH_STYLE}")

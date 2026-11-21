@@ -22,7 +22,7 @@ from aura.cli.styles import BORDER_STYLE, CATEGORY_STYLE, ID_STYLE, MENU_STYLE, 
 
 
 def cmd_version(*, console: Console | None = None) -> int:
-    line = f"aura-harness {__version__}"
+    line = f"machine-aura {__version__}"
     if console is None:
         print(line)
     else:

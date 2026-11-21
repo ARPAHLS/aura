@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="https://raw.githubusercontent.com/ARPAHLS/aura/main/docs/assets/aura_splash.png" alt="αύρα — AURA Harness" width="480" />
+<img src="https://raw.githubusercontent.com/ARPAHLS/aura/main/docs/assets/aura_splash.png" alt="αύρα — AURA" width="480" />
 
 <br>
 
@@ -11,7 +11,7 @@ Run your agent in your environment with your tools. AURA mediates every egress w
 <br>
 
 <div align="center">
-  <a href="https://pypi.org/project/aura-harness/"><img src="https://img.shields.io/pypi/v/aura-harness?label=Version&color=e8d4c0&style=flat-square" alt="Version"></a>
+  <a href="https://pypi.org/project/machine-aura/"><img src="https://img.shields.io/pypi/v/machine-aura?label=Version&color=e8d4c0&style=flat-square" alt="Version"></a>
   <a href="https://doi.org/10.5281/zenodo.22031863"><img src="https://img.shields.io/badge/DOI-10.5281%2Fzenodo.22031863-d4dce8?style=flat-square" alt="DOI"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-e8c4c0?style=flat-square" alt="License"></a>
   <a href="https://github.com/arpahls"><img src="https://img.shields.io/badge/Powered_by-ARPA_HLS-cfc8dc?style=flat-square" alt="ARPA HLS"></a>
@@ -31,7 +31,7 @@ Run your agent in your environment with your tools. AURA mediates every egress w
 
 ## Overview
 
-**AURA Harness** wraps whatever runs your agent loop — a Python script, [Skillware](https://github.com/arpahls/skillware), LangGraph, or your own host. It does not replace the loop. It sits around it, records what happened, enforces your rules at tool boundaries, and exports a session you can ship to logs or compliance.
+**AURA** wraps whatever runs your agent loop — a Python script, [Skillware](https://github.com/arpahls/skillware), LangGraph, or your own host. It does not replace the loop. It sits around it, records what happened, enforces your rules at tool boundaries, and exports a session you can ship to logs or compliance.
 
 | | |
 |---|---|
@@ -67,7 +67,7 @@ flowchart LR
     TOOLS["Tools"] -.-> BODY
     CONST["Constitution"] -.-> BODY
 
-    BODY --> AURA["AURA Harness"]
+    BODY --> AURA["AURA"]
     AURA --> TRAIL["Audit Trail"]
     TRAIL --> EXPORT["Session Export"]
     TRAIL -.-> OBS["Observers"]
@@ -85,9 +85,9 @@ Requires **Python 3.10+**.
 **Install from PyPI:**
 
 ```bash
-pip install aura-harness
+pip install machine-aura
 # optional Skillware host extra:
-pip install "aura-harness[skillware]"
+pip install "machine-aura[skillware]"
 ```
 
 **Develop from source:**

@@ -1,4 +1,4 @@
-"""AURA Harness v0.1 tests."""
+"""AURA v0.1 tests."""
 
 from __future__ import annotations
 

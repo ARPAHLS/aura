@@ -3,17 +3,18 @@
 cff-version: 1.2.0
 message: >-
   If you use this software, please cite it using the metadata below.
-  Record the aura-harness version you used (PyPI or Git tag) for reproducibility.
+  Record the machine-aura version you used (PyPI or Git tag) for reproducibility.
 type: software
-title: AURA Harness
+title: AURA
 abstract: >-
-  AURA Harness is an open-source Python runtime coat for agent loops. It wraps
-  existing hosts with a membrane model — ingress context, egress policy on tool
-  calls, prescriptive sequencer pipelines, observers, hash-chained audit trails,
-  conformance summaries, and structured audit reports — without replacing the
-  user's loop, model, or skill runtime.
-version: "0.3.6"
-date-released: "2026-10-16"
+  AURA (machine-aura) is an open-source Python verifiable runtime coat and
+  attestation spine for AI agents. It wraps existing hosts with a membrane
+  model — ingress context, egress policy on tool calls, prescriptive sequencer
+  pipelines, observers, hash-chained audit trails, conformance summaries, and
+  offline-verifiable signed audit packs — without replacing the user's loop,
+  model, or skill runtime.
+version: "0.3.7"
+date-released: "2026-11-21"
 license: MIT
 repository-code: "https://github.com/ARPAHLS/aura"
 url: "https://github.com/ARPAHLS/aura"
@@ -36,7 +37,7 @@ authors:
     website: "https://arpacorp.net"
 keywords:
   - aura
-  - aura-harness
+  - machine-aura
   - python
   - ai-agents
   - agent-harness

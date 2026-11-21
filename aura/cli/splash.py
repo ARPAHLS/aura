@@ -98,14 +98,14 @@ def print_splash(console: Console | None = None, *, version: str | None = None) 
         console.print(gradient_splash_text(_SPLASH_LOGO_LINES))
         console.print(
             gradient_text_line(
-                f"  AURA Harness v{version} — Runtime membrane for agent loops",
+                f"  AURA v{version} — Runtime membrane for agent loops",
                 logo_width,
             )
         )
     except UnicodeEncodeError:
         plain = Console(force_terminal=False, no_color=True, file=console.file)
         plain.print("AURA")
-        plain.print(f"AURA Harness v{version} — Runtime membrane for agent loops")
+        plain.print(f"AURA v{version} — Runtime membrane for agent loops")
     console.print(
         Text(
             "  https://github.com/ARPAHLS/aura  ·  https://arpacorp.net\n",
@@ -116,4 +116,4 @@ def print_splash(console: Console | None = None, *, version: str | None = None) 
 
 def splash_contains_aura(text: str) -> bool:
     """True when combined output includes AURA branding from the splash."""
-    return "AURA Harness" in text and ("█████╗" in text or text.strip().startswith("AURA"))
+    return "AURA" in text and ("█████╗" in text or text.strip().startswith("AURA"))

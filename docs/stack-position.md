@@ -2,7 +2,7 @@
 
 > **Optional** — harness-centric view of the broader ARPA stack. Default path: [architecture.md](architecture.md) and [onboarding.md](onboarding.md).
 
-How **AURA Harness** models a run.
+How **AURA** models a run.
 
 ---
 
@@ -55,7 +55,7 @@ flowchart LR
 
 ## vs full ARPA stack
 
-| Full ARPA stack | AURA Harness |
+| Full ARPA stack | AURA |
 | :--- | :--- |
 | Identity → Soul → Body chain | Identity is an input alongside brain, memory, tools |
 | Soul / SoulSig | Folded into **Constitution** + optional `ids` metadata |

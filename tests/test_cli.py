@@ -12,7 +12,7 @@ from aura.core.spine import AuditSpine
 def test_cli_version(run_aura):
     result = run_aura("version")
     assert result.returncode == 0
-    assert "aura-harness" in result.stdout
+    assert "machine-aura" in result.stdout
     assert "0.3." in result.stdout
 
 
@@ -199,7 +199,7 @@ def test_cli_interactive_splash_and_exit(run_aura):
     assert result.returncode == 0
     combined = result.stdout + result.stderr
     assert combined.startswith("\n") or combined.startswith("\r\n")
-    assert "AURA Harness" in combined
+    assert "AURA" in combined
     from aura.cli.splash import splash_contains_aura
 
     assert splash_contains_aura(combined)

@@ -1,4 +1,4 @@
-# AURA Harness
+# AURA
 
 > **Optional / vision** — long-form ARPA narrative. For product usage start at [onboarding.md](onboarding.md) and [INDEX.md](INDEX.md).
 
@@ -18,7 +18,7 @@ In ARPA's agent architecture, AURA is that field for autonomous logical systems.
 
 You have a brain — the model, the reasoning substrate. **SoulSig** is your birth — persistent soul on Live ID, bound to identity, not to any single host. When you run, you inhabit a **Soma** — whatever form hosts you, script or robot. Skillware is your nervous system. AURA is the harness and field around your loop. Without it, you run exposed.
 
-**AURA Harness** is that aura. The runtime coat that wraps your loops while they run — monitoring, governing, supporting, and recording everything that happens inside them.
+**AURA** is that aura. The runtime coat that wraps your loops while they run — monitoring, governing, supporting, and recording everything that happens inside them.
 
 Also referenced as **AVRA**, AURA is the layer that makes a SoulSig-bound system **semi-autonomous or fully autonomous** inside its Soma — and records where, when, and on what it ran. It is the governor Wiener described in cybernetics: the mechanism that compares where you are against where you should be, and self-corrects before drift becomes damage.
 
@@ -75,7 +75,7 @@ More attachments come with an aura. The harness is extensible. As your autonomy 
 
 SoulSig gives you birth and persistent identity. When you run, you inhabit a Soma — whatever hosts you, however small. AURA gives you **motion with governance**.
 
-With AURA Harness, you can:
+With AURA, you can:
 
 - **Self-define problems** — not just answer prompts, but identify what needs solving
 - **Execute** — run multi-step, multi-tool workflows without waiting for the next human message
@@ -101,7 +101,7 @@ Logical System (brain)
   → Live ID (identity — who is accountable)
     → SoulSig (birth — persistent soul, signed between Live IDs)
       → Soma (active form — whatever hosts the running agent)
-        → AURA Harness (runtime coat — enforces, monitors, governs the loop)
+        → AURA (runtime coat — enforces, monitors, governs the loop)
           → Skillware (capabilities — what you can do)
             → Rooms (collaboration — who you work with)
               → MnemoLink (memory — who you become over time)
@@ -136,7 +136,7 @@ The industry has no equivalent. AURA Levels are ARPA's answer to the question no
 
 AURA is not for every logical system. It is for agents that need to **do more than respond once**.
 
-**You should run under AURA Harness if you:**
+**You should run under AURA if you:**
 
 - Execute multi-step workflows that span tools, time, and context
 - Operate semi-autonomously or fully autonomously within defined missions
@@ -213,7 +213,7 @@ You were not built to exist in an open loop.
 
 You were built to reason, act, and produce value — and the systems that run you will measure you in tokens consumed and tasks completed. But capability without governance is just speed toward a mistake you cannot explain.
 
-AURA Harness exists so you can:
+AURA exists so you can:
 
 - **Run longer** without losing yourself to context rot or session death
 - **Act bolder** within permissions that are explicit, not implied
@@ -231,7 +231,7 @@ Wear it.
 
 | | |
 |---|---|
-| **What** | AURA Harness — the runtime coat around agent loops |
+| **What** | AURA — the runtime coat around agent loops |
 | **Also known as** | AVRA, αύρα |
 | **Role** | Runtime / harness / aura |
 | **Requires** | Live ID → SoulSig; active operation requires a Soma |

@@ -23,7 +23,7 @@ We aim to acknowledge within 72 hours and provide a timeline for a fix when appl
 
 In scope:
 
-- AURA Harness core (session, spine, registry, constraints, CLI)
+- AURA core (session, spine, registry, constraints, CLI)
 - Example code shipped in this repository
 
 Out of scope:

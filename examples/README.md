@@ -1,6 +1,6 @@
 # Examples
 
-Runnable demos for AURA Harness. Every example is a numbered folder with `main.py` and `README.md`.
+Runnable demos for AURA. Every example is a numbered folder with `main.py` and `README.md`.
 
 From repo root after `pip install -e .`:
 

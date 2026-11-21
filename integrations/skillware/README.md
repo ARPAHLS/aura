@@ -8,7 +8,7 @@ AURA wraps [Skillware](https://github.com/arpahls/skillware) at **egress** — p
 
 ```powershell
 .venv\Scripts\activate
-pip install -e ".[dev,skillware]"     # aura-harness + skillware>=0.6.2,<0.7
+pip install -e ".[dev,skillware]"     # machine-aura + skillware>=0.6.2,<0.7
 pip install -e ".[integrations]"      # + ollama, openai, anthropic, google clients
 ```
 

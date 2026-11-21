@@ -1,4 +1,4 @@
-"""AURA Harness v0.3 tests — identity, audit report, hash chain, compare."""
+"""AURA v0.3 tests — identity, audit report, hash chain, compare."""
 
 from __future__ import annotations
 

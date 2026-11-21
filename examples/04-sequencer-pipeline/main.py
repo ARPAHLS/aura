@@ -12,7 +12,7 @@ PIPELINE = {
             "id": "research",
             "type": "skill",
             "ref": "research",
-            "config": {"tool": "search", "args": {"query": "AURA harness membrane"}},
+            "config": {"tool": "search", "args": {"query": "AURA membrane"}},
         },
         {"id": "draft", "type": "op", "ref": "compose", "config": {"template": "brief"}},
         {

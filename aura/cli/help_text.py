@@ -68,7 +68,7 @@ _HELP_MENU: List[Tuple[str, str, str, Union[int, str]]] = [
     ("2", "sessions", "run, logs, report, export, compare, verify", 1),
     ("3", "paths", "AURA_HOME and project storage", 2),
     ("4", "general", "menu, help, version", 3),
-    ("5", "install", "pip install aura-harness", "install"),
+    ("5", "install", "pip install machine-aura", "install"),
     ("6", "docs", "full usage guide online", "docs"),
     ("7", "interactive", "numbered splash menu", "interactive"),
 ]

@@ -9,6 +9,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- *(none yet)*
+
+### Changed
+
+- *(none yet)*
+
+### Fixed
+
+- *(none yet)*
+
+## [0.3.7] - 2026-11-21
+
+### Added
+
+- *(none yet)*
+
+### Changed
+
+- *(none yet)*
+
+### Fixed
+
+- *(none yet)*
+
+## [0.3.7] - 2026-11-21
+
+### Added
+
 - **Signed audit pack export ([#50](https://github.com/ARPAHLS/aura/issues/50))** — opt-in `signed_pack=True` on `ag.session()` / `export_session()` emits `export.signed_pack` on the spine and writes `{session_id}.pack.json` atomically with `chain_root`, artifact SHA-256 digests, and detached `hmac-sha256` (zero-dependency default) or `ed25519` (when `cryptography` is installed) signature; offline verification via `verify_audit_pack()` and `aura verify pack <path> [--key ...]`.
 - **AURA-native coat ops ([#49](https://github.com/ARPAHLS/aura/issues/49))** — `aura/core/coat_ops.py` (`WebhookCoatOp` with SSRF URL validation and HMAC-SHA256 `X-AURA-Signature` signing, `SmtpCoatOp` via stdlib `smtplib`, `CallableCoatOp`, `CoatOpDispatcher`, and `CoatOpRunner` for membrane-level Skillware/mock scans through `SkillwareHost` egress); `EscalationEngine` and `ag.session(coat_ops=...)` dispatch `escalation.email` and `escalation.wake` with `delivery: "sent" | "failed" | "stub"` on the spine; `examples/17-coat-ops-delivery/`, `scripts/aura_coat_ops_stress_sim.py`, and `tests/test_coat_ops.py`.
 - **Skillware 0.6.2+ dispatch audit bridge & dual-ledger verification** — `SkillwareHost.create_context()`, `SkillwareHost.from_skill_context()`, and `create_dispatch_audit_hook()` bridge Skillware `SkillContext` `on_dispatch` events into AURA's `AuditSpine` (`skill.dispatch`) with correlated `trace_id`/`span_id` and deduplicated FinOps telemetry (single-ledger default); optional `audit_log_path` + `verify_dual_audit_chain(aura_jsonl, skillware_jsonl)` + `aura verify chain <path> --skillware-log <sw_jsonl>` cross-verify dual SHA-256 hash chains and detect tampering, truncation, or unanchored shadow executions; out-of-band `SkillContext` dispatches bypassing AURA egress emit `skill.egress_bypass` and surface audit finding `UNGUARDED_SKILL_DISPATCH` (`severity: high`).
@@ -19,6 +47,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **PyPI package rename (`aura-harness` -> `machine-aura`)** — renamed the distribution package from `aura-harness` to `machine-aura` (`pip install machine-aura`); the importable Python package (`import aura`) and CLI (`aura`) remain unchanged, and existing `aura-harness<=0.3.6` releases remain available on PyPI.
 - **Skillware compatibility** — bumped optional `[skillware]` and `[integrations]` extras from `skillware>=0.5.4,<0.6` to `skillware>=0.6.2,<0.7` in `pyproject.toml`; updated `docs/skillware-integration.md`, `docs/guides/aura-on-skillware.md`, `docs/outputs.md`, `docs/observers.md`, `docs/using-aura.md`, `docs/sequencer.md`, `docs/TESTING.md`, `integrations/skillware/README.md`, and `spec/aura-event.schema.json`.
 - **Unified secret pattern redaction** — `aura/core/payload_redaction.py` (`redact_secret_patterns`) now scrubs raw credential patterns (`sk-...`, `gh[pousr]_...`, `AIza...`, `AKIA...`, `glpat-...`, `xox[bp]-...`, `Bearer ...`, PEM private keys) across all free-form string fields and error messages, adds `access_key`/`secret_key` key detection, preserves FinOps token counters (`prompt_tokens`, `completion_tokens`, `tokens_saved`, `new_tokens`), and adds a 32-level recursion depth guard; `aura/sequencer/pii_mask.py` aligned with `AIza`, `gh[usr]_`, and PEM patterns.
 

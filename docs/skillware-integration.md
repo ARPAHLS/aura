@@ -1,6 +1,6 @@
 # Skillware integration
 
-AURA Harness wraps Skillware skills at **egress** — policy, approval, and audit — without owning Skillware's runtime.
+AURA wraps Skillware skills at **egress** — policy, approval, and audit — without owning Skillware's runtime.
 
 **Full guide (recommended):** [guides/aura-on-skillware.md](guides/aura-on-skillware.md) — stack position, skill types, provider loops, sequencer chains, best practices.
 
@@ -15,7 +15,7 @@ AURA Harness wraps Skillware skills at **egress** — policy, approval, and audi
 | **AURA membrane** | Ingress context, egress guard on every tool call |
 | **Audit trail** | JSONL spine + session export |
 
-Skillware is **optional**: `pip install "aura-harness[skillware]"` (see [Version compatibility](#version-compatibility) below). Tests and examples use `MockSkill` when Skillware is not installed.
+Skillware is **optional**: `pip install "machine-aura[skillware]"` (see [Version compatibility](#version-compatibility) below). Tests and examples use `MockSkill` when Skillware is not installed.
 
 ---
 
@@ -137,7 +137,7 @@ with ag.session() as run:
     host.register(
         MockSkill("research", {"search": lambda args: {"results": []}})
     )
-    host.execute("research", "search", {"query": "AURA harness"})
+    host.execute("research", "search", {"query": "AURA"})
 ```
 
 Every execution emits:

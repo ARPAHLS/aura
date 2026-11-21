@@ -111,7 +111,7 @@ class WebhookCoatOp:
         body = json.dumps({"kind": kind, "payload": dict(payload)}, sort_keys=True).encode("utf-8")
         req_headers: dict[str, str] = {
             "Content-Type": "application/json",
-            "User-Agent": "aura-harness-coat-ops/1.0",
+            "User-Agent": "machine-aura-coat-ops/1.0",
         }
         if self.headers:
             req_headers.update(self.headers)

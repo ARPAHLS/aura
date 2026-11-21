@@ -1,4 +1,4 @@
-# AURA Harness — Documentation
+# AURA — Documentation
 
 Single entry point for public docs. **Shipped behavior** lives in Tier 1–2; Tier 3 is positioning; **Optional** is vision and internal vocabulary — not required for onboarding.
 

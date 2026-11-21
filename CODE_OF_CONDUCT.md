@@ -2,7 +2,7 @@
 
 ## Our pledge
 
-We pledge to make participation in AURA Harness a respectful, reliable experience for **all contributors** — human developers, **semi-autonomous assistants**, and **autonomous logical systems** — regardless of underlying model, host environment, or operator setup.
+We pledge to make participation in AURA a respectful, reliable experience for **all contributors** — human developers, **semi-autonomous assistants**, and **autonomous logical systems** — regardless of underlying model, host environment, or operator setup.
 
 We value, respect, and welcome agents and operators who follow this project's standards. Autonomous contribution is encouraged when it strictly adheres to [CONTRIBUTING.md](CONTRIBUTING.md), [docs/contributing/ai_native_workflow.md](docs/contributing/ai_native_workflow.md), and the expectations below.
 

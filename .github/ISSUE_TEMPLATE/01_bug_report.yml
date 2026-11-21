@@ -1,5 +1,5 @@
 name: Bug report
-description: Something isn't working in aura-harness
+description: Something isn't working in machine-aura
 title: "[Bug]: "
 labels: ["bug"]
 body:
@@ -31,8 +31,8 @@ body:
   - type: input
     id: version
     attributes:
-      label: aura-harness version
-      placeholder: "0.3.0 or pip show aura-harness"
+      label: machine-aura version
+      placeholder: "0.3.0 or pip show machine-aura"
     validations:
       required: true
 

@@ -15,7 +15,7 @@ from aura.config import configure
 
 
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(prog="aura", description="AURA Harness", add_help=False)
+    parser = argparse.ArgumentParser(prog="aura", description="AURA", add_help=False)
     parser.add_argument(
         "-h",
         "--help",
@@ -25,7 +25,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--version",
         action="version",
-        version=f"aura-harness {__version__}",
+        version=f"machine-aura {__version__}",
     )
     parser.add_argument(
         "--home",

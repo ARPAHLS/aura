@@ -1,4 +1,4 @@
-# Using AURA Harness
+# Using AURA
 
 How to attach AURA to your agent loop — from lightweight audit logging to prescriptive pipelines.
 
@@ -235,7 +235,7 @@ Schema: [sequencer.schema.json](../spec/sequencer.schema.json)
 ## Optional Skillware
 
 ```bash
-pip install "aura-harness[skillware]"
+pip install "machine-aura[skillware]"
 ```
 
 Skillware >= 0.6.2 (see [skillware-integration.md](skillware-integration.md#version-compatibility)) runs inside the body; AURA wraps `execute()` / `aexecute()` at egress and bridges `SkillContext` audit hooks into the spine.

@@ -1,4 +1,4 @@
-"""AURA Harness — runtime coat around agent loops."""
+"""AURA — verifiable runtime coat and attestation spine for AI agents."""
 
 from aura.api import (
     AgentHandle,
@@ -42,7 +42,7 @@ from aura.api import (
     verify_audit_pack,
 )
 
-__version__ = "0.3.6"
+__version__ = "0.3.7"
 
 __all__ = [
     "__version__",

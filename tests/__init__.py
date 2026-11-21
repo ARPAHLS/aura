@@ -1,1 +1,1 @@
-"""AURA Harness tests."""
+"""AURA tests."""

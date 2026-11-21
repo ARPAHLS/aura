@@ -33,7 +33,7 @@ def _verify_jwt(token: str, *, issuer: str, audience: str | None) -> dict[str, A
         from jwt import PyJWKClient
     except ImportError as exc:  # pragma: no cover - optional extra
         raise IdentityVerificationError(
-            "pyjwt required for OIDC verification (pip install 'aura-harness[identity]')",
+            "pyjwt required for OIDC verification (pip install 'machine-aura[identity]')",
             method="oidc",
         ) from exc
 

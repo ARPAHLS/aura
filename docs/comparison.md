@@ -1,6 +1,6 @@
-# Comparison: AURA Harness vs. Alternatives
+# Comparison: AURA vs. Alternatives
 
-AURA Harness is a **framework-agnostic runtime membrane** — a sidecar that wraps agent loops for audit and policy at the I/O boundary. It is **not** an orchestrator, eval suite, or tool framework.
+AURA is a **framework-agnostic runtime membrane** — a sidecar that wraps agent loops for audit and policy at the I/O boundary. It is **not** an orchestrator, eval suite, or tool framework.
 
 For architecture and current scope, see [architecture.md](architecture.md) and [ROADMAP.md](ROADMAP.md).
 
@@ -16,7 +16,7 @@ This document clarifies how AURA compares to **DeepSeek Harness (DSH)**, **LangG
 
 | Approach | Build inside their stack? | Full causal audit | Policy before world effects | Works with existing script |
 | :--- | :--- | :--- | :--- | :--- |
-| **AURA Harness** | No — wrap what you have | Yes (JSONL + audit report + hash chain) | Yes (constitution, gates, egress on wired ToolHost paths) | Yes (SDK + any ToolHost adapter; Skillware is one reference impl) |
+| **AURA** | No — wrap what you have | Yes (JSONL + audit report + hash chain) | Yes (constitution, gates, egress on wired ToolHost paths) | Yes (SDK + any ToolHost adapter; Skillware is one reference impl) |
 | **DeepSeek Harness** | Yes — plugins, profiles, session model | Yes (SessionEvent log) | Partial (sandbox, approval in base) | No — adopt DSH runtime |
 | **LangGraph** | Yes — graph nodes and state | Via LangSmith / custom | Via graph logic you write | No — model as graph |
 | **CrewAI** | Yes — crews, roles, tasks | Via external logging | Via agent/task design | No — CrewAI workflow |
@@ -193,7 +193,7 @@ Orchestrators optimize for **task completion**. Eval harnesses optimize for **qu
 
 ## Executive summary matrix
 
-| Feature | AURA Harness | DeepSeek Harness | LangGraph | CrewAI / AutoGen | LangSmith / tracing | DeepEval / RAGAS |
+| Feature | AURA | DeepSeek Harness | LangGraph | CrewAI / AutoGen | LangSmith / tracing | DeepEval / RAGAS |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | **Primary goal** | **Runtime membrane — audit & policy** | Composable agent runtime | Stateful agent graphs | Multi-agent orchestration | LLM observability | Offline quality eval |
 | **Architecture** | **Sidecar / wrapper** | Plugin-based runtime | Graph framework | Agent workflow framework | SaaS / SDK tracing | Test harness |
