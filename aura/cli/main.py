@@ -159,10 +159,16 @@ def build_parser() -> argparse.ArgumentParser:
     )
     pack_p = verify_sub.add_parser("pack", help="Verify a signed audit pack (.pack.json)")
     pack_p.add_argument("path", help="Path to a .pack.json manifest file")
-    pack_p.add_argument(
+    pack_key_group = pack_p.add_mutually_exclusive_group()
+    pack_key_group.add_argument(
         "--key",
         default=None,
         help="Signing key or SecretBroker ref (defaults to AURA_SIGNING_KEY)",
+    )
+    pack_key_group.add_argument(
+        "--keyring",
+        default=None,
+        help="JSON keyring file mapping key_id to secret/PEM string or key file path",
     )
 
     return parser
@@ -216,7 +222,7 @@ def dispatch(args: argparse.Namespace) -> int:
         if args.verify_command == "chain":
             return commands.cmd_verify_chain(args.path, skillware_log=args.skillware_log)
         if args.verify_command == "pack":
-            return commands.cmd_verify_pack(args.path, key=args.key)
+            return commands.cmd_verify_pack(args.path, key=args.key, keyring=args.keyring)
         print("usage: aura verify chain|pack <path>", file=sys.stderr)
         return 1
     if args.command is None:

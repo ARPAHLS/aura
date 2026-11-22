@@ -392,20 +392,36 @@ def cmd_verify_pack(
     path: str,
     *,
     key: str | None = None,
+    keyring: str | None = None,
     console: Console | None = None,
 ) -> int:
-    pack_path = Path(path)
-    if not pack_path.is_file():
-        message = f"not found: {pack_path}"
+    def _emit_error(message: str) -> int:
         if console is None:
             print(message, file=sys.stderr)
         else:
             console.print(message, style="bold #FF9AA2")
         return 1
 
-    from aura.exporters.signed_pack import verify_audit_pack
+    pack_path = Path(path)
+    if not pack_path.is_file():
+        return _emit_error(f"not found: {pack_path}")
 
-    result = verify_audit_pack(pack_path, key=key)
+    if key is not None and keyring is not None:
+        return _emit_error("cannot specify both --key and --keyring")
+
+    from aura.exporters.signed_pack import SignedPackError, load_keyring, verify_audit_pack
+
+    loaded_keyring: dict[str, str | bytes] | None = None
+    if keyring is not None:
+        kr_path = Path(keyring)
+        if not kr_path.is_file():
+            return _emit_error(f"not found: {kr_path}")
+        try:
+            loaded_keyring = load_keyring(kr_path)
+        except SignedPackError as exc:
+            return _emit_error(str(exc))
+
+    result = verify_audit_pack(pack_path, key=key, keyring=loaded_keyring)
     payload = json.dumps(result)
     if console is None:
         print(payload)

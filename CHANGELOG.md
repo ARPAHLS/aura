@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- *(none yet)*
+- **Multi-key keyring lookup for signed audit packs ([#101](https://github.com/ARPAHLS/aura/issues/101))** — added `keyring: Mapping[str, str | bytes] | None = None` to `verify_audit_pack()` (plus `load_keyring()`) and `--keyring <path>` to `aura verify pack` for resolving rotated keys by pack `key_id`, failing closed on missing or unknown `key_id`s while preserving single-`key` and `AURA_SIGNING_KEY` behavior.
 
 ### Changed
 
