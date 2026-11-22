@@ -13,9 +13,9 @@ Identity fields on export: [trust-paths.md](trust-paths.md). Session-close workf
 | **Audit trail** | `{session_id}.jsonl` | Append-only AuraEvents with causal ids + hash chain |
 | **Summary** | `{session_id}.summary.json` | Metadata, conformance, audit report |
 | **OTel JSONL** | `{session_id}.otel.jsonl` | Span-style records mapped from events; written on close by default and refreshed by `aura export-otel` |
-| **Signed pack** (opt-in) | `{session_id}.pack.json` | Detached HMAC-SHA256 / Ed25519 signature over `chain_root` and artifact SHA-256 digests ([#50](https://github.com/ARPAHLS/aura/issues/50)); verify via `aura verify pack <path>` |
+| **Signed pack** (opt-in) | `{session_id}.pack.json` | Detached HMAC-SHA256 / Ed25519 signature over `chain_root` and artifact SHA-256 digests ([#50](https://github.com/ARPAHLS/aura/issues/50)); verify via `aura verify pack <path> [--key <key> \| --keyring <path>]` |
 
-CLI: `aura report show <session_id>`, `aura report show <session_id> --json`, `aura export`, `aura export-otel`, `aura compare`, `aura verify chain <path>`.
+CLI: `aura report show <session_id>`, `aura report show <session_id> --json`, `aura export`, `aura export-otel`, `aura compare`, `aura verify chain <path>`, `aura verify pack <path>`.
 
 **Export commit:** Summary and OTel files are written to staging paths and renamed atomically on success. If export fails, neither artifact is committed (the live JSONL trail may still exist from the session). With `export=False`, the SDK still builds `run.summary` and `run.audit_report` in memory.
 
@@ -69,6 +69,8 @@ Binary pass/fail plus violations list — declared rules, sequencer step order, 
 Each event includes `prev_hash` and `content_hash` (SHA-256). Tampering or corruption breaks verification in the audit report.
 
 Use `aura verify chain <path>` to validate an exported JSONL audit trail directly. Pass `--skillware-log <skillware_audit.jsonl>` to run optional dual-ledger cross-verification against a Skillware hash-chained log. It prints a JSON object with `hash_chain_valid`; when the chain is broken, the object also identifies the first affected `event_id` (or dual-ledger mismatch details) and the command exits with status 1.
+
+Use `aura verify pack <path>` (or `verify_audit_pack(pack_path, key=..., keyring=...)`) to verify a signed `.pack.json` bundle offline. Pass `--key <secret-or-ref>` (defaults to `AURA_SIGNING_KEY`) for single-key verification, or `--keyring <keyring.json>` (a JSON object mapping `key_id` to a secret/PEM string, `SecretBroker` ref, or key file path) to resolve rotated keys by the pack's `key_id` ([#101](https://github.com/ARPAHLS/aura/issues/101)). Keyring mode fails closed when `key_id` is missing or not found in the keyring.
 
 ---
 
